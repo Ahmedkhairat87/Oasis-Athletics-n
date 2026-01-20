@@ -210,148 +210,65 @@ class _MedicalFormState extends State<MedicalForm> {
 
   /// ✅ Put API data into the SAME variables/controllers that UI reads
   void _assignApiToUi(MedicalFormDataResponse data) {
-    // 1) Populate options for checkboxes from API (WITHOUT changing UI widgets)
-    final allergiesOptions =
-        (data.populateAllergies ?? [])
-            .map((e) => (e.column1 ?? '').trim())
-            .where((e) => e.isNotEmpty)
-            .toList();
-
-    final injuriesOptions =
-        (data.populateInjuries ?? [])
-            .map((e) => (e.column1 ?? '').trim())
-            .where((e) => e.isNotEmpty)
-            .toList();
-
-    final surgeriesOptions =
-        (data.populateSurgeries ?? [])
-            .map((e) => (e.column1 ?? '').trim())
-            .where((e) => e.isNotEmpty)
-            .toList();
-
-    setState(() {
-      // rebuild known allergies map from API list (or fallback constants)
-      final allList =
-          allergiesOptions.isNotEmpty
-              ? allergiesOptions
-              : MedicalConstants.allergies;
-      _knownAllergies
-        ..clear()
-        ..addEntries(allList.map((k) => MapEntry(k, false)));
-
-      // rebuild injuries map
-      final injList =
-          injuriesOptions.isNotEmpty
-              ? injuriesOptions
-              : MedicalConstants.pastInjuryTypes;
-      _pastInjuries
-        ..clear()
-        ..addEntries(injList.map((k) => MapEntry(k, false)));
-
-      // rebuild surgeries map
-      final surgList =
-          surgeriesOptions.isNotEmpty
-              ? surgeriesOptions
-              : MedicalConstants.surgeryTypes;
-      _surgeries
-        ..clear()
-        ..addEntries(surgList.map((k) => MapEntry(k, false)));
-    });
-
-    // 2) stdMedicalFormData غالبًا JSON String — نحاول نفكّه ونرمي القيم في أماكنها
     final form =
-        (data.stdMedicalFormData != null && data.stdMedicalFormData!.isNotEmpty)
-            ? data.stdMedicalFormData!.first
-            : null;
+    (data.stdMedicalFormData != null &&
+        data.stdMedicalFormData!.isNotEmpty)
+        ? data.stdMedicalFormData!.first
+        : null;
 
     if (form == null) return;
 
-    void _assignApiToUi(MedicalFormDataResponse data) {
-      final form =
-          (data.stdMedicalFormData != null &&
-                  data.stdMedicalFormData!.isNotEmpty)
-              ? data.stdMedicalFormData!.first
-              : null;
+    setState(() {
+      _bloodGroup = form.bloodGroupName;
 
-      if (form == null) return;
+      _hasAllergies = form.hasAllergies ?? false;
+      _typeOfAllergyController.text = form.allergyType ?? '';
+      _severityController.text = form.allergySeverity ?? '';
+      _specificTreatmentController.text = form.allergyTreatment ?? '';
+      _otherAllergyController.text = form.allergyOther ?? '';
 
-      setState(() {
-        /// Blood Group
-        _bloodGroup = form.bloodGroupName;
+      _chronicConditionsController.text = form.chronicConditions ?? '';
+      _chronicTreatmentController.text = form.treatmentPlan ?? '';
+      _chronicEmergencyController.text = form.emergencyProtocols ?? '';
 
-        /// Allergies
-        _hasAllergies = form.hasAllergies ?? false;
-        _typeOfAllergyController.text = form.allergyType ?? '';
-        _severityController.text = form.allergySeverity ?? '';
-        _specificTreatmentController.text = form.allergyTreatment ?? '';
-        _otherAllergyController.text = form.allergyOther ?? '';
+      _pastSurgeryController.text = form.surgeryTypeDate ?? '';
+      _hospitalizationReasonController.text =
+          form.hospitalizationReason ?? '';
+      _hospitalizationDatesController.text =
+          form.hospitalizationDates ?? '';
 
-        /// Chronic conditions
-        _chronicConditionsController.text = form.chronicConditions ?? '';
-        _chronicTreatmentController.text = form.treatmentPlan ?? '';
-        _chronicEmergencyController.text = form.emergencyProtocols ?? '';
+      _familyHistoryController.text = form.familyHistory ?? '';
 
-        /// Hospitalization
-        _pastSurgeryController.text = form.surgeryTypeDate ?? '';
-        _hospitalizationReasonController.text =
-            form.hospitalizationReason ?? '';
-        _hospitalizationDatesController.text = form.hospitalizationDates ?? '';
+      _vaccinesReceivedController.text = form.vaccinesReceived ?? '';
 
-        /// Family history
-        _familyHistoryController.text = form.familyHistory ?? '';
+      _visionProblemsController.text = form.visionProblems ?? '';
+      _hearingProblemsController.text =
+      (form.hearingProblems == true) ? 'Yes' : 'No';
 
-        /// Immunization
-        _vaccinesReceivedController.text = form.vaccinesReceived ?? '';
+      _activityLimitationsController.text =
+          form.physicalLimitations ?? '';
+      _sportsParticipationController.text =
+          form.sportsLimitations ?? '';
+      _specialEquipmentController.text =
+          form.specialEquipment ?? '';
 
-        /// Vision & hearing
-        _visionProblemsController.text = form.visionProblems ?? '';
-        _hearingProblemsController.text =
-            (form.hearingProblems == true) ? 'Yes' : 'No';
+      _mentalHistoryController.text =
+          form.mentalHealthHistory ?? '';
+      _diagnosedConditionsController.text =
+          form.diagnosedConditions ?? '';
+      _therapyMedicationController.text =
+          form.medicationOrTherapy ?? '';
+      _behavioralConcernsController.text =
+          form.behavioralConcerns ?? '';
+      _supportNeededController.text =
+          form.supportNeeded ?? '';
 
-        /// Physical
-        _activityLimitationsController.text = form.physicalLimitations ?? '';
-        _sportsParticipationController.text = form.sportsLimitations ?? '';
-        _specialEquipmentController.text = form.specialEquipment ?? '';
+      _specialDietController.text = form.specialDiet ?? '';
+      _foodAllergiesController.text = form.foodAllergies ?? '';
 
-        /// Mental
-        _mentalHistoryController.text = form.mentalHealthHistory ?? '';
-        _diagnosedConditionsController.text = form.diagnosedConditions ?? '';
-        _therapyMedicationController.text = form.medicationOrTherapy ?? '';
-        _behavioralConcernsController.text = form.behavioralConcerns ?? '';
-        _supportNeededController.text = form.supportNeeded ?? '';
-
-        /// Diet
-        _specialDietController.text = form.specialDiet ?? '';
-        _foodAllergiesController.text = form.foodAllergies ?? '';
-
-        _lastUpdate = DateTime.tryParse(form.createdAt ?? '');
-      });
-    }
-
-    // 3) Medications قد تكون JSON list أو string
-    final meds = data.medications ?? [];
-    // امسح الموجود
-    for (final row in _medications) {
-      row['name']?.dispose();
-      row['dosage']?.dispose();
-      row['freq']?.dispose();
-    }
-    _medications.clear();
-
-    // عبّي من الـ API
-    if (meds.isNotEmpty) {
-      for (final m in meds) {
-        _medications.add({
-          'name': TextEditingController(text: m.medicationName ?? ''),
-          'dosage': TextEditingController(text: m.dosage ?? ''),
-          'freq': TextEditingController(text: m.frequency ?? ''),
-        });
-      }
-    } else {
-      _addMedicationRow(); // default row
-    }
+      _lastUpdate = DateTime.tryParse(form.createdAt ?? '');
+    });
   }
-
   // ===================== original lifecycle =====================
   @override
   void initState() {
