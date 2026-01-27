@@ -18,6 +18,7 @@ class APIManager {
   static String getAthleticLinks = "${fixedURL}stdLinksAthletics";
 
   static String getMedicalFormData = "${fixedURL}stdFormMedical";
+  static String updateMedicalFormData = "${fixedURL}stdFormMedicalUpdate";
 
   //APIS from Parents app API.Oasis
   static const fixedURL2 = "https://api1.oasisdemaadi.com/api/";

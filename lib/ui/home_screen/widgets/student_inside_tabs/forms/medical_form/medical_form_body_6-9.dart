@@ -56,6 +56,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
         ),
 
         /// 7. Vision & Hearing
+        /// 7. Vision & Hearing
         sectionHeader('7. Vision & Hearing'),
         editableWrapper(
           state.isEditing,
@@ -65,8 +66,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
               children: [
                 TextFormField(
                   controller: state.visionProblemsController,
-                  decoration:
-                  medicalInputDecoration(context, 'Vision Problems'),
+                  decoration: medicalInputDecoration(context, 'Vision Problems'),
                 ),
                 SizedBox(height: 8.h),
                 _dateAndToggleRow(
@@ -76,16 +76,11 @@ class MedicalFormBodyPart2 extends StatelessWidget {
                   onPick: (d) => state.lastEyeExam = d,
                   no: state.visionProblemNo,
                   yes: state.visionProblemYes,
-                  onToggle: (idx) => state.toggleVision(idx),
+                  onToggle: state.toggleVision,
                   enabled: state.isEditing,
                 ),
-                SizedBox(height: 8.h),
-                TextFormField(
-                  controller: state.hearingProblemsController,
-                  decoration:
-                  medicalInputDecoration(context, 'Hearing Problems'),
-                ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 12.h),
+
                 _dateAndToggleRow(
                   context,
                   label: 'Last Hearing Test Date',
@@ -93,7 +88,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
                   onPick: (d) => state.lastHearingTest = d,
                   no: state.hearingProblemNo,
                   yes: state.hearingProblemYes,
-                  onToggle: (idx) => state.toggleHearing(idx),
+                  onToggle: state.toggleHearing,
                   enabled: state.isEditing,
                 ),
               ],

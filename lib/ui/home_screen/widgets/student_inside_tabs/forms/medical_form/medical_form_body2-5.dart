@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
+import 'helpersFiles/medical_form_medications_section.dart';
+import 'helpersFiles/medical_form_preview_field.dart';
 import 'medical_form_helpers.dart';
 import 'medical_form_state.dart';
 
@@ -92,72 +93,8 @@ class MedicalFormBodyPart1 extends StatelessWidget {
             ),
           ),
         ),
-
         /// 5. Current Medications
-        sectionHeader('5. Current Medications'),
-        editableWrapper(
-          state.isEditing,
-          sectionCard(
-            context,
-            Column(
-              children: [
-                smallHint(
-                  'Add medications the child is taking (Medication / Dosage / Frequency)',
-                ),
-                for (int i = 0; i < state.medications.length; i++)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 8.h),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 4,
-                          child: TextFormField(
-                            controller: state.medications[i]['name'],
-                            decoration: medicalInputDecoration(
-                                context, 'Medication'),
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Expanded(
-                          flex: 3,
-                          child: TextFormField(
-                            controller: state.medications[i]['dosage'],
-                            decoration:
-                            medicalInputDecoration(context, 'Dosage'),
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Expanded(
-                          flex: 3,
-                          child: TextFormField(
-                            controller: state.medications[i]['freq'],
-                            decoration:
-                            medicalInputDecoration(context, 'Frequency'),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline),
-                          onPressed: state.isEditing &&
-                              state.medications.length > 1
-                              ? () => state.removeMedicationRow(i)
-                              : null,
-                        ),
-                      ],
-                    ),
-                  ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add medication'),
-                    onPressed:
-                    state.isEditing ? state.addMedicationRow : null,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        MedicalFormMedicationsSection(state: state),
       ],
     );
   }

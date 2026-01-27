@@ -45,7 +45,14 @@ class MedicalFormFooter extends StatelessWidget {
                 ),
                 elevation: 2,
               ),
-              onPressed: state.isEditing ? state.saveProfile : null,
+              onPressed: state.isEditing ? () async {
+                final ok = await state.saveMedicalForm();
+                if (ok && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Saved successfully')),
+                  );
+                }
+              } : null,
               child: Text(
                 'Save',
                 style: TextStyle(

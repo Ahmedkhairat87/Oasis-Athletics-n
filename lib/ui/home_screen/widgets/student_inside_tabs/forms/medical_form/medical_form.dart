@@ -2,15 +2,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oasisathletic/ui/home_screen/widgets/student_inside_tabs/forms/medical_form/medical_form_section_allergies.dart';
 import 'package:provider/provider.dart';
 
 
 
 import '../../../../../../core/reusable_components/app_background.dart';
+import 'medical_form_sections.dart';
 import 'medical_form_state.dart';
-import 'medical_form_body_part1.dart';
-import 'medical_form_body_part2.dart';
-import 'medical_form_body_part3.dart';
+import 'medical_form_body2-5.dart';
+import 'medical_form_body_6-9.dart';
+import 'medical_form_body_10-12.dart';
 import 'medical_form_footer.dart';
 
 class MedicalForm extends StatelessWidget {
@@ -32,6 +34,21 @@ class MedicalForm extends StatelessWidget {
                 style: TextStyle(color: Colors.black),
               ),
               actions: [
+                // ✅ SAVE (top)
+                IconButton(
+                  tooltip: 'Save',
+                  onPressed: state.isEditing
+                      ? () async {
+                    final ok = await state.saveMedicalForm();
+                    if (ok && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Saved successfully')),
+                      );
+                    }
+                  }
+                      : null,
+                  icon: const Icon(Icons.save),
+                ),
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: state.isEditing ? null : state.enterEditMode,
@@ -53,6 +70,8 @@ class MedicalForm extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  MedicalFormSections(state: state),
+                                  MedicalFormAllergiesSection(state: state),
                                   MedicalFormBodyPart1(state: state),
                                   MedicalFormBodyPart2(state: state),
                                   MedicalFormBodyPart3(state: state),
