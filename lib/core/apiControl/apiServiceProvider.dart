@@ -77,7 +77,7 @@ class APIServices {
       if (response.statusCode >= 400 && response.statusCode < 500) {
         return {
           "success": false,
-          "data": null,
+          "data": decoded, // ✅ keep it
           "message": _clientErrorMessage(response.body, response.statusCode),
           "statusCode": response.statusCode,
         };

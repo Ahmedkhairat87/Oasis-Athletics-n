@@ -673,21 +673,40 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       debugPrintStack(stackTrace: st);
 
       if (e is ApiException) {
-        if (e.statusCode == 204) {
+        final code = e.statusCode ?? -1;
+
+        if (code == 204) {
+          // ✅ invalid credentials
           _setLoginError('Wrong username or password.');
-        } else {
-          _setLoginError('An error occurred. Please try again.');
         }
-      } else {
+
+        else if (code == 401 || code == 403) {
+          _setLoginError('Access denied. Please contact support.');
+        }
+        else if (code == 404) {
+          _setLoginError('Service not available. Please try again later.');
+        }
+        else if (code >= 500) {
+          _setLoginError('Server error. Please try again later.');
+        }
+        else {
+          _setLoginError('Server error. Please try again later-.');
+        }
+      }
+      else {
+        // Non-ApiException (rare, but keep safe)
         final msg = e.toString().toLowerCase();
+
         if (msg.contains('socketexception') ||
             msg.contains('no internet') ||
             msg.contains('network')) {
           _setLoginError('No internet connection. Please check your network.');
-        } else if (msg.contains('timeout')) {
+        }
+        else if (msg.contains('timeout')) {
           _setLoginError('Request timed out. Please try again.');
-        } else {
-          _setLoginError('An error occurred. Please try again.');
+        }
+        else {
+          _setLoginError('Unexpected error. Please try again later.');
         }
       }
     } finally {
@@ -695,4 +714,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       setState(() => _isLoggingIn = false);
     }
   }
+
+
+
 }

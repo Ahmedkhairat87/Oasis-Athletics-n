@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../medical_form.dart';
+
 import '../nutrition_form.dart';
+import 'medical_form/medical_form.dart';
 
 /// Forms tab content used inside the StudentInside page's PageView.
 /// NOTE: This widget intentionally does NOT use a Scaffold (it is
