@@ -1,6 +1,7 @@
 // lib/ui/home_screen/widgets/student_inside_tabs/nutrition_form.dart
 import 'dart:ui';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -83,7 +84,7 @@ class _NutritionFormState extends State<NutritionForm> {
     _nightHungerOrSnack = SnackFeeling.snack;
     _eatingSpeed = EatingSpeed.moderate;
     _eatOrDrinkFruit = EatFruitDrink.eat;
-    _whenSnack = 'After breakfast';
+    //_whenSnack = 'After breakfast';
     _cupsPerDayController.text = '0';
     _sugarTeaspoonsController.text = '0';
     _avgSleepHoursController.text = '8.0';
@@ -251,8 +252,8 @@ class _NutritionFormState extends State<NutritionForm> {
   void _saveForm() {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fix form errors'),
+        SnackBar(
+          content: Text('please_fix_errors'.tr()),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -299,8 +300,8 @@ class _NutritionFormState extends State<NutritionForm> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Nutrition form saved'),
+      SnackBar(
+        content: Text('nutrition_form_saved'.tr()),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -327,9 +328,9 @@ class _NutritionFormState extends State<NutritionForm> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          'Nutrition Form',
-          style: TextStyle(color: Colors.black),
+        title: Text(
+          'nutrition_form'.tr(),
+          style: const TextStyle(color: Colors.black),
         ),
         flexibleSpace: ClipRect(
           child: BackdropFilter(
@@ -380,7 +381,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    'Last update :',
+                                    'last_update'.tr(),
                                     style: TextStyle(fontSize: 11.sp),
                                   ),
                                   Text(
@@ -400,7 +401,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                   Icons.edit,
                                   color: ColorsManager.accentPurple,
                                 ),
-                                tooltip: 'Edit',
+                                tooltip: 'edit'.tr(),
                                 onPressed: _enterEditMode,
                               )
                             else ...[
@@ -409,7 +410,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                   Icons.close,
                                   color: Colors.redAccent,
                                 ),
-                                tooltip: 'Cancel',
+                                tooltip: 'cancel'.tr(),
                                 onPressed: _cancelEditMode,
                               ),
                               IconButton(
@@ -417,7 +418,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                   Icons.check,
                                   color: ColorsManager.accentMint,
                                 ),
-                                tooltip: 'Save',
+                                tooltip: 'save'.tr(),
                                 onPressed: _saveAndExit,
                               ),
                             ],
@@ -430,7 +431,7 @@ class _NutritionFormState extends State<NutritionForm> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _sectionHeader('Food Preferences'),
+                                _sectionHeader('food_preferences'.tr()),
                                 _editableWrapper(
                                   child: _sectionCard(
                                     Column(
@@ -438,14 +439,14 @@ class _NutritionFormState extends State<NutritionForm> {
                                         TextFormField(
                                           controller: _favoriteSnackController,
                                           decoration: _inputDecoration(
-                                            'Favorite snack the child loves',
+                                            'favorite_snack'.tr(),
                                           ),
                                         ),
                                         SizedBox(height: 8.h),
                                         TextFormField(
                                           controller: _dislikedFoodsController,
                                           decoration: _inputDecoration(
-                                            'Food they don’t like or refuse',
+                                            'disliked_foods'.tr(),
                                           ),
                                         ),
                                       ],
@@ -453,7 +454,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                   ),
                                 ),
 
-                                _sectionHeader('Water & Breakfast'),
+                                _sectionHeader('water_breakfast'.tr()),
                                 _editableWrapper(
                                   child: _sectionCard(
                                     Column(
@@ -466,7 +467,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 controller:
                                                     _cupsPerDayController,
                                                 decoration: _inputDecoration(
-                                                  'How many cups per day?',
+                                                  'cups_per_day'.tr(),
                                                 ),
                                                 keyboardType:
                                                     TextInputType.number,
@@ -481,7 +482,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 isExpanded: true,
                                                 initialValue: _breakfastFreq,
                                                 decoration: _inputDecoration(
-                                                  'Do you have breakfast?',
+                                                  'breakfast_question'.tr(),
                                                 ),
                                                 items:
                                                     BreakfastFreq.values.map((
@@ -491,12 +492,12 @@ class _NutritionFormState extends State<NutritionForm> {
                                                           {
                                                             BreakfastFreq
                                                                     .always:
-                                                                'Always',
+                                                                'always'.tr(),
                                                             BreakfastFreq
                                                                     .sometimes:
-                                                                'Sometimes',
+                                                                'sometimes'.tr(),
                                                             BreakfastFreq.never:
-                                                                'Never',
+                                                                'never'.tr(),
                                                           }[f]!;
                                                       return DropdownMenuItem(
                                                         value: f,
@@ -522,7 +523,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                   ),
                                 ),
 
-                                _sectionHeader('Snacking & Night Eating'),
+                                _sectionHeader('snacking_night_eating'.tr()),
                                 _editableWrapper(
                                   child: _sectionCard(
                                     Column(
@@ -530,7 +531,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                         TextFormField(
                                           controller: _toastTypeController,
                                           decoration: _inputDecoration(
-                                            'Toasts / Balady bread (what kind?)',
+                                            'toast_type'.tr(),
                                           ),
                                         ),
                                         SizedBox(height: 8.h),
@@ -541,7 +542,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 controller:
                                                     _sugarTeaspoonsController,
                                                 decoration: _inputDecoration(
-                                                  'Teaspoons of sugar per day',
+                                                  'sugar_teaspoons_per_day'.tr(),
                                                 ),
                                                 keyboardType:
                                                     TextInputType.number,
@@ -555,18 +556,18 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 isExpanded: true,
                                                 initialValue: _riceAmount,
                                                 decoration: _inputDecoration(
-                                                  'How many rice for lunch?',
+                                                  'rice_amount'.tr(),
                                                 ),
                                                 items:
                                                     RiceAmount.values.map((r) {
                                                       final label =
                                                           {
                                                             RiceAmount.same:
-                                                                'Same',
+                                                                'same'.tr(),
                                                             RiceAmount.less:
-                                                                'Less',
+                                                                'less'.tr(),
                                                             RiceAmount.more:
-                                                                'More',
+                                                                'more'.tr(),
                                                           }[r]!;
                                                       return DropdownMenuItem(
                                                         value: r,
@@ -595,7 +596,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 isExpanded: true,
                                                 initialValue: _eatBeforeSleep,
                                                 decoration: _inputDecoration(
-                                                  'Do you eat before sleep every day?',
+                                                  'eat_before_sleep'.tr(),
                                                 ),
                                                 items:
                                                     YesNo.values
@@ -605,8 +606,8 @@ class _NutritionFormState extends State<NutritionForm> {
                                                                 value: y,
                                                                 child: Text(
                                                                   y == YesNo.yes
-                                                                      ? 'Yes'
-                                                                      : 'No',
+                                                                      ? 'yes'.tr()
+                                                                      : 'no'.tr(),
                                                                 ),
                                                               ),
                                                         )
@@ -631,7 +632,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 isExpanded: true,
                                                 initialValue: _isNightEater,
                                                 decoration: _inputDecoration(
-                                                  'Are you a night eater?',
+                                                  'night_eater'.tr(),
                                                 ),
                                                 items:
                                                     YesNo.values
@@ -641,8 +642,8 @@ class _NutritionFormState extends State<NutritionForm> {
                                                                 value: y,
                                                                 child: Text(
                                                                   y == YesNo.yes
-                                                                      ? 'Yes'
-                                                                      : 'No',
+                                                                      ? 'yes'.tr()
+                                                                      : 'no'.tr(),
                                                                 ),
                                                               ),
                                                         )
@@ -671,7 +672,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 initialValue:
                                                     _nightHungerOrSnack,
                                                 decoration: _inputDecoration(
-                                                  'Do you feel hungry at night or just snack?',
+                                                  'night_feeling'.tr(),
                                                 ),
                                                 items:
                                                     SnackFeeling.values
@@ -684,8 +685,8 @@ class _NutritionFormState extends State<NutritionForm> {
                                                               s ==
                                                                       SnackFeeling
                                                                           .snack
-                                                                  ? 'Snack'
-                                                                  : 'Hungry',
+                                                                  ? 'snack'.tr()
+                                                                  : 'hungry'.tr(),
                                                             ),
                                                           ),
                                                         )
@@ -710,13 +711,13 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 isExpanded: true,
                                                 initialValue: _whenSnack,
                                                 decoration: _inputDecoration(
-                                                  'When do you have snack?',
+                                                  'when_snack'.tr(),
                                                 ),
                                                 items:
                                                     [
-                                                          'After breakfast',
-                                                          'After lunch',
-                                                          'Between both',
+                                                          'after_breakfast'.tr(),
+                                                          'after_lunch'.tr(),
+                                                          'between_both'.tr(),
                                                         ]
                                                         .map(
                                                           (s) =>
@@ -743,7 +744,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                   ),
                                 ),
 
-                                _sectionHeader('Sleep & Eating'),
+                                _sectionHeader('sleep_eating'.tr()),
                                 _editableWrapper(
                                   child: _sectionCard(
                                     Column(
@@ -756,7 +757,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 controller:
                                                     _avgSleepHoursController,
                                                 decoration: _inputDecoration(
-                                                  'Average sleep hours',
+                                                  'average_sleep'.tr(),
                                                 ),
                                                 keyboardType:
                                                     TextInputType.numberWithOptions(
@@ -773,19 +774,19 @@ class _NutritionFormState extends State<NutritionForm> {
                                                 isExpanded: true,
                                                 initialValue: _eatingSpeed,
                                                 decoration: _inputDecoration(
-                                                  'Eating speed',
+                                                  'eating_speed'.tr(),
                                                 ),
                                                 items:
                                                     EatingSpeed.values.map((e) {
                                                       final label =
                                                           {
                                                             EatingSpeed.fast:
-                                                                'Fast',
+                                                                'fast'.tr(),
                                                             EatingSpeed
                                                                     .moderate:
-                                                                'Moderate',
+                                                                'moderate'.tr(),
                                                             EatingSpeed.slow:
-                                                                'Slow',
+                                                                'slow'.tr(),
                                                           }[e]!;
                                                       return DropdownMenuItem(
                                                         value: e,
@@ -810,7 +811,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                   ),
                                 ),
 
-                                _sectionHeader('Vegetables & Fruits'),
+                                _sectionHeader('vegetables_fruits'.tr()),
                                 _editableWrapper(
                                   child: _sectionCard(
                                     Column(
@@ -818,28 +819,28 @@ class _NutritionFormState extends State<NutritionForm> {
                                         TextFormField(
                                           controller: _vegFreqController,
                                           decoration: _inputDecoration(
-                                            'How often do you eat vegetables? (Cooked / Raw)',
+                                            'veg_freq'.tr(),
                                           ),
                                         ),
                                         SizedBox(height: 8.h),
                                         TextFormField(
                                           controller: _vegListController,
                                           decoration: _inputDecoration(
-                                            'Which vegetables does your kid eat?',
+                                            'veg_list'.tr(),
                                           ),
                                         ),
                                         SizedBox(height: 8.h),
                                         TextFormField(
                                           controller: _fruitFreqController,
                                           decoration: _inputDecoration(
-                                            'How often do you eat fruits?',
+                                            'fruit_freq'.tr(),
                                           ),
                                         ),
                                         SizedBox(height: 8.h),
                                         TextFormField(
                                           controller: _fruitListController,
                                           decoration: _inputDecoration(
-                                            'Which fruits does your kid eat?',
+                                            'fruit_list'.tr(),
                                           ),
                                         ),
                                         SizedBox(height: 8.h),
@@ -847,14 +848,14 @@ class _NutritionFormState extends State<NutritionForm> {
                                           isExpanded: true,
                                           initialValue: _eatOrDrinkFruit,
                                           decoration: _inputDecoration(
-                                            'Do you eat the fruits or drink them?',
+                                            'eat_or_drink_fruit'.tr(),
                                           ),
                                           items:
                                               EatFruitDrink.values.map((v) {
                                                 final label =
                                                     v == EatFruitDrink.eat
-                                                        ? 'Eat'
-                                                        : 'Drink';
+                                                        ? 'eat'.tr()
+                                                        : 'drink'.tr();
                                                 return DropdownMenuItem(
                                                   value: v,
                                                   child: Text(label),
@@ -873,7 +874,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                         TextFormField(
                                           controller: _candyController,
                                           decoration: _inputDecoration(
-                                            'How often do they eat candy? What is it?',
+                                            'candy'.tr(),
                                           ),
                                         ),
                                         SizedBox(height: 8.h),
@@ -890,7 +891,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                               runSpacing: 6.h,
                                               children: [
                                                 _smallCheckboxLabel(
-                                                  label: 'Oil',
+                                                  label: 'oil'.tr(),
                                                   value: _usesOil,
                                                   onChanged: (v) {
                                                     if (!_isEditing) return;
@@ -900,7 +901,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                   },
                                                 ),
                                                 _smallCheckboxLabel(
-                                                  label: 'Butter',
+                                                  label: 'butter'.tr(),
                                                   value: _usesButter,
                                                   onChanged: (v) {
                                                     if (!_isEditing) return;
@@ -910,7 +911,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                                   },
                                                 ),
                                                 _smallCheckboxLabel(
-                                                  label: 'Margarine',
+                                                  label: 'margarine'.tr(),
                                                   value: _usesMargarine,
                                                   onChanged: (v) {
                                                     if (!_isEditing) return;
@@ -954,7 +955,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                         onPressed:
                                             () => Navigator.of(context).pop(),
                                         child: Text(
-                                          'Cancel',
+                                          'cancel'.tr(),
                                           style: TextStyle(fontSize: 14.sp),
                                         ),
                                       ),

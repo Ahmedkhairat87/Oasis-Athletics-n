@@ -37,7 +37,6 @@
   "student_selection": "Choose a student to continue",
   "payment_information": "Payment Information",
   "name": "Name",
-
   "parents_profile": "Parents Profile",
   "save": "Save",
   "general": "General",
@@ -71,7 +70,7 @@
   "home_tel": "Home Tel.",
   "cell_phone": "Cell Phone",
   "relation": "Relation",
-  "inbox": "Inbox",
+  "Inbox": "Inbox",
   "sent": "Sent",
   "all": "All",
   "no_messages": "No messages",
@@ -371,5 +370,18 @@
   "drawer_profile": "Profile",
   "drawer_orders": "Orders",
   "drawer_cart": "Cart",
-  "drawer_org_name": "Oasis Athletics"
+  "drawer_org_name": "Oasis Athletics",
+  "messages_title": "Messages",
+  "tab_inbox": "Inbox",
+  "tab_sent": "Sent",
+  "filter_all": "All",
+  "Students": "Students",
+  "Medical Form": "Medical Form",
+  "Home":"Home",
+  "Profile": "Profile",
+  "pAllergies":"Allergies",
+  "pPast_injuries": "Past injuries",
+  "no_subrepo_found" : "No subject reports found",
+  "teacher_cmnt": "Teacher's Comment:",
+  "attend": "Attend"
 }

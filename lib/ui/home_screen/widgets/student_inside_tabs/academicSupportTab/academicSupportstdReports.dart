@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oasisathletic/core/reusable_components/app_background.dart';
@@ -71,7 +72,7 @@ class StudentReports extends StatelessWidget {
         centerTitle: true,
         titleSpacing: 0,
         title: Text(
-          "Academic Support Report",
+          "academic_support_report".tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: 18.sp,
@@ -142,14 +143,14 @@ class StudentReports extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          const Text("School Tasks"),
+                           Text("school_tasks".tr()),
                           _pill("$schoolTasks", Colors.cyan),
                         ],
                       ),
                       SizedBox(width: 6.w),
                       Column(
                         children: [
-                          const Text("Extra Tasks"),
+                           Text("extra_tasks".tr()),
                           _pill("$extraTasks", Colors.orange),
                         ],
                       ),
@@ -189,7 +190,7 @@ class StudentReports extends StatelessWidget {
                       border: Border.all(color: Colors.grey.shade300),
                     ),
                     child: Text(
-                      "No subject reports found",
+                      "no_subrepo_found".tr(),
                       style: TextStyle(fontSize: 14.sp),
                     ),
                   )
@@ -334,7 +335,7 @@ class StudentReports extends StatelessWidget {
               const Text("📝"),
               SizedBox(width: 6.w),
               Text(
-                "Teacher's Comment:",
+                "teacher_cmnt".tr(),
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,

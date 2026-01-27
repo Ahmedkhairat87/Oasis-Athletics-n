@@ -1,4 +1,5 @@
 // lib/core/reusable_components/academic_support_report_card.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -188,7 +189,7 @@ class AcademicSupportReportCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _buildTogglePill(
-                      label: 'School',
+                      label: 'school'.tr(),
                       icon: Icons.school,
                       active: isSchool,
                       activeColor: accentMint,
@@ -199,7 +200,7 @@ class AcademicSupportReportCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: _buildTogglePill(
-                      label: 'Extra',
+                      label: 'extra'.tr(),
                       icon: Icons.sports,
                       active: !isSchool,
                       activeColor: accentCoral,

@@ -1,4 +1,5 @@
 // lib/ui/home_screen/widgets/student_inside_tabs/medical_tab.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -260,13 +261,13 @@ class _MedicalTabState extends State<MedicalTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // -------------------- DOCTOR SECTION --------------------
-            const SectionTitle('Doctor'),
+            SectionTitle('doctor'.tr()),
             SizedBox(height: 10.h),
 
             // Psychologist
             _sectionHeader(
               icon: Icons.psychology,
-              title: 'Psychologist',
+              title: 'psychologist'.tr(),
               color: accentPurple,
             ),
             SizedBox(height: 6.h),
@@ -294,7 +295,7 @@ class _MedicalTabState extends State<MedicalTab> {
             // Physiotherapist
             _sectionHeader(
               icon: Icons.accessibility_new_rounded,
-              title: 'Physiotherapist',
+              title: 'physiotherapist'.tr(),
               color: accentMint,
             ),
             SizedBox(height: 6.h),
@@ -322,7 +323,7 @@ class _MedicalTabState extends State<MedicalTab> {
             // Clinic visits
             _sectionHeader(
               icon: Icons.local_hospital,
-              title: 'Clinic visits',
+              title: 'clinic_visits'.tr(),
               color: accentSky,
             ),
             SizedBox(height: 6.h),
@@ -348,13 +349,13 @@ class _MedicalTabState extends State<MedicalTab> {
             SizedBox(height: 18.h),
 
             // -------------------- NUTRITIONIST SECTION --------------------
-            const SectionTitle('Nutritionist'),
+            SectionTitle('nutritionist'.tr()),
             SizedBox(height: 10.h),
 
             // Body follow-up (InBody)
             _sectionHeader(
               icon: Icons.monitor_weight,
-              title: 'Body follow-up',
+              title: 'body_follow_up'.tr(),
               color: accentSun,
             ),
             SizedBox(height: 6.h),
@@ -381,7 +382,7 @@ class _MedicalTabState extends State<MedicalTab> {
             // Weekly diet plan
             _sectionHeader(
               icon: Icons.restaurant_menu,
-              title: 'Weekly diet plan',
+              title: 'weekly_diet_plan'.tr(),
               color: accentMint,
             ),
             SizedBox(height: 6.h),
@@ -443,7 +444,7 @@ class _MedicalTabState extends State<MedicalTab> {
           ),
           SizedBox(width: 4.w),
           Text(
-            isRead ? 'Read' : 'Unread',
+            isRead ? 'read'.tr() : 'unread'.tr(),
             style: TextStyle(
               fontSize: 11.sp,
               fontWeight: FontWeight.w600,
@@ -500,7 +501,7 @@ class _MedicalTabState extends State<MedicalTab> {
                     size: 20.sp,
                     color: primaryBlue,
                   ),
-                  tooltip: 'Download report',
+                  tooltip: 'download_report'.tr(),
                 ),
               ],
             ),
@@ -568,7 +569,7 @@ class _MedicalTabState extends State<MedicalTab> {
               ),
               SizedBox(height: 10.h),
               Text(
-                'Psychologist report',
+                'psychologist_report'.tr(),
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w800,
@@ -593,7 +594,7 @@ class _MedicalTabState extends State<MedicalTab> {
                 child: TextButton.icon(
                   onPressed: () => _downloadFile(context, r.fileName),
                   icon: const Icon(Icons.file_download),
-                  label: const Text('Download full report'),
+                  label: Text('download_full_report'.tr()),
                 ),
               ),
               SizedBox(height: 10.h),
@@ -709,7 +710,7 @@ class _MedicalTabState extends State<MedicalTab> {
               borderRadius: BorderRadius.circular(16.r),
             ),
             title: Text(
-              'Physiotherapy visit',
+              'physiotherapy_visit'.tr(),
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
@@ -720,10 +721,10 @@ class _MedicalTabState extends State<MedicalTab> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _detailRow('Visit date', _formatDate(v.visitDate)),
-                  _detailRow('Complaint', v.complaint),
-                  _detailRow('Diagnosis', v.diagnosis),
-                  _detailRow('Needed scans', v.neededScans),
+                  _detailRow('visit_date'.tr(), _formatDate(v.visitDate)),
+                  _detailRow('complaint'.tr(), v.complaint),
+                  _detailRow('diagnosis'.tr(), v.diagnosis),
+                  _detailRow('needed_scans'.tr(), v.neededScans),
                   if (v.followUpDate != null)
                     _detailRow('Follow-up', _formatDate(v.followUpDate!)),
                 ],
@@ -732,11 +733,11 @@ class _MedicalTabState extends State<MedicalTab> {
             actions: [
               TextButton(
                 onPressed: () => _downloadFile(context, v.fileName),
-                child: const Text('Download report'),
+                child: Text('download_report'.tr()),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Close'),
+                child: Text('close'.tr()),
               ),
             ],
           ),
@@ -840,7 +841,7 @@ class _MedicalTabState extends State<MedicalTab> {
               borderRadius: BorderRadius.circular(16.r),
             ),
             title: Text(
-              'Clinic visit',
+              'clinic_visits'.tr(),
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
@@ -862,11 +863,11 @@ class _MedicalTabState extends State<MedicalTab> {
             actions: [
               TextButton(
                 onPressed: () => _downloadFile(context, c.fileName),
-                child: const Text('Download report'),
+                child: Text('download_report'.tr()),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('Close'),
+                child: Text('close'.tr()),
               ),
             ],
           ),
@@ -927,7 +928,7 @@ class _MedicalTabState extends State<MedicalTab> {
           TextButton.icon(
             onPressed: () => _downloadFile(context, r.fileName),
             icon: const Icon(Icons.file_download),
-            label: const Text('Report'),
+            label:  Text('report'.tr()),
           ),
         ],
       ),
