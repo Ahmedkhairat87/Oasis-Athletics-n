@@ -1,5 +1,6 @@
 // lib/ui/home_screen/widgets/student_inside_tabs/academic_tab_attendance_screen.dart
 import 'dart:ui';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -106,8 +107,8 @@ class TasksListScreen extends StatelessWidget {
         selectedType == null
             ? 'Academic Support Attendance'
             : (selectedType == TaskType.school
-                ? 'School Tasks'
-                : 'Extra Tasks');
+                ? 'school_tasks'.tr()
+                : 'extra_tasks'.tr());
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -181,7 +182,7 @@ class TasksListScreen extends StatelessWidget {
                                 Expanded(
                                   child: _summaryCard(
                                     context,
-                                    label: 'Total',
+                                    label: 'total'.tr(),
                                     count: tasks.length,
                                     color: primaryBlue,
                                   ),
@@ -190,7 +191,7 @@ class TasksListScreen extends StatelessWidget {
                                 Expanded(
                                   child: _summaryCard(
                                     context,
-                                    label: 'Attended',
+                                    label: 'attended'.tr(),
                                     count:
                                         tasks.where((t) => t.attended).length,
                                     color: accentMint,
@@ -204,7 +205,7 @@ class TasksListScreen extends StatelessWidget {
                                   tasks.isEmpty
                                       ? Center(
                                         child: Text(
-                                          'No tasks found',
+                                          'no_tasks_found'.tr(),
                                           style: TextStyle(
                                             fontSize: 15.sp,
                                             color: Theme.of(context)
@@ -410,8 +411,8 @@ class TasksListScreen extends StatelessWidget {
                                                       ),
                                                       child: Text(
                                                         attended
-                                                            ? 'Attended'
-                                                            : 'Absent',
+                                                            ? 'attended'.tr()
+                                                            : 'absent'.tr(),
                                                         style: TextStyle(
                                                           fontSize: 11.sp,
                                                           fontWeight:
@@ -574,7 +575,7 @@ class TasksListScreen extends StatelessWidget {
                   SizedBox(height: 6.h),
                   _detailRow(
                     'Type',
-                    t.type == TaskType.school ? 'School' : 'Extra',
+                    t.type == TaskType.school ? 'school'.tr() : 'extra'.tr(),
                   ),
                 ],
               ),
@@ -582,7 +583,7 @@ class TasksListScreen extends StatelessWidget {
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Text(
-                    'Close',
+                    'close'.tr(),
                     style: TextStyle(
                       color: accentPurple,
                       fontWeight: FontWeight.w600,

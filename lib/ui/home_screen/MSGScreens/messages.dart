@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oasisathletic/ui/home_screen/MSGScreens/sendMessagesScreen.dart';
@@ -109,7 +110,7 @@ class _MessagesState extends State<Messages> {
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
-        'Messages',
+        'Messages'.tr(),
         style: TextStyle(
           color: isDark ? Colors.white : Colors.black,
           fontWeight: FontWeight.w600,
@@ -209,7 +210,7 @@ class _MessagesState extends State<Messages> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _buildFilterChip(label: "All", isDark: isDark, value: "All"),
+          _buildFilterChip(label: "all".tr(), isDark: isDark, value: "All"),
           SizedBox(width: 8.w),
 
           ...students.map(

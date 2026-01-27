@@ -1,6 +1,7 @@
 // lib/ui/home_screen/widgets/student_inside_tabs/academic_tab.dart
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -128,7 +129,7 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
             children: [
               ListTile(
                 leading: const Icon(Icons.open_in_new),
-                title: const Text('Open'),
+                title: Text('open'.tr()),
                 onTap: () {
                   Navigator.pop(ctx);
                   _open(item.url);
@@ -136,12 +137,12 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
               ),
               ListTile(
                 leading: const Icon(Icons.copy),
-                title: const Text('Copy link'),
+                title:  Text('copy_link'.tr()),
                 onTap: () {
                   Navigator.pop(ctx);
                   Clipboard.setData(ClipboardData(text: item.url));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Copied to clipboard")),
+                     SnackBar(content: Text("copied_to_clipboard".tr())),
                   );
                 },
               ),
@@ -195,7 +196,7 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionTitle('Academic Links'),
+             SectionTitle('academic_links'.tr()),
             SizedBox(height: 12.h),
 
             // Main GoldCard container like AcademicSupportTab
@@ -270,7 +271,7 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
                                     SizedBox(height: 60.h),
                                     Center(
                                       child: Text(
-                                        "No academic links available",
+                                        "no_academic_links".tr(),
                                         style: TextStyle(
                                           fontSize: 14.sp,
                                           color: Colors.grey[600],
@@ -280,7 +281,7 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
                                     SizedBox(height: 10.h),
                                     Center(
                                       child: Text(
-                                        "Links from the stage coordinator will appear here.",
+                                        "academic_links_hint".tr(),
                                         style: TextStyle(
                                           fontSize: 12.sp,
                                           color: Colors.grey[500],

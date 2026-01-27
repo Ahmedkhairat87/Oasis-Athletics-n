@@ -1,4 +1,5 @@
 // lib/ui/student_inside_tabs/profile_tab.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oasisathletic/core/model/stdLinks/StdFullData.dart';
@@ -311,7 +312,7 @@ class _ProfileTabState extends State<ProfileTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 1. Student information (READ-ONLY)
-            const SectionTitle('Student Information'),
+             SectionTitle('student_information'.tr()),
             _animatedSection(
               delayMs: 0,
               child: GoldCard(
@@ -347,13 +348,13 @@ class _ProfileTabState extends State<ProfileTab> {
                               ),
                               SizedBox(height: 6.h),
                               ReadOnlyField(
-                                label: 'Grade',
+                                label: 'grade'.tr(),
                                 value: _gradeController.text,
                                 preferredLabelWidth: 88,
                               ),
                               SizedBox(height: 6.h),
                               ReadOnlyField(
-                                label: 'School year',
+                                label: 'school_year'.tr(),
                                 value: _schoolYearController.text,
                                 preferredLabelWidth: 110,
                               ),
@@ -370,7 +371,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     _readOnlyChips(context),
                     SizedBox(height: 10.h),
                     ReadOnlyField(
-                      label: 'Birth date',
+                      label: 'birth_date'.tr(),
                       value: _birthDateController.text,
                       preferredLabelWidth: 110,
                     ),
@@ -382,7 +383,7 @@ class _ProfileTabState extends State<ProfileTab> {
             SizedBox(height: 12.h),
 
             // 2. Contact information (editable)
-            const SectionTitle('Contact information'),
+             SectionTitle('contact_information'.tr()),
             _animatedSection(
               delayMs: 60,
               child: GoldCard(
@@ -399,7 +400,7 @@ class _ProfileTabState extends State<ProfileTab> {
                         Expanded(
                           child: LabeledTextField(
                             controller: _fatherMobileController,
-                            hint: 'Father mobile',
+                            hint: 'father_mobile'.tr(),
                             keyboardType: TextInputType.phone,
                           ),
                         ),
@@ -407,7 +408,7 @@ class _ProfileTabState extends State<ProfileTab> {
                         Expanded(
                           child: LabeledTextField(
                             controller: _motherMobileController,
-                            hint: 'Mother mobile',
+                            hint: 'mother_mobile'.tr(),
                             keyboardType: TextInputType.phone,
                           ),
                         ),
@@ -416,7 +417,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     SizedBox(height: 8.h),
                     LabeledTextField(
                       controller: _contactMobileController,
-                      hint: 'Contact mobile',
+                      hint: 'contact_mobile'.tr(),
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: 12.h),
@@ -424,12 +425,12 @@ class _ProfileTabState extends State<ProfileTab> {
                     SizedBox(height: 6.h),
                     LabeledTextField(
                       controller: _fatherAddressController,
-                      hint: 'Father address',
+                      hint: 'father_address'.tr(),
                     ),
                     SizedBox(height: 8.h),
                     LabeledTextField(
                       controller: _motherAddressController,
-                      hint: 'Mother address',
+                      hint: 'mother_address'.tr(),
                     ),
                   ],
                 ),
@@ -439,7 +440,7 @@ class _ProfileTabState extends State<ProfileTab> {
             SizedBox(height: 12.h),
 
             // 3. Medical information (editable)
-            const SectionTitle('Medical information'),
+             SectionTitle('medical_information'.tr()),
             _animatedSection(
               delayMs: 120,
               child: GoldCard(
@@ -449,7 +450,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     Row(
                       children: [
                         Text(
-                          'Blood group',
+                          'blood_group'.tr(),
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
@@ -502,30 +503,30 @@ class _ProfileTabState extends State<ProfileTab> {
                     SizedBox(height: 10.h),
 
                     ConditionalSwitch(
-                      label: 'Allergies',
+                      label: 'pAllergies'.tr(),
                       value: _hasAllergies,
                       onChanged: (v) => setState(() => _hasAllergies = v),
                       child: LabeledTextField(
                         controller: _allergyDetailsController,
-                        hint: 'Allergy details (if any)',
+                        hint: 'allergy_details'.tr(),
                       ),
                     ),
                     SizedBox(height: 10.h),
 
                     ConditionalSwitch(
-                      label: 'Past injuries',
+                      label: 'pPast_injuries'.tr(),
                       value: _pastInjuries,
                       onChanged: (v) => setState(() => _pastInjuries = v),
                     ),
                     SizedBox(height: 10.h),
 
                     ConditionalSwitch(
-                      label: 'Any surgery',
+                      label: 'any_surgery'.tr(),
                       value: _anySurgery,
                       onChanged: (v) => setState(() => _anySurgery = v),
                       child: LabeledTextField(
                         controller: _surgeryDetailsController,
-                        hint: 'Surgery details (if any)',
+                        hint: 'surgery_details'.tr(),
                       ),
                     ),
                   ],
@@ -536,7 +537,7 @@ class _ProfileTabState extends State<ProfileTab> {
             SizedBox(height: 12.h),
 
             // 4. Sports & Plan (editable)
-            const SectionTitle('Sports & Plan'),
+             SectionTitle('sports_plan'.tr()),
             _animatedSection(
               delayMs: 180,
               child: GoldCard(
@@ -544,12 +545,12 @@ class _ProfileTabState extends State<ProfileTab> {
                   children: [
                     LabeledTextField(
                       controller: _subscriptionPlanController,
-                      hint: 'Subscription plan',
+                      hint: 'subscription_plan'.tr(),
                     ),
                     SizedBox(height: 8.h),
                     LabeledTextField(
                       controller: _athleticProgramController,
-                      hint: 'Athletic program',
+                      hint: 'athletic_program'.tr(),
                     ),
                     SizedBox(height: 8.h),
                     Row(
@@ -557,14 +558,14 @@ class _ProfileTabState extends State<ProfileTab> {
                         Expanded(
                           child: LabeledTextField(
                             controller: _primarySportController,
-                            hint: 'Primary sport',
+                            hint: 'primary_sport'.tr(),
                           ),
                         ),
                         SizedBox(width: 8.w),
                         Expanded(
                           child: LabeledTextField(
                             controller: _secondarySportController,
-                            hint: 'Secondary sport',
+                            hint: 'secondary_sport'.tr(),
                           ),
                         ),
                       ],
@@ -600,7 +601,7 @@ class _ProfileTabState extends State<ProfileTab> {
                         ),
                         onPressed: _onSave,
                         child: Text(
-                          'Save',
+                          'Save'.tr(),
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
@@ -647,7 +648,7 @@ class _ProfileTabState extends State<ProfileTab> {
         children: [
           const Icon(Icons.check_circle, color: Colors.white),
           SizedBox(width: 8.w),
-          const Text('Profile saved', style: TextStyle(color: Colors.white)),
+           Text('profile_saved'.tr(), style: TextStyle(color: Colors.white)),
         ],
       ),
     );

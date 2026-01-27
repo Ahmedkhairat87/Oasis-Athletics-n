@@ -1,4 +1,5 @@
 // lib/core/reusable_components/academic_report_card.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../colors_Manager.dart';
@@ -252,7 +253,7 @@ class AcademicReportCard extends StatelessWidget {
                       onTap: onTapSchoolTasks,
                       child: _countBadge(
                         context,
-                        label: 'School',
+                        label: 'school'.tr(),
                         count: report.schoolTasks,
                         background: accentSky.withOpacity(0.15),
                         borderColor: accentSky,
@@ -266,7 +267,7 @@ class AcademicReportCard extends StatelessWidget {
                       onTap: onTapExtraTasks,
                       child: _countBadge(
                         context,
-                        label: 'Extra',
+                        label: 'extra'.tr(),
                         count: report.extraTasks,
                         background: accentMint.withOpacity(0.16),
                         borderColor: accentMint,
@@ -366,7 +367,7 @@ class AcademicReportCard extends StatelessWidget {
           Icon(Icons.calendar_today, size: 14.r, color: iconColor),
           SizedBox(width: 6.w),
           Text(
-            'Attend',
+            'attend'.tr(),
             style: TextStyle(
               fontSize: 12.sp,
               color: labelColor,

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oasisathletic/core/model/stdLinks/academicSupport/StdSubjectDetailsData.dart';
@@ -70,7 +71,7 @@ class StudentAcademicSupportReport extends StatelessWidget {
         centerTitle: true,
         titleSpacing: 0,
         title: Text(
-          "Academic Support Report",
+          "academic_support_report".tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: 18.sp,
@@ -137,7 +138,7 @@ class StudentAcademicSupportReport extends StatelessWidget {
                           children: [
                             Expanded(
                               child: ReportSummaryTile(
-                                label: 'Total',
+                                label: 'total'.tr(),
                                 count: items.length,
                                 color: ColorsManager.accentSky,
                                 elevated: true,
@@ -146,7 +147,7 @@ class StudentAcademicSupportReport extends StatelessWidget {
                             SizedBox(width: 10.w),
                             Expanded(
                               child: ReportSummaryTile(
-                                label: 'School',
+                                label: 'school'.tr(),
                                 count:
                                     items.where((e) => e.isSchoolTask).length,
                                 color: ColorsManager.accentMint,
@@ -156,7 +157,7 @@ class StudentAcademicSupportReport extends StatelessWidget {
                             SizedBox(width: 10.w),
                             Expanded(
                               child: ReportSummaryTile(
-                                label: 'Extra',
+                                label: 'extra'.tr(),
                                 count:
                                     items.length -
                                     items.where((e) => e.isSchoolTask).length,

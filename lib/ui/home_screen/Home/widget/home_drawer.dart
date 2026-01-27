@@ -179,7 +179,7 @@ class _HomeDrawerState extends State<HomeDrawer>
                         dense: true,
                         leading: Icon(Icons.home_rounded, color: accentSky),
                         title: Text(
-                          'Home',
+                          'Home'.tr(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -196,7 +196,7 @@ class _HomeDrawerState extends State<HomeDrawer>
                         dense: true,
                         leading: Icon(Icons.person_rounded, color: accentSun),
                         title: Text(
-                          'Profile',
+                          'Profile'.tr(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
