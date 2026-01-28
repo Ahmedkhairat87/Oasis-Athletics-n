@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,10 +11,10 @@ class MedicalFormAllergiesSection extends StatelessWidget {
 
   const MedicalFormAllergiesSection({super.key, required this.state});
 
-  static const List<String> severityOptions = [
-    'Mild',
-    'Moderate',
-    'Severe',
+  static final List<String> severityOptions = [
+    'mild'.tr(),
+    'moderate'.tr(),
+    'severe'.tr(),
   ];
 
   @override
@@ -21,7 +22,7 @@ class MedicalFormAllergiesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        sectionHeader('1. Allergies'),
+        sectionHeader('allergies'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -33,7 +34,7 @@ class MedicalFormAllergiesSection extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'Does the child have allergies?',
+                        'has_allergies'.tr(),
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
@@ -41,7 +42,7 @@ class MedicalFormAllergiesSection extends StatelessWidget {
                       ),
                     ),
                     ChoiceChip(
-                      label: const Text('No'),
+                      label: Text('no'.tr()),
                       selected: !state.hasAllergies,
                       onSelected: state.isEditing
                           ? (_) => state.setHasAllergies(false)
@@ -49,7 +50,7 @@ class MedicalFormAllergiesSection extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     ChoiceChip(
-                      label: const Text('Yes'),
+                      label: Text('yes'.tr()),
                       selected: state.hasAllergies,
                       onSelected: state.isEditing
                           ? (_) => state.setHasAllergies(true)
@@ -63,7 +64,7 @@ class MedicalFormAllergiesSection extends StatelessWidget {
 
                   TextFormField(
                     controller: state.typeOfAllergyController,
-                    decoration: medicalInputDecoration(context, 'Type of Allergy'),
+                    decoration: medicalInputDecoration(context, 'type_of_allergy'.tr()),
                   ),
                   SizedBox(height: 8.h),
 
@@ -73,7 +74,7 @@ class MedicalFormAllergiesSection extends StatelessWidget {
                         .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                         .toList(),
                     onChanged: state.isEditing ? state.setAllergySeverity : null,
-                    decoration: medicalInputDecoration(context, 'Severity'),
+                    decoration: medicalInputDecoration(context, 'severity'.tr()),
                   ),
                   SizedBox(height: 8.h),
 
@@ -81,7 +82,7 @@ class MedicalFormAllergiesSection extends StatelessWidget {
                     controller: state.specificTreatmentController,
                     decoration: medicalInputDecoration(
                       context,
-                      'Specific Treatment or Medication',
+                      'specific_treatment'.tr(),
                     ),
                     maxLines: 2,
                   ),
@@ -89,13 +90,13 @@ class MedicalFormAllergiesSection extends StatelessWidget {
 
                   TextFormField(
                     controller: state.otherAllergyController,
-                    decoration: medicalInputDecoration(context, 'If other (describe)'),
+                    decoration: medicalInputDecoration(context, 'if_other_describe'.tr()),
                     maxLines: 2,
                   ),
 
                   SizedBox(height: 14.h),
                   Text(
-                    'Please check if your child suffers from one or more of the following conditions. '
+                    'Please check if your child suffers from one or more of the following conditions.'
                         'If so, please provide details below.',
                     style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
                   ),

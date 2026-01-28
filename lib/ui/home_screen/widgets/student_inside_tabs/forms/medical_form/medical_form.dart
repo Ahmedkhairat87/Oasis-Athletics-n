@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oasisathletic/ui/home_screen/widgets/student_inside_tabs/forms/medical_form/medical_form_section_allergies.dart';
@@ -29,20 +30,20 @@ class MedicalForm extends StatelessWidget {
               backgroundColor: Colors.white.withOpacity(0.9),
               elevation: 0,
               centerTitle: true,
-              title: const Text(
-                'Child Medical History',
-                style: TextStyle(color: Colors.black),
+              title: Text(
+                'child_medical_history'.tr(),
+                style: const TextStyle(color: Colors.black),
               ),
               actions: [
                 // ✅ SAVE (top)
                 IconButton(
-                  tooltip: 'Save',
+                  tooltip: 'save'.tr(),
                   onPressed: state.isEditing
                       ? () async {
                     final ok = await state.saveMedicalForm();
                     if (ok && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Saved successfully')),
+                        SnackBar(content: Text('medical_saved'.tr())),
                       );
                     }
                   }

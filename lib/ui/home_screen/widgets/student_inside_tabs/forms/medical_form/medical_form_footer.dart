@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,7 +27,7 @@ class MedicalFormFooter extends StatelessWidget {
               ),
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'Cancel',
+                'cancel'.tr(),
                 style: TextStyle(fontSize: 14.sp),
               ),
             ),
@@ -49,12 +50,12 @@ class MedicalFormFooter extends StatelessWidget {
                 final ok = await state.saveMedicalForm();
                 if (ok && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Saved successfully')),
+                    SnackBar(content: Text('medical_saved'.tr())),
                   );
                 }
               } : null,
               child: Text(
-                'Save',
+                'save'.tr(),
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
