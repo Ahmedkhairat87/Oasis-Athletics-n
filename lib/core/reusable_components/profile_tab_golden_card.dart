@@ -24,6 +24,37 @@ class GoldCard extends StatelessWidget {
     final Color innerBackground =
         isLight ? Colors.white : ColorsManager.darkFields;
 
+    final List<Color> borderGradient =
+        isLight
+            ? [
+              primaryBlue.withOpacity(0.95),
+              accentSky.withOpacity(0.85),
+              accentMint.withOpacity(0.85),
+              accentSun.withOpacity(0.9),
+            ]
+            : [
+              ColorsManager.darkBorders,
+              ColorsManager.darkFields,
+              ColorsManager.darkBorders,
+            ];
+
+    final List<BoxShadow> cardShadow =
+        isLight
+            ? [
+              BoxShadow(
+                color: primaryBlue.withOpacity(0.22),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ]
+            : [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.35),
+                blurRadius: 10,
+                offset: const Offset(0, 6),
+              ),
+            ];
+
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.96, end: 1.0),
       duration: const Duration(milliseconds: 260),
@@ -39,20 +70,9 @@ class GoldCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              primaryBlue.withOpacity(0.95),
-              accentSky.withOpacity(0.85),
-              accentMint.withOpacity(0.85),
-              accentSun.withOpacity(0.9),
-            ],
+            colors: borderGradient,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: primaryBlue.withOpacity(0.22),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          boxShadow: cardShadow,
         ),
         child: Container(
           // Inner card surface

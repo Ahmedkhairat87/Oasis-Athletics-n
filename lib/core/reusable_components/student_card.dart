@@ -22,7 +22,7 @@ class StudentCard extends StatelessWidget {
     final Color primaryBlue =
         isLight
             ? ColorsManager.primaryGradientStart
-            : ColorsManager.primaryGradientStartDark;
+            : Theme.of(context).colorScheme.onSurface;
     final Color accentMint = ColorsManager.accentMint;
     final Color accentSun = ColorsManager.accentSun;
     final Color accentSky = ColorsManager.accentSky;
@@ -57,26 +57,37 @@ class StudentCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(18.r),
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18.r),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  primaryBlue.withOpacity(0.12),
-                  accentSky.withOpacity(0.10),
-                  accentMint.withOpacity(0.08),
-                  accentSun.withOpacity(0.06),
-                ],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: primaryBlue.withOpacity(0.16),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
+            decoration:
+                isLight
+                    ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(18.r),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          primaryBlue.withOpacity(0.12),
+                          accentSky.withOpacity(0.10),
+                          accentMint.withOpacity(0.08),
+                          accentSun.withOpacity(0.06),
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: primaryBlue.withOpacity(0.16),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    )
+                    : BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(18.r),
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withOpacity(0.35),
+                      ),
+                    ),
             child: Container(
               margin: EdgeInsets.all(1.5.w),
               decoration: BoxDecoration(
@@ -91,18 +102,27 @@ class StudentCard extends StatelessWidget {
                     // IMAGE RING
                     Container(
                       padding: EdgeInsets.all(3.0.w),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: SweepGradient(
-                          colors: [
-                            primaryBlue,
-                            accentSky,
-                            accentMint,
-                            accentSun,
-                            primaryBlue,
-                          ],
-                        ),
-                      ),
+                      decoration:
+                          isLight
+                              ? BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: SweepGradient(
+                                  colors: [
+                                    primaryBlue,
+                                    accentSky,
+                                    accentMint,
+                                    accentSun,
+                                    primaryBlue,
+                                  ],
+                                ),
+                              )
+                              : BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .outline
+                                    .withOpacity(0.35),
+                              ),
                       child: Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,

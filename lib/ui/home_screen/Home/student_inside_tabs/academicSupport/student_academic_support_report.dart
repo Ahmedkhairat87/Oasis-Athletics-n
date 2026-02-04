@@ -73,7 +73,10 @@ class StudentAcademicSupportReport extends StatelessWidget {
         title: Text(
           "academic_support_report".tr(),
           style: TextStyle(
-            color: Colors.white,
+            color:
+                isLight
+                    ? Colors.white
+                    : Theme.of(context).colorScheme.onSurface,
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
           ),
@@ -82,14 +85,19 @@ class StudentAcademicSupportReport extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    primaryBlue.withOpacity(0.98),
-                    secondaryBlue.withOpacity(0.98),
-                  ],
-                ),
-              ),
+              decoration:
+                  isLight
+                      ? BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            primaryBlue.withOpacity(0.98),
+                            secondaryBlue.withOpacity(0.98),
+                          ],
+                        ),
+                      )
+                      : BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
             ),
           ),
         ),
@@ -109,14 +117,24 @@ class StudentAcademicSupportReport extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface, // OPAQUE
                     borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(color: Colors.black.withOpacity(0.05)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: primaryBlue.withOpacity(0.08),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    border: Border.all(
+                      color:
+                          isLight
+                              ? Colors.black.withOpacity(0.05)
+                              : Theme.of(
+                                context,
+                              ).colorScheme.outline.withOpacity(0.35),
+                    ),
+                    boxShadow:
+                        isLight
+                            ? [
+                              BoxShadow(
+                                color: primaryBlue.withOpacity(0.08),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                            : [],
                   ),
                   child: TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0.0, end: 1.0),

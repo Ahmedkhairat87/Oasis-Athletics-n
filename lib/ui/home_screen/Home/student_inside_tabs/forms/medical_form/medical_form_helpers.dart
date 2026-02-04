@@ -65,18 +65,27 @@ Widget sectionCard(BuildContext context, Widget child,
   return Container(
     width: double.infinity,
     padding: padding ?? EdgeInsets.all(12.w),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(14.r),
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          start.withOpacity(0.06),
-          end.withOpacity(0.03),
-        ],
-      ),
-      border: Border.all(color: Colors.black.withOpacity(0.04)),
-    ),
+    decoration:
+        isLight
+            ? BoxDecoration(
+              borderRadius: BorderRadius.circular(14.r),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  start.withOpacity(0.06),
+                  end.withOpacity(0.03),
+                ],
+              ),
+              border: Border.all(color: Colors.black.withOpacity(0.04)),
+            )
+            : BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withOpacity(0.35),
+              ),
+            ),
     child: child,
   );
 }

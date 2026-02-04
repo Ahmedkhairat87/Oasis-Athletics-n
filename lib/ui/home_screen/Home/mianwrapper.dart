@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/apiControl/apiManager.dart';
 import '../../../core/apiControl/apiServiceProvider.dart';
+import '../../../core/colors_Manager.dart';
 import '../../../core/model/regStdModels/RegStResponse.dart';
 import '../../../core/model/regStdModels/SideMenu.dart';
 import '../../../core/model/regStdModels/stdData.dart';
@@ -17,8 +18,11 @@ import '../../../core/reusable_components/Errors/checkInternetConnection.dart';
 import '../../../core/reusable_components/Errors/globalOfflineListener.dart';
 import '../../../core/reusable_components/Errors/networkController.dart';
 import '../../../core/reusable_components/Notifiers/student_notifier.dart';
+import '../../../core/reusable_components/app_background.dart';
+import '../../../core/services/loginServices/AuthLogoutService.dart';
 import '../../../core/services/regStudentsServices/getRegStd.dart';
 
+import '../../login_screen/login.dart';
 import 'students_screen.dart';
 import 'widget/home_drawer.dart';
 
@@ -229,34 +233,128 @@ class MainWrapperState extends State<MainWrapper> {
   }
 
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return GlobalOfflineListener(
+  //     child: Scaffold(
+  //       extendBody: true,               // ✅ ADD
+  //       extendBodyBehindAppBar: true,   // ✅ ADD
+  //       appBar: _buildStyledAppBar(context),
+  //       drawer: HomeDrawer(
+  //         sideMenuList: _sideMenuList,
+  //         isLoading: _loading,
+  //         isOnline: _isOnline,
+  //       ),
+  //       body: AppBackground(            // ✅ WRAP HERE (IMPORTANT)
+  //         useAppBarBlur: true,          // ✅ because you have AppBar
+  //         child: StudentsScreen(
+  //           key: ValueKey(
+  //             '${_students.length}-${_sideMenuList.length}-${_loading ? 1 : 0}',
+  //           ),
+  //           students: _students,
+  //           isRefreshing: _loading,
+  //           onRefresh: () => _fetchRegStd(showErrorDialog: true),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  //   // return GlobalOfflineListener(
+  //   //   child: Scaffold(
+  //   //     appBar: _buildStyledAppBar(context),
+  //   //     drawer: HomeDrawer(
+  //   //       sideMenuList: _sideMenuList,
+  //   //       isLoading: _loading,
+  //   //       isOnline: _isOnline,
+  //   //     ),
+  //   //     body: StudentsScreen(
+  //   //       key: ValueKey(
+  //   //         '${_students.length}-${_sideMenuList.length}-${_loading ? 1 : 0}',
+  //   //       ),
+  //   //       students: _students,
+  //   //       isRefreshing: _loading,
+  //   //       onRefresh: () => _fetchRegStd(showErrorDialog: true),
+  //   //     ),
+  //   //   ),
+  //   // );
+  // }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return GlobalOfflineListener(
+  //     child: Scaffold(
+  //       backgroundColor: Colors.transparent, // ✅ important
+  //       extendBody: true,
+  //       extendBodyBehindAppBar: true,
+  //       appBar: _buildStyledAppBar(context),
+  //       drawer: HomeDrawer(
+  //         sideMenuList: _sideMenuList,
+  //         isLoading: _loading,
+  //         isOnline: _isOnline,
+  //       ),
+  //       body: AppBackground(
+  //         useAppBarBlur: false, // ✅
+  //         child: SafeArea(
+  //           child: StudentsScreen(
+  //             key: ValueKey(
+  //               '${_students.length}-${_sideMenuList.length}-${_loading ? 1 : 0}',
+  //             ),
+  //             students: _students,
+  //             isRefreshing: _loading,
+  //             onRefresh: () => _fetchRegStd(showErrorDialog: true),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
+    final topPad = MediaQuery.of(context).padding.top;
+
     return GlobalOfflineListener(
       child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+
         appBar: _buildStyledAppBar(context),
         drawer: HomeDrawer(
           sideMenuList: _sideMenuList,
           isLoading: _loading,
           isOnline: _isOnline,
         ),
-        body: StudentsScreen(
-          key: ValueKey(
-            '${_students.length}-${_sideMenuList.length}-${_loading ? 1 : 0}',
+
+        body: AppBackground(
+          // background must cover full screen (behind appbar + system bars)
+          useAppBarBlur: false,
+          useSafeArea: true,
+          safeAreaTop: false,
+          safeAreaBottom: true,
+          child: Padding(
+            padding: EdgeInsets.only(top: topPad + kToolbarHeight),
+            child: StudentsScreen(
+              key: ValueKey(
+                '${_students.length}-${_sideMenuList.length}-${_loading ? 1 : 0}',
+              ),
+              students: _students,
+              isRefreshing: _loading,
+              onRefresh: () => _fetchRegStd(showErrorDialog: true),
+            ),
           ),
-          students: _students,
-          isRefreshing: _loading,
-          onRefresh: () => _fetchRegStd(showErrorDialog: true),
         ),
       ),
     );
   }
+
 
   PreferredSizeWidget _buildStyledAppBar(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.white.withOpacity(0.65),
+      scrolledUnderElevation: 0,
+      backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       centerTitle: true,
       title: Text(
@@ -267,33 +365,60 @@ class MainWrapperState extends State<MainWrapper> {
           fontWeight: FontWeight.w700,
         ),
       ),
+
       actions: [
-        IconButton(
-          tooltip: 'Refresh',
-          onPressed:
-              _loading ? null : () => _fetchRegStd(showErrorDialog: true),
-          icon: const Icon(Icons.refresh),
+        _appBarAction(
+          context,
+          tooltip: "Refresh",
+          onPressed: _loading ? null : () => _fetchRegStd(showErrorDialog: true),
+          icon: Icons.refresh_rounded,
+          color: ColorsManager.primaryGradientStart,
         ),
+        _appBarAction(
+          context,
+          tooltip: "Sign out",
+          onPressed: () => _handleLogout(context),
+          icon: Icons.logout_rounded,
+          color: Theme.of(context).colorScheme.error,
+        ),
+        SizedBox(width: 8),
       ],
-      flexibleSpace: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.white.withOpacity(0.96),
-                  Colors.white.withOpacity(0.92),
-                  Colors.white.withOpacity(0.88),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.black.withOpacity(0.04),
-                  width: 0.5,
+    );
+  }
+
+  Widget _appBarAction(
+      BuildContext context, {
+        required String tooltip,
+        required VoidCallback? onPressed,
+        required IconData icon,
+        required Color color,
+      }) {
+    final isDisabled = onPressed == null;
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: 6),
+      child: Tooltip(
+        message: tooltip,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(999),
+          onTap: onPressed,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: isDisabled ? 0.45 : 1,
+            child: Container(
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: color.withOpacity(0.20),
+                  width: 1,
                 ),
+              ),
+              child: Icon(
+                icon,
+                size: 20,
+                color: color,
               ),
             ),
           ),
@@ -301,4 +426,29 @@ class MainWrapperState extends State<MainWrapper> {
       ),
     );
   }
+
+
+  Future<void> _handleLogout(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    final success = await ParentLogoutService.logout();
+    Navigator.pop(context);
+
+    if (success) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        LoginScreen.routeName,
+            (route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Logout failed")),
+      );
+    }
+  }
+
 }

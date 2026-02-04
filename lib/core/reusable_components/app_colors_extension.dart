@@ -1,4 +1,3 @@
-// lib/core/reusable_components/app_colors_extension.dart
 import 'package:flutter/material.dart';
 import '../colors_Manager.dart';
 
@@ -7,6 +6,7 @@ extension AppColors on ColorScheme {
   bool get isLight => brightness == Brightness.light;
 
   /// Main button background / key action color.
+  /// In dark mode, use brand accent (blue) like familiar apps.
   Color get btnBackMainColor =>
       isLight ? ColorsManager.logoGoldLight : ColorsManager.logoGoldLight;
 
@@ -15,8 +15,9 @@ extension AppColors on ColorScheme {
       isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground;
 
   /// Text on top of strong backgrounds (buttons, pills).
+  /// Always white in dark mode.
   Color get textMainWhite =>
-      isLight ? ColorsManager.lightTextWhite : ColorsManager.darkTextBlack;
+      isLight ? ColorsManager.lightTextWhite : ColorsManager.darkTextWhite;
 
   /// Primary readable text for content.
   Color get textMainBlack =>
@@ -31,6 +32,7 @@ extension AppColors on ColorScheme {
       isLight ? ColorsManager.lightLabelText : ColorsManager.darkLabelText;
 
   /// Primary interactive elements: buttons, active icons.
+  /// Dark mode should NOT be white; it should be the brand accent.
   Color get elements =>
       isLight ? ColorsManager.lightElements : ColorsManager.darkElements;
 

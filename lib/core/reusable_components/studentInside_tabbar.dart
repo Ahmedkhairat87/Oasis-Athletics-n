@@ -189,50 +189,68 @@ class _GoldenTabBarState extends State<GoldenTabBar> {
     required Color accentSky,
     required Color accentPurple,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     // Each tab is a fixed-width card with constrained label height (prevents overflow).
     return AnimatedContainer(
       duration: const Duration(milliseconds: 240),
       curve: Curves.easeOut,
       width: widget.tabWidth.w,
       padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 6.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14.r),
-        gradient:
-            selected
-                ? LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    primaryBlue.withOpacity(0.16),
-                    accentSky.withOpacity(0.14),
-                    accentMint.withOpacity(0.10),
-                  ],
-                )
-                : LinearGradient(
-                  colors: [
-                    Theme.of(context).colorScheme.surface.withOpacity(0.04),
-                    Theme.of(context).colorScheme.surface.withOpacity(0.02),
-                  ],
+      decoration:
+          isDark
+              ? BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outline.withOpacity(selected ? 0.5 : 0.35),
                 ),
-        border: Border.all(
-          color: selected ? primaryBlue : Colors.transparent,
-          width: selected ? 1.2 : 0,
-        ),
-        boxShadow: [
-          if (selected)
-            BoxShadow(
-              color: primaryBlue.withOpacity(0.14),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            )
-          else
-            BoxShadow(
-              color: Colors.black.withOpacity(0.02),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-        ],
-      ),
+              )
+              : BoxDecoration(
+                borderRadius: BorderRadius.circular(14.r),
+                gradient:
+                    selected
+                        ? LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            primaryBlue.withOpacity(0.16),
+                            accentSky.withOpacity(0.14),
+                            accentMint.withOpacity(0.10),
+                          ],
+                        )
+                        : LinearGradient(
+                          colors: [
+                            Theme.of(context)
+                                .colorScheme
+                                .surface
+                                .withOpacity(0.04),
+                            Theme.of(context)
+                                .colorScheme
+                                .surface
+                                .withOpacity(0.02),
+                          ],
+                        ),
+                border: Border.all(
+                  color: selected ? primaryBlue : Colors.transparent,
+                  width: selected ? 1.2 : 0,
+                ),
+                boxShadow: [
+                  if (selected)
+                    BoxShadow(
+                      color: primaryBlue.withOpacity(0.14),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    )
+                  else
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.02),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                ],
+              ),
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Column(
@@ -248,23 +266,33 @@ class _GoldenTabBarState extends State<GoldenTabBar> {
                       Transform.scale(scale: scale, child: child),
               child: Container(
                 padding: EdgeInsets.all(selected ? 6.r : 4.r),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient:
-                      selected
-                          ? SweepGradient(
-                            colors: [
-                              primaryBlue,
-                              accentSky,
-                              accentMint,
-                              accentSun,
-                              primaryBlue,
-                            ],
-                          )
-                          : null,
-                  color:
-                      selected ? null : Theme.of(context).colorScheme.surface,
-                ),
+                decoration:
+                    isDark
+                        ? BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.outline.withOpacity(0.35),
+                        )
+                        : BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient:
+                              selected
+                                  ? SweepGradient(
+                                    colors: [
+                                      primaryBlue,
+                                      accentSky,
+                                      accentMint,
+                                      accentSun,
+                                      primaryBlue,
+                                    ],
+                                  )
+                                  : null,
+                          color:
+                              selected
+                                  ? null
+                                  : Theme.of(context).colorScheme.surface,
+                        ),
                 child: Container(
                   padding: EdgeInsets.all(selected ? 3.r : 0),
                   decoration: BoxDecoration(
@@ -300,11 +328,13 @@ class _GoldenTabBarState extends State<GoldenTabBar> {
                   fontSize: selected ? 13.sp : 12.sp,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
                   color:
-                      selected
-                          ? accentPurple
-                          : Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withOpacity(0.85),
+                      isDark
+                          ? Theme.of(context).colorScheme.onSurface
+                          : (selected
+                              ? accentPurple
+                              : Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.85)),
                 ),
               ),
             ),
@@ -333,19 +363,25 @@ class _GoldenTabBarState extends State<GoldenTabBar> {
       child: Container(
         width: 26.w,
         height: 4.h,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(999.r),
-          gradient: LinearGradient(
-            colors: [primaryBlue, primaryBlueEnd, accentMint, accentSun],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: primaryBlue.withOpacity(0.22),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
+        decoration:
+            Theme.of(context).brightness == Brightness.dark
+                ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(999.r),
+                  color: Theme.of(context).colorScheme.onSurface,
+                )
+                : BoxDecoration(
+                  borderRadius: BorderRadius.circular(999.r),
+                  gradient: LinearGradient(
+                    colors: [primaryBlue, primaryBlueEnd, accentMint, accentSun],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: primaryBlue.withOpacity(0.22),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
       ),
     );
   }

@@ -102,6 +102,11 @@ class MedicalTab extends StatefulWidget {
 }
 
 class _MedicalTabState extends State<MedicalTab> {
+  bool get isLight => Theme.of(context).brightness == Brightness.light;
+  Color get titleColor =>
+      isLight
+          ? ColorsManager.primaryGradientStart
+          : Theme.of(context).colorScheme.onSurface;
   // Mock data – replace with API data later
   final List<PsychologistReport> _psychologistReports = [
     PsychologistReport(
@@ -240,6 +245,9 @@ class _MedicalTabState extends State<MedicalTab> {
     final Color accentSun = ColorsManager.accentSun;
     final Color accentSky = ColorsManager.accentSky;
     final Color accentPurple = ColorsManager.accentPurple;
+    final Color titleColor = isLight
+        ? primaryBlue
+        : Theme.of(context).colorScheme.onSurface;
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -488,7 +496,7 @@ class _MedicalTabState extends State<MedicalTab> {
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
-                      color: primaryBlue,
+                      color: titleColor,
                     ),
                   ),
                 ),
@@ -499,7 +507,7 @@ class _MedicalTabState extends State<MedicalTab> {
                   icon: Icon(
                     Icons.file_download,
                     size: 20.sp,
-                    color: primaryBlue,
+                    color: titleColor,
                   ),
                   tooltip: 'download_report'.tr(),
                 ),
@@ -535,6 +543,7 @@ class _MedicalTabState extends State<MedicalTab> {
     PsychologistReport r,
     Color primaryBlue,
   ) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     setState(() {
       r.isRead = true;
     });
@@ -563,7 +572,9 @@ class _MedicalTabState extends State<MedicalTab> {
                   height: 4.h,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(999.r),
-                    color: primaryBlue.withOpacity(0.3),
+                    color: isLight
+                        ? primaryBlue.withOpacity(0.3)
+                        : Theme.of(context).colorScheme.outline.withOpacity(0.35),
                   ),
                 ),
               ),
@@ -573,7 +584,7 @@ class _MedicalTabState extends State<MedicalTab> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w800,
-                  color: primaryBlue,
+                  color: titleColor,
                 ),
               ),
               SizedBox(height: 6.h),
@@ -637,7 +648,7 @@ class _MedicalTabState extends State<MedicalTab> {
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
-                      color: primaryBlue,
+                      color: titleColor,
                     ),
                   ),
                 ),
@@ -648,7 +659,7 @@ class _MedicalTabState extends State<MedicalTab> {
                   icon: Icon(
                     Icons.file_download,
                     size: 20.sp,
-                    color: primaryBlue,
+                    color: titleColor,
                   ),
                 ),
               ],
@@ -714,7 +725,7 @@ class _MedicalTabState extends State<MedicalTab> {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
-                color: primaryBlue,
+                color: titleColor,
               ),
             ),
             content: SingleChildScrollView(
@@ -776,7 +787,7 @@ class _MedicalTabState extends State<MedicalTab> {
                     style: TextStyle(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
-                      color: primaryBlue,
+                      color: titleColor,
                     ),
                   ),
                 ),
@@ -787,7 +798,7 @@ class _MedicalTabState extends State<MedicalTab> {
                   icon: Icon(
                     Icons.file_download,
                     size: 20.sp,
-                    color: primaryBlue,
+                    color: titleColor,
                   ),
                 ),
               ],
@@ -845,7 +856,7 @@ class _MedicalTabState extends State<MedicalTab> {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
-                color: primaryBlue,
+                color: titleColor,
               ),
             ),
             content: SingleChildScrollView(
@@ -901,7 +912,7 @@ class _MedicalTabState extends State<MedicalTab> {
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
-                    color: primaryBlue,
+                    color: titleColor,
                   ),
                 ),
                 SizedBox(height: 4.h),

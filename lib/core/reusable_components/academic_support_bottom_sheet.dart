@@ -76,23 +76,38 @@ class _TeacherCommentSheetContent extends StatelessWidget {
             );
           },
           child: Container(
-            // outer colorful "shell"
+            // outer shell
             margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [primaryBlue, primaryBlueEnd, accentSky],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: primaryBlue.withOpacity(0.35),
-                  blurRadius: 18,
-                  offset: const Offset(0, -6),
-                ),
-              ],
-            ),
+            decoration:
+                isLight
+                    ? BoxDecoration(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20.r),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [primaryBlue, primaryBlueEnd, accentSky],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: primaryBlue.withOpacity(0.35),
+                          blurRadius: 18,
+                          offset: const Offset(0, -6),
+                        ),
+                      ],
+                    )
+                    : BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20.r),
+                      ),
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withOpacity(0.35),
+                      ),
+                    ),
             child: Container(
               // inner card for content
               decoration: BoxDecoration(
@@ -109,7 +124,13 @@ class _TeacherCommentSheetContent extends StatelessWidget {
                       width: 48.w,
                       height: 4.h,
                       decoration: BoxDecoration(
-                        color: accentSky.withOpacity(0.3),
+                        color:
+                            isLight
+                                ? accentSky.withOpacity(0.3)
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.25),
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                     ),
@@ -122,23 +143,37 @@ class _TeacherCommentSheetContent extends StatelessWidget {
                       horizontal: 12.w,
                       vertical: 6.h,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(999.r),
-                      gradient: LinearGradient(
-                        colors: [
-                          accentMint.withOpacity(0.9),
-                          accentSky.withOpacity(0.9),
-                          accentSun.withOpacity(0.9),
-                        ],
-                      ),
-                    ),
+                    decoration:
+                        isLight
+                            ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(999.r),
+                              gradient: LinearGradient(
+                                colors: [
+                                  accentMint.withOpacity(0.9),
+                                  accentSky.withOpacity(0.9),
+                                  accentSun.withOpacity(0.9),
+                                ],
+                              ),
+                            )
+                            : BoxDecoration(
+                              borderRadius: BorderRadius.circular(999.r),
+                              color: Theme.of(context).colorScheme.surface,
+                              border: Border.all(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.outline.withOpacity(0.35),
+                              ),
+                            ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.chat_bubble_rounded,
                           size: 16.r,
-                          color: Colors.white,
+                          color:
+                              isLight
+                                  ? Colors.white
+                                  : Theme.of(context).colorScheme.onSurface,
                         ),
                         SizedBox(width: 6.w),
                         Text(
@@ -146,7 +181,12 @@ class _TeacherCommentSheetContent extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                            color:
+                                isLight
+                                    ? Colors.white
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
                           ),
                         ),
                       ],
@@ -160,7 +200,10 @@ class _TeacherCommentSheetContent extends StatelessWidget {
                       Icon(
                         Icons.person_outline,
                         size: 18.r,
-                        color: accentPurple,
+                        color:
+                            isLight
+                                ? accentPurple
+                                : Theme.of(context).colorScheme.onSurface,
                       ),
                       SizedBox(width: 6.w),
                       Text(
@@ -177,12 +220,21 @@ class _TeacherCommentSheetContent extends StatelessWidget {
                   Container(
                     width: 80.w,
                     height: 3.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(999.r),
-                      gradient: LinearGradient(
-                        colors: [accentMint, accentSun, accentCoral],
-                      ),
-                    ),
+                    decoration:
+                        isLight
+                            ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(999.r),
+                              gradient: LinearGradient(
+                                colors: [accentMint, accentSun, accentCoral],
+                              ),
+                            )
+                            : BoxDecoration(
+                              borderRadius: BorderRadius.circular(999.r),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.5),
+                            ),
                   ),
                   SizedBox(height: 12.h),
 
@@ -223,13 +275,25 @@ class _TeacherCommentSheetContent extends StatelessWidget {
                       Icon(
                         Icons.emoji_emotions_outlined,
                         size: 20.r,
-                        color: accentMint,
+                        color:
+                            isLight
+                                ? accentMint
+                                : Theme.of(context).colorScheme.onSurface,
                       ),
                       const Spacer(),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: accentMint,
-                          foregroundColor: Colors.white,
+                          backgroundColor:
+                              isLight
+                                  ? accentMint
+                                  : Theme.of(context).colorScheme.onSurface,
+                          foregroundColor:
+                              isLight
+                                  ? Colors.white
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.1),
                           padding: EdgeInsets.symmetric(
                             horizontal: 22.w,
                             vertical: 11.h,
@@ -237,8 +301,11 @@ class _TeacherCommentSheetContent extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(999.r),
                           ),
-                          elevation: 4,
-                          shadowColor: accentMint.withOpacity(0.4),
+                          elevation: isLight ? 4 : 0,
+                          shadowColor:
+                              isLight
+                                  ? accentMint.withOpacity(0.4)
+                                  : Colors.transparent,
                         ),
                         onPressed: () => Navigator.pop(context),
                         child: Row(

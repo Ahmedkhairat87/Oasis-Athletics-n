@@ -385,5 +385,12 @@
   "pPast_injuries": "Blessures antérieures",
   "no_subrepo_found" : "Aucun rapport de sujet trouvé",
   "teacher_cmnt": "Commentaire de l'enseignant:",
-  "attend": "Attendre"
+  "attend": "Attendre",
+  "mild": "Léger",
+  "severe": "Sévère",
+  "pciycsfomotfc":"Veuillez vérifier si votre enfant souffre d’une ou de plusieurs des conditions suivantes.",
+
+  "Weight" : "Poids",
+  "Height" : "Hauteur",
+  "Age": "Âge"
 }

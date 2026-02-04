@@ -650,12 +650,21 @@ class _MealsTabState extends State<MealsTab> with TickerProviderStateMixin {
                       child: Container(
                         width: 48.w,
                         height: 4.h,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(999.r),
-                          gradient: LinearGradient(
-                            colors: [primaryBlue, accentMint],
-                          ),
-                        ),
+                        decoration:
+                            isLight
+                                ? BoxDecoration(
+                                  borderRadius: BorderRadius.circular(999.r),
+                                  gradient: LinearGradient(
+                                    colors: [primaryBlue, accentMint],
+                                  ),
+                                )
+                                : BoxDecoration(
+                                  borderRadius: BorderRadius.circular(999.r),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.5),
+                                ),
                       ),
                     ),
                     SizedBox(height: 12.h),
@@ -665,7 +674,10 @@ class _MealsTabState extends State<MealsTab> with TickerProviderStateMixin {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w800,
-                        color: primaryBlue,
+                        color:
+                            isLight
+                                ? primaryBlue
+                                : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     SizedBox(height: 8.h),

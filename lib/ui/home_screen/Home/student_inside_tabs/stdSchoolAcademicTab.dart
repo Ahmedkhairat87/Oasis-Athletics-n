@@ -176,6 +176,9 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
     final Color accentSky = ColorsManager.accentSky;
     final Color accentSun = ColorsManager.accentSun;
     final Color accentPurple = ColorsManager.accentPurple;
+    final Color titleColor = isLight
+        ? primaryBlue
+        : Theme.of(context).colorScheme.onSurface;
 
     return SingleChildScrollView(
       //padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
@@ -233,7 +236,7 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w800,
-                                  color: primaryBlue,
+                                  color: titleColor,
                                 ),
                               ),
                             ],
@@ -281,7 +284,7 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
                     //         style: TextStyle(
                     //           fontSize: 16.sp,
                     //           fontWeight: FontWeight.w800,
-                    //           color: primaryBlue,
+                    //           color: titleColor,
                     //         ),
                     //       ),
                     //     ),
@@ -422,7 +425,7 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.w800,
                                                           fontSize: 14.sp,
-                                                          color: primaryBlue,
+                                                          color: titleColor,
                                                         ),
                                                       ),
                                                       // ✅ removed item.url Text here

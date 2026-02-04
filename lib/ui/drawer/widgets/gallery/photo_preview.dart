@@ -21,37 +21,25 @@ class PhotoPreview extends StatelessWidget {
         elevation: 0,
       ),
       body: AppBackground(
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                color: Colors.grey.shade300,
-                child: const Center(child: Icon(Icons.image, size: 120)),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: /*ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  minimumSize: const Size.fromHeight(50),
+        useSafeArea: false,
+        child: SafeArea(
+          top: false,
+          bottom: true,
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Colors.grey.shade300,
+                  child: const Center(child: Icon(Icons.image, size: 120)),
                 ),
-                child: const Text('Request this photo'),
-                onPressed: () {
-                  context.read<CartProvider>().addToCart(
-                    PhotoItem(
-                      id: photoId,
-                      album: album,
-                      price: 40,
-                    ),
-                  );
-                  Navigator.pop(context);
-                },
-              ),*/ ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
                     vertical: 14.h,
                   ),
                   shape: RoundedRectangleBorder(
@@ -82,14 +70,6 @@ class PhotoPreview extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 child: Ink(
-                  /*decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.blueAccent.shade400, Colors.blueAccent.shade700],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),*/
                   child: Container(
                     alignment: Alignment.center,
                     child: Text(
@@ -111,8 +91,8 @@ class PhotoPreview extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-          ],
+              )],
+          ),
         ),
       ),
     );

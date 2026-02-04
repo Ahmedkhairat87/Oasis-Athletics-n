@@ -383,5 +383,13 @@
   "pPast_injuries": "Past injuries",
   "no_subrepo_found" : "No subject reports found",
   "teacher_cmnt": "Teacher's Comment:",
-  "attend": "Attend"
+  "attend": "Attend",
+  "mild": "Mild",
+  "severe": "Severe",
+  "pciycsfomotfc": "Please check if your child suffers from one or more of the following conditions.",
+
+
+  "Weight" : "Weight",
+  "Height" : "Height",
+  "Age": "Age"
 }

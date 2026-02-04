@@ -116,22 +116,28 @@ class TasksListScreen extends StatelessWidget {
         title: Text(titleText),
         centerTitle: true,
         elevation: 0,
-        foregroundColor: Colors.white,
+        foregroundColor:
+            isLight ? Colors.white : Theme.of(context).colorScheme.onSurface,
         backgroundColor: Colors.transparent,
         flexibleSpace: ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    primaryBlue.withOpacity(0.98),
-                    primaryBlueEnd.withOpacity(0.98),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+              decoration:
+                  isLight
+                      ? BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            primaryBlue.withOpacity(0.98),
+                            primaryBlueEnd.withOpacity(0.98),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      )
+                      : BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
             ),
           ),
         ),
@@ -158,7 +164,12 @@ class TasksListScreen extends StatelessWidget {
                         ).colorScheme.surface.withOpacity(0.86),
                         borderRadius: BorderRadius.circular(16.r),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.03),
+                          color:
+                              isLight
+                                  ? Colors.black.withOpacity(0.03)
+                                  : Theme.of(
+                                    context,
+                                  ).colorScheme.outline.withOpacity(0.35),
                         ),
                       ),
                       child: TweenAnimationBuilder<double>(
@@ -265,80 +276,114 @@ class TasksListScreen extends StatelessWidget {
                                                   horizontal: 10.w,
                                                   vertical: 10.h,
                                                 ),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        14.r,
-                                                      ),
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .surface
-                                                      .withOpacity(
-                                                        0.06,
-                                                      ), // subtle contrast
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: statusColor
-                                                          .withOpacity(0.06),
-                                                      blurRadius: 10,
-                                                      offset: const Offset(
-                                                        0,
-                                                        4,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                  border: Border.all(
-                                                    color: statusColor
-                                                        .withOpacity(0.65),
-                                                    width: 1,
-                                                  ),
-                                                ),
+                                                decoration:
+                                                    isLight
+                                                        ? BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                14.r,
+                                                              ),
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .surface
+                                                              .withOpacity(
+                                                                0.06,
+                                                              ), // subtle contrast
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: statusColor
+                                                                  .withOpacity(0.06),
+                                                              blurRadius: 10,
+                                                              offset: const Offset(
+                                                                0,
+                                                                4,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                          border: Border.all(
+                                                            color: statusColor
+                                                                .withOpacity(0.65),
+                                                            width: 1,
+                                                          ),
+                                                        )
+                                                        : BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                14.r,
+                                                              ),
+                                                          color: Theme.of(context)
+                                                              .colorScheme
+                                                              .surface,
+                                                          border: Border.all(
+                                                            color: Theme.of(
+                                                              context,
+                                                            ).colorScheme.outline.withOpacity(
+                                                              0.35,
+                                                            ),
+                                                            width: 1,
+                                                          ),
+                                                        ),
                                                 child: Row(
                                                   children: [
                                                     Container(
                                                       width: 40.w,
                                                       height: 40.w,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        gradient: LinearGradient(
-                                                          begin:
-                                                              Alignment.topLeft,
-                                                          end:
-                                                              Alignment
-                                                                  .bottomRight,
-                                                          colors: [
-                                                            statusColor
-                                                                .withOpacity(
-                                                                  0.95,
+                                                      decoration:
+                                                          isLight
+                                                              ? BoxDecoration(
+                                                                shape: BoxShape.circle,
+                                                                gradient: LinearGradient(
+                                                                  begin:
+                                                                      Alignment.topLeft,
+                                                                  end:
+                                                                      Alignment
+                                                                          .bottomRight,
+                                                                  colors: [
+                                                                    statusColor
+                                                                        .withOpacity(
+                                                                          0.95,
+                                                                        ),
+                                                                    statusColor
+                                                                        .withOpacity(
+                                                                          0.75,
+                                                                        ),
+                                                                  ],
                                                                 ),
-                                                            statusColor
-                                                                .withOpacity(
-                                                                  0.75,
-                                                                ),
-                                                          ],
-                                                        ),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: statusColor
-                                                                .withOpacity(
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: statusColor
+                                                                        .withOpacity(
+                                                                          0.35,
+                                                                        ),
+                                                                    blurRadius: 8,
+                                                                    offset:
+                                                                        const Offset(
+                                                                          0,
+                                                                          4,
+                                                                        ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                              : BoxDecoration(
+                                                                shape: BoxShape.circle,
+                                                                color: Theme.of(
+                                                                  context,
+                                                                ).colorScheme.outline.withOpacity(
                                                                   0.35,
                                                                 ),
-                                                            blurRadius: 8,
-                                                            offset:
-                                                                const Offset(
-                                                                  0,
-                                                                  4,
-                                                                ),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                              ),
                                                       child: Icon(
                                                         attended
                                                             ? Icons
                                                                 .check_rounded
                                                             : Icons
                                                                 .close_rounded,
-                                                        color: Colors.white,
+                                                        color:
+                                                            isLight
+                                                                ? Colors.white
+                                                                : Theme.of(context)
+                                                                    .colorScheme
+                                                                    .onSurface,
                                                         size: 22.sp,
                                                       ),
                                                     ),
@@ -357,7 +402,11 @@ class TasksListScreen extends StatelessWidget {
                                                                   FontWeight
                                                                       .w700,
                                                               color:
-                                                                  primaryBlue,
+                                                                  isLight
+                                                                      ? primaryBlue
+                                                                      : Theme.of(
+                                                                        context,
+                                                                      ).colorScheme.onSurface,
                                                             ),
                                                             maxLines: 2,
                                                             overflow:
@@ -394,21 +443,39 @@ class TasksListScreen extends StatelessWidget {
                                                             horizontal: 10.w,
                                                             vertical: 6.h,
                                                           ),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              999.r,
-                                                            ),
-                                                        gradient: LinearGradient(
-                                                          colors: [
-                                                            statusColor,
-                                                            statusColor
-                                                                .withOpacity(
-                                                                  0.85,
+                                                      decoration:
+                                                          isLight
+                                                              ? BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      999.r,
+                                                                    ),
+                                                                gradient: LinearGradient(
+                                                                  colors: [
+                                                                    statusColor,
+                                                                    statusColor
+                                                                        .withOpacity(
+                                                                          0.85,
+                                                                        ),
+                                                                  ],
                                                                 ),
-                                                          ],
-                                                        ),
-                                                      ),
+                                                              )
+                                                              : BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      999.r,
+                                                                    ),
+                                                                color: Theme.of(
+                                                                  context,
+                                                                ).colorScheme.surface,
+                                                                border: Border.all(
+                                                                  color: Theme.of(
+                                                                    context,
+                                                                  ).colorScheme.outline.withOpacity(
+                                                                    0.35,
+                                                                  ),
+                                                                ),
+                                                              ),
                                                       child: Text(
                                                         attended
                                                             ? 'attended'.tr()
@@ -417,7 +484,12 @@ class TasksListScreen extends StatelessWidget {
                                                           fontSize: 11.sp,
                                                           fontWeight:
                                                               FontWeight.w700,
-                                                          color: Colors.white,
+                                                          color:
+                                                              isLight
+                                                                  ? Colors.white
+                                                                  : Theme.of(
+                                                                    context,
+                                                                  ).colorScheme.onSurface,
                                                         ),
                                                       ),
                                                     ),
@@ -464,22 +536,33 @@ class TasksListScreen extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [baseBg, color.withOpacity(0.10)],
-          ),
-          border: Border.all(color: color.withOpacity(0.75)),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.14),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
+        decoration:
+            isLight
+                ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [baseBg, color.withOpacity(0.10)],
+                  ),
+                  border: Border.all(color: color.withOpacity(0.75)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(0.14),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                )
+                : BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  color: Theme.of(context).colorScheme.surface,
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withOpacity(0.35),
+                  ),
+                ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -487,14 +570,24 @@ class TasksListScreen extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 13.sp,
-                color: color,
+                color:
+                    isLight
+                        ? color
+                        : Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
               ),
             ),
             SizedBox(height: 6.h),
             Text(
               '$count',
-              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w800),
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w800,
+                color:
+                    isLight
+                        ? Theme.of(context).textTheme.bodyLarge?.color
+                        : Theme.of(context).colorScheme.onSurface,
+              ),
             ),
           ],
         ),
@@ -537,16 +630,30 @@ class TasksListScreen extends StatelessWidget {
                   Container(
                     width: 32.w,
                     height: 32.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [statusColor, statusColor.withOpacity(0.85)],
-                      ),
-                    ),
+                    decoration:
+                        Theme.of(context).brightness == Brightness.light
+                            ? BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  statusColor,
+                                  statusColor.withOpacity(0.85),
+                                ],
+                              ),
+                            )
+                            : BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.outline.withOpacity(0.35),
+                            ),
                     child: Icon(
                       t.attended ? Icons.check_rounded : Icons.close_rounded,
                       size: 18.sp,
-                      color: Colors.white,
+                      color:
+                          Theme.of(context).brightness == Brightness.light
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   SizedBox(width: 10.w),
@@ -558,7 +665,10 @@ class TasksListScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w800,
-                        color: primaryBlue,
+                        color:
+                            Theme.of(context).brightness == Brightness.light
+                                ? primaryBlue
+                                : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),

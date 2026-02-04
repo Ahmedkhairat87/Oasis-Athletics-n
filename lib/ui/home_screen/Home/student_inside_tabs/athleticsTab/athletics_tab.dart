@@ -32,6 +32,11 @@ class AthleticsTab extends StatefulWidget {
 }
 
 class _AthleticsTabState extends State<AthleticsTab> {
+  bool get isLight => Theme.of(context).brightness == Brightness.light;
+  Color get titleColor =>
+      isLight
+          ? ColorsManager.primaryGradientStart
+          : Theme.of(context).colorScheme.onSurface;
   // mock reports - replace with API data later
 
   bool loading = false;
@@ -144,6 +149,9 @@ class _AthleticsTabState extends State<AthleticsTab> {
     final Color accentCoral = ColorsManager.accentCoral;
     final Color accentSky = ColorsManager.accentSky;
     final Color accentPurple = ColorsManager.accentPurple;
+    final Color titleColor = isLight
+        ? primaryBlue
+        : Theme.of(context).colorScheme.onSurface;
 
     final bool isRead = r.isRead;
     final Color statusColor = isRead ? accentMint : accentCoral;
@@ -238,7 +246,7 @@ class _AthleticsTabState extends State<AthleticsTab> {
                           style: TextStyle(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
-                            color: primaryBlue,
+                            color: titleColor,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -436,7 +444,7 @@ class _AthleticsTabState extends State<AthleticsTab> {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w800,
-                          color: primaryBlue,
+                          color: titleColor,
                         ),
                       ),
                       SizedBox(height: 8.h),
@@ -546,7 +554,7 @@ class _AthleticsTabState extends State<AthleticsTab> {
                               'Close',
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: primaryBlue,
+                                color: titleColor,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

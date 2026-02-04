@@ -128,6 +128,7 @@ class _HomeDrawerState extends State<HomeDrawer>
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     final sideMenu = widget.sideMenuList;
 
     final Color primaryBlue = ColorsManager.primaryGradientStart;
@@ -138,17 +139,22 @@ class _HomeDrawerState extends State<HomeDrawer>
 
     return Drawer(
       child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              primaryBlue.withOpacity(0.10),
-              accentMint.withOpacity(0.12),
-              accentSun.withOpacity(0.10),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        decoration:
+            isLight
+                ? BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      primaryBlue.withOpacity(0.10),
+                      accentMint.withOpacity(0.12),
+                      accentSun.withOpacity(0.10),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                )
+                : BoxDecoration(
+                  color: Theme.of(context).colorScheme.background,
+                ),
         child: Column(
           children: [
             _buildHeader(
@@ -161,29 +167,51 @@ class _HomeDrawerState extends State<HomeDrawer>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
               child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.85),
-                  borderRadius: BorderRadius.circular(18.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryBlue.withOpacity(0.12),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
+                decoration:
+                    isLight
+                        ? BoxDecoration(
+                          color: Colors.white.withOpacity(0.85),
+                          borderRadius: BorderRadius.circular(18.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primaryBlue.withOpacity(0.12),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        )
+                        : BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(18.r),
+                          border: Border.all(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.outline.withOpacity(0.35),
+                          ),
+                        ),
                 child: Row(
                   children: [
                     Expanded(
                       child: ListTile(
                         dense: true,
-                        leading: Icon(Icons.home_rounded, color: accentSky),
+                        leading: Icon(
+                          Icons.home_rounded,
+                          color:
+                              isLight
+                                  ? accentSky
+                                  : Theme.of(context).colorScheme.onSurface,
+                        ),
                         title: Text(
                           'Home'.tr(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Colors.black87,
+                            color:
+                                isLight
+                                    ? Colors.black87
+                                    : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                             fontWeight: FontWeight.w600,
                             fontSize: fsp(context, 14, max: 16),
                           ),
@@ -194,13 +222,24 @@ class _HomeDrawerState extends State<HomeDrawer>
                     Expanded(
                       child: ListTile(
                         dense: true,
-                        leading: Icon(Icons.person_rounded, color: accentSun),
+                        leading: Icon(
+                          Icons.person_rounded,
+                          color:
+                              isLight
+                                  ? accentSun
+                                  : Theme.of(context).colorScheme.onSurface,
+                        ),
                         title: Text(
                           'Profile'.tr(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Colors.black87,
+                            color:
+                                isLight
+                                    ? Colors.black87
+                                    : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                             fontWeight: FontWeight.w600,
                             fontSize: fsp(context, 14, max: 16),
                           ),
