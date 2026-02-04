@@ -13,6 +13,7 @@ import '../../core/reusable_components/generalErrorDialog.dart'; // UnderConstru
 import '../../core/reusable_components/login_background.dart';
 import '../../core/reusable_components/role_selector.dart';
 import '../../core/reusable_components/text_field.dart';
+import '../../core/services/FCM-Token-Service.dart';
 import '../../core/services/apiExceptions.dart';
 import '../../core/services/loginServices/AuthLoginService.dart';
 import '../../core/setMobileData.dart';
@@ -30,6 +31,7 @@ Future<void> saveUserData(String token, String empName) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString("token", token);
   await prefs.setString("empName", empName);
+
 }
 
 class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
@@ -634,13 +636,23 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       final deviceData = await getDeviceData();
       final deviceId = deviceData["deviceId"] ?? "unknown";
       final deviceType = deviceData["deviceType"] ?? "0";
+      final fcmToken = await FcmService.getOrFetchToken();
+
+      if (fcmToken.isEmpty) {
+        _setLoginError(
+          'Notifications are required to sign in. Please enable notifications and try again.',
+        );
+        return;
+      }
+
+      print("📌 Using saved FCM token on login: $fcmToken");
 
       final response = await AuthLoginService.login(
         username: userController.text,
         password: passController.text,
         deviceId: deviceId,
         DeviceType: deviceType,
-        fcmToken: "",
+        fcmToken: fcmToken,
       );
 
       if (!mounted) return;

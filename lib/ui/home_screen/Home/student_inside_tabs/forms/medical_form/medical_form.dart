@@ -2,18 +2,18 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:oasisathletic/ui/home_screen/widgets/student_inside_tabs/forms/medical_form/medical_form_section_allergies.dart';
 import 'package:provider/provider.dart';
 
 
 
 import '../../../../../../core/reusable_components/app_background.dart';
+import 'medical_form_section_allergies.dart';
 import 'medical_form_sections.dart';
-import 'medical_form_state.dart';
 import 'medical_form_body2-5.dart';
 import 'medical_form_body_6-9.dart';
 import 'medical_form_body_10-12.dart';
 import 'medical_form_footer.dart';
+import 'medical_form_state.dart';
 
 class MedicalForm extends StatelessWidget {
   const MedicalForm({super.key});

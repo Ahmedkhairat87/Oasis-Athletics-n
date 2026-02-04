@@ -34,6 +34,8 @@ class MainWrapperState extends State<MainWrapper> {
   bool _loading = false;
   StreamSubscription<bool>? _netSub;
   bool _isOnline = true;
+  bool _wasOnline = true;
+  Timer? _autoRefetchDebounce;
 
   List<stdData> _students = [];
   List<SideMenu> _sideMenuList = [];
@@ -49,9 +51,26 @@ class MainWrapperState extends State<MainWrapper> {
     _isOnline = NetworkController.I.isOnline;
 
     // اسمع التغييرات واعمل rebuild
+    _wasOnline = NetworkController.I.isOnline;
+
     _netSub = NetworkController.I.onlineStream.listen((online) {
       if (!mounted) return;
+
       setState(() => _isOnline = online);
+
+      // ✅ detect offline -> online
+      final cameBackOnline = !_wasOnline && online;
+      _wasOnline = online;
+
+      if (cameBackOnline) {
+        // prevent quick duplicate triggers (resume / wifi rebind)
+        _autoRefetchDebounce?.cancel();
+        _autoRefetchDebounce = Timer(const Duration(milliseconds: 600), () {
+          if (!mounted) return;
+          if (_loading) return; // don't spam
+          _fetchRegStd(showErrorDialog: false, force: true); // ✅ silent auto refresh
+        });
+      }
     });
 
     _bootstrap();
@@ -59,6 +78,7 @@ class MainWrapperState extends State<MainWrapper> {
 
   @override
   void dispose() {
+    _autoRefetchDebounce?.cancel();
     _netSub?.cancel();
     super.dispose();
   }
@@ -134,66 +154,80 @@ class MainWrapperState extends State<MainWrapper> {
     );
   }
 
-  Future<void> _fetchRegStd({bool showErrorDialog = true}) async {
-    if (_loading) return;
-    setState(() => _loading = true);
+  Future<void> _fetchRegStd({
+    bool showErrorDialog = true,
+    bool force = false,
+  }) async {
+    // ✅ if already loading, allow only when forced (auto-reconnect)
+    if (_loading && !force) return;
 
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token') ?? '';
+    // ✅ when called from reconnect, don't trust isOnline snapshot instantly
+    final online = await NetworkGuard.hasInternet();
+    if (!online) {
+      if (mounted) setState(() => _loading = false);
+      return;
+    }
 
-    if (token.isEmpty) {
-      setState(() => _loading = false);
-      if (showErrorDialog) {
-        await ErrorRetrySheet.show(
-          context,
-          title: 'Missing token',
-          message: 'Please login again.',
-          onTryAgain: () => _fetchRegStd(showErrorDialog: true),
-          onCancel: () {},
-        );
+    if (mounted) setState(() => _loading = true);
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
+
+      if (token.isEmpty) {
+        if (!mounted) return;
+        setState(() => _loading = false);
+
+        if (showErrorDialog) {
+          await ErrorRetrySheet.show(
+            context,
+            title: 'Missing token',
+            message: 'Please login again.',
+            onTryAgain: () => _fetchRegStd(showErrorDialog: true),
+            onCancel: () {},
+          );
+        }
+        return;
       }
-      return;
+
+      final res = await ApiGuard.run(
+        title: 'Failed to load',
+        showDialog: showErrorDialog,
+        request: () => APIServices().apiRequest(APIManager.regStd, {
+          "token": token,
+          "deviceID": "1",
+          "DeviceType": 1,
+        }),
+        onTryAgain: () => _fetchRegStd(showErrorDialog: true),
+      );
+
+      if (!mounted) return;
+
+      if (res == null || res["success"] != true || res["data"] == null) {
+        setState(() => _loading = false);
+        return;
+      }
+
+      final RegStdResponse parsed = RegStdResponse.fromJson(res["data"]);
+      final newStudents = parsed.data ?? <stdData>[];
+      final newSideMenu = parsed.sideMenu ?? <SideMenu>[];
+
+      await _saveCache(students: newStudents, sideMenu: newSideMenu);
+
+      setState(() {
+        _students = newStudents;
+        _sideMenuList = newSideMenu;
+        _loading = false;
+      });
+
+      studentsNotifier.value = newStudents;
+    } catch (e, st) {
+      debugPrint("❌ _fetchRegStd error: $e");
+      debugPrint(st.toString());
+      if (mounted) setState(() => _loading = false);
     }
-
-    final res = await ApiGuard.run(
-      title: 'Failed to load',
-      showDialog: showErrorDialog,
-      request:
-          () => APIServices().apiRequest(APIManager.regStd, {
-            "token": token,
-            "deviceID": "1",
-            "DeviceType": 1,
-          }),
-      onTryAgain: () => _fetchRegStd(showErrorDialog: true),
-    );
-
-    if (!mounted) return;
-
-    // لو ApiGuard رجّع null (يعني dialog اتعرض/اتقفل) أو request فشل
-    if (res == null || res["success"] != true || res["data"] == null) {
-      setState(() => _loading = false);
-      return;
-    }
-
-    // ✅ نفس منطق Getregstd.getRegStd القديم
-    final RegStdResponse parsed = RegStdResponse.fromJson(res["data"]);
-
-    final newStudents = parsed.data ?? <stdData>[];
-    final newSideMenu = parsed.sideMenu ?? <SideMenu>[];
-
-    // ✅ cache
-    await _saveCache(students: newStudents, sideMenu: newSideMenu);
-
-    // ✅ update UI
-    setState(() {
-      _students = newStudents;
-      _sideMenuList = newSideMenu;
-      _loading = false;
-    });
-
-    // ✅ update notifier
-    studentsNotifier.value = newStudents;
   }
+
 
   @override
   Widget build(BuildContext context) {

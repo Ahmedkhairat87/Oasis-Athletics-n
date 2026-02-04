@@ -126,10 +126,7 @@ class _MessagesState extends State<Messages> {
           ),
           child: InkWell(
             onTap: () {
-              Navigator.pushReplacementNamed(
-                context,
-                sendMessagesScreen.routeName,
-              );
+              Navigator.pushNamed(context, sendMessagesScreen.routeName);
             },
             child: Image.asset(
               "assets/images/compose.png",
@@ -280,10 +277,15 @@ class _MessagesState extends State<Messages> {
             msg: msg,
             studentFirstName: firstName,
             onTap: () {
+              final isSentTab = selectedTab == "Sent";
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MessageDetailsScreen(message: msg),
+                  builder: (_) => MessageDetailsScreen(
+                    message: msg,
+                    isSent: isSentTab, // ✅ true for Sent tab, false for Inbox tab
+                  ),
                 ),
               );
             },
