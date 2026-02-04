@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +18,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// 10. Dietary Restrictions
-        sectionHeader('10. Dietary Restrictions'),
+        sectionHeader('dietary_restrictions'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -27,13 +28,13 @@ class MedicalFormBodyPart3 extends StatelessWidget {
                 TextFormField(
                   controller: state.specialDietController,
                   decoration: medicalInputDecoration(
-                      context, 'Any Special Diet / Nutritional Needs'),
+                      context, 'special_diet'.tr()),
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.foodAllergiesController,
                   decoration: medicalInputDecoration(
-                      context, 'Food Allergies or Sensitivities'),
+                      context, 'food_allergies'.tr()),
                 ),
               ],
             ),
@@ -41,7 +42,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
         ),
 
         /// 11. Past Injuries
-        sectionHeader('11. Past Injuries'),
+        sectionHeader('past_injuries'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -51,7 +52,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
                 Row(
                   children: [
                     ChoiceChip(
-                      label: const Text('No'),
+                      label: Text('no'.tr()),
                       selected: state.pastInjuryNone,
                       onSelected: state.isEditing
                           ? (_) => state.togglePastInjuryNone()
@@ -59,7 +60,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     ChoiceChip(
-                      label: const Text('Yes'),
+                      label: Text('yes'.tr()),
                       selected: state.pastInjuryYes,
                       onSelected: state.isEditing
                           ? (_) => state.togglePastInjuryYes()
@@ -88,7 +89,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
                   TextFormField(
                     controller: state.pastInjuriesOtherController,
                     decoration:
-                    medicalInputDecoration(context, 'If other'),
+                    medicalInputDecoration(context, 'if_other'.tr()),
                   ),
                 ],
               ],
@@ -97,7 +98,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
         ),
 
         /// 12. Surgeries
-        sectionHeader('12. Surgeries'),
+        sectionHeader('surgeries'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -107,7 +108,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
                 Row(
                   children: [
                     ChoiceChip(
-                      label: const Text('No'),
+                      label: Text('no'.tr()),
                       selected: state.surgeriesNone,
                       onSelected: state.isEditing
                           ? (_) => state.toggleSurgeryNone()
@@ -115,7 +116,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     ChoiceChip(
-                      label: const Text('Yes'),
+                      label: Text('yes'.tr()),
                       selected: state.surgeriesYes,
                       onSelected: state.isEditing
                           ? (_) => state.toggleSurgeryYes()
@@ -144,7 +145,7 @@ class MedicalFormBodyPart3 extends StatelessWidget {
                   TextFormField(
                     controller: state.surgeriesOtherController,
                     decoration:
-                    medicalInputDecoration(context, 'If other'),
+                    medicalInputDecoration(context, 'if_other'.tr()),
                   ),
                 ],
               ],
