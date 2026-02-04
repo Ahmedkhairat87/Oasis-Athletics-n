@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +16,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// 6. Immunization Record
-        sectionHeader('6. Immunization Record'),
+        sectionHeader('immunization_record'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -32,12 +33,12 @@ class MedicalFormBodyPart2 extends StatelessWidget {
                       : null,
                   child: InputDecorator(
                     decoration: medicalInputDecoration(
-                        context, 'Date of Last Immunization'),
+                        context, 'last_immunization'.tr()),
                     child: Text(
                       state.lastImmunizationDate != null
                           ? DateFormat.yMMMd()
                           .format(state.lastImmunizationDate!)
-                          : 'Select date',
+                          : 'select_date'.tr(),
                     ),
                   ),
                 ),
@@ -45,7 +46,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
                 TextFormField(
                   controller: state.vaccinesReceivedController,
                   decoration: medicalInputDecoration(
-                      context, 'Vaccines Received'),
+                      context, 'vaccines_received'.tr()),
                   maxLines: 2,
                 ),
               ],
@@ -55,7 +56,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
 
         /// 7. Vision & Hearing
         /// 7. Vision & Hearing
-        sectionHeader('7. Vision & Hearing'),
+        sectionHeader('vision_hearing'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -64,12 +65,12 @@ class MedicalFormBodyPart2 extends StatelessWidget {
               children: [
                 TextFormField(
                   controller: state.visionProblemsController,
-                  decoration: medicalInputDecoration(context, 'Vision Problems'),
+                  decoration: medicalInputDecoration(context, 'vision_problems'.tr()),
                 ),
                 SizedBox(height: 8.h),
                 _dateAndToggleRow(
                   context,
-                  label: 'Last Eye Exam Date',
+                  label: 'last_eye_exam'.tr(),
                   date: state.lastEyeExam,
                   onPick: (d) => state.lastEyeExam = d,
                   no: state.visionProblemNo,
@@ -81,7 +82,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
 
                 _dateAndToggleRow(
                   context,
-                  label: 'Last Hearing Test Date',
+                  label: 'last_hearing_test'.tr(),
                   date: state.lastHearingTest,
                   onPick: (d) => state.lastHearingTest = d,
                   no: state.hearingProblemNo,
@@ -95,7 +96,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
         ),
 
         /// 8. Physical Activity & Sports
-        sectionHeader('8. Physical Activity & Sports'),
+        sectionHeader('physical_activity'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -105,21 +106,21 @@ class MedicalFormBodyPart2 extends StatelessWidget {
                 TextFormField(
                   controller: state.activityLimitationsController,
                   decoration: medicalInputDecoration(
-                      context, 'Limitations on Physical Activity'),
+                      context, 'activity_limitations'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.sportsParticipationController,
                   decoration: medicalInputDecoration(
-                      context, 'Sports Participation (limitations)'),
+                      context, 'sports_participation'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.specialEquipmentController,
                   decoration: medicalInputDecoration(
-                      context, 'Special Equipment Needed'),
+                      context, 'special_equipment'.tr()),
                 ),
               ],
             ),
@@ -127,7 +128,7 @@ class MedicalFormBodyPart2 extends StatelessWidget {
         ),
 
         /// 9. Mental & Behavioral Health
-        sectionHeader('9. Mental & Behavioral Health'),
+        sectionHeader('mental_behavioral'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -137,35 +138,35 @@ class MedicalFormBodyPart2 extends StatelessWidget {
                 TextFormField(
                   controller: state.mentalHistoryController,
                   decoration:
-                  medicalInputDecoration(context, 'Mental Health History'),
+                  medicalInputDecoration(context, 'mental_history'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.diagnosedConditionsController,
                   decoration:
-                  medicalInputDecoration(context, 'Diagnosed Conditions'),
+                  medicalInputDecoration(context, 'diagnosed_conditions'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.therapyMedicationController,
                   decoration:
-                  medicalInputDecoration(context, 'Medication or Therapy'),
+                  medicalInputDecoration(context, 'therapy_medication'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.behavioralConcernsController,
                   decoration:
-                  medicalInputDecoration(context, 'Behavioral Concerns'),
+                  medicalInputDecoration(context, 'behavioral_concerns'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.supportNeededController,
                   decoration:
-                  medicalInputDecoration(context, 'Support Needed'),
+                  medicalInputDecoration(context, 'support_needed'.tr()),
                 ),
               ],
             ),
@@ -204,14 +205,14 @@ class MedicalFormBodyPart2 extends StatelessWidget {
         ToggleButtons(
           isSelected: [no, yes],
           onPressed: enabled ? onToggle : null,
-          children: const [
+          children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text('No'),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text('no'.tr()),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text('Yes'),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text('yes'.tr()),
             ),
           ],
         ),

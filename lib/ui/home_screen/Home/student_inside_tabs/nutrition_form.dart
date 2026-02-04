@@ -356,18 +356,31 @@ class _NutritionFormState extends State<NutritionForm> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(14.r),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
                 child: Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.w,
                     vertical: 12.h,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surface.withOpacity(0.92),
                     borderRadius: BorderRadius.circular(14.r),
-                    border: Border.all(color: Colors.black.withOpacity(0.03)),
+
+                    // ✨ Liquid glass gradient
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withOpacity(0.22),
+                        Colors.white.withOpacity(0.08),
+                        Colors.white.withOpacity(0.02),
+                      ],
+                    ),
+
+                    // ✨ Soft glass edge highlight
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.35),
+                      width: 1,
+                    ),
                   ),
                   child: Form(
                     key: _formKey,

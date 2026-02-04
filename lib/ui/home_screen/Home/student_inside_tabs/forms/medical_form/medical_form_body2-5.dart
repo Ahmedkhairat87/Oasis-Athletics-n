@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +18,7 @@ class MedicalFormBodyPart1 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// 2. Chronic Conditions
-        sectionHeader('2. Chronic Conditions'),
+        sectionHeader('chronic_conditions'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -26,21 +27,21 @@ class MedicalFormBodyPart1 extends StatelessWidget {
               children: [
                 TextFormField(
                   controller: state.chronicConditionsController,
-                  decoration: medicalInputDecoration(context, 'Condition(s)'),
+                  decoration: medicalInputDecoration(context, 'conditions'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.chronicTreatmentController,
                   decoration: medicalInputDecoration(
-                      context, 'Treatment / Management Plan'),
+                      context, 'treatment_plan'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.chronicEmergencyController,
                   decoration: medicalInputDecoration(
-                      context, 'Emergency Protocols (if any)'),
+                      context, 'emergency_protocols'.tr()),
                   maxLines: 2,
                 ),
               ],
@@ -49,7 +50,7 @@ class MedicalFormBodyPart1 extends StatelessWidget {
         ),
 
         /// 3. Past Surgeries / Procedures
-        sectionHeader('3. Past Surgeries / Procedures'),
+        sectionHeader('past_surgeries'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -59,20 +60,20 @@ class MedicalFormBodyPart1 extends StatelessWidget {
                 TextFormField(
                   controller: state.pastSurgeryController,
                   decoration: medicalInputDecoration(
-                      context, 'Surgery Type & Date'),
+                      context, 'surgery_type_date'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.hospitalizationReasonController,
                   decoration: medicalInputDecoration(
-                      context, 'Reason for Hospitalization'),
+                      context, 'hospitalization_reason'.tr()),
                   maxLines: 2,
                 ),
                 SizedBox(height: 8.h),
                 TextFormField(
                   controller: state.hospitalizationDatesController,
-                  decoration: medicalInputDecoration(context, 'Date(s)'),
+                  decoration: medicalInputDecoration(context, 'dates'.tr()),
                 ),
               ],
             ),
@@ -80,7 +81,7 @@ class MedicalFormBodyPart1 extends StatelessWidget {
         ),
 
         /// 4. Family Medical History
-        sectionHeader('4. Family Medical History'),
+        sectionHeader('family_history'.tr()),
         editableWrapper(
           state.isEditing,
           sectionCard(
@@ -88,7 +89,7 @@ class MedicalFormBodyPart1 extends StatelessWidget {
             TextFormField(
               controller: state.familyHistoryController,
               decoration: medicalInputDecoration(
-                  context, 'Relevant Family Medical History'),
+                  context, 'family_medical_history'.tr()),
               maxLines: 3,
             ),
           ),
