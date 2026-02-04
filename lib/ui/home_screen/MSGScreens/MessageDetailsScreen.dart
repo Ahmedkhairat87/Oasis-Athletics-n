@@ -9,8 +9,9 @@ class MessageDetailsScreen extends StatelessWidget {
   static const routeName = '/message-details';
 
   final BaseMessage message;
+  final bool isSent;
 
-  const MessageDetailsScreen({super.key, required this.message});
+  const MessageDetailsScreen({super.key, required this.message,this.isSent = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +20,16 @@ class MessageDetailsScreen extends StatelessWidget {
     final originalAttachments = getOriginalAttachments(message);
     final replyAttachments = getReplyAttachments(message);
 
+    final hasReply =
+        message.replyStatus == 1 && (message.noteBodyReply?.trim().isNotEmpty ?? false);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: isDark ? Colors.black : Colors.white,
 
+      // ✅ RESTORED APPBAR ✅
       appBar: AppBar(
-        backgroundColor:
-            isDark ? Colors.black54 : Colors.white.withOpacity(0.2),
+        backgroundColor: isDark ? Colors.black54 : Colors.white.withOpacity(0.2),
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -56,23 +60,18 @@ class MessageDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ✅ Sender Type
               Text(
                 message.enDesc,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
               ),
-
               SizedBox(height: 8.h),
 
-              // ✅ Sender Name
               Text(
                 message.empName,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
               ),
-
               SizedBox(height: 12.h),
 
-              // ✅ Date
               Text(
                 "Date: ${message.actualEditdate}",
                 style: TextStyle(color: Colors.grey, fontSize: 14.sp),
@@ -80,25 +79,20 @@ class MessageDetailsScreen extends StatelessWidget {
 
               Divider(height: 30.h, thickness: 1),
 
-              // ✅ Subject
               Text(
                 message.noteSubject,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.sp),
               ),
-
               SizedBox(height: 12.h),
 
-              // ✅ Message Body
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(message.message, style: TextStyle(fontSize: 16.sp)),
-
                       SizedBox(height: 16.h),
 
-                      // ✅ ✅ ORIGINAL ATTACHMENTS BUTTON
                       if (originalAttachments.isNotEmpty)
                         SizedBox(
                           width: double.infinity,
@@ -117,8 +111,8 @@ class MessageDetailsScreen extends StatelessWidget {
 
                       SizedBox(height: 20.h),
 
-                      // ✅ ✅ REPLY STATUS
-                      if (message.replyStatus == 0)
+                      // ✅ Inbox only: show waiting text
+                      if (!isSent && message.replyStatus == 0)
                         Text(
                           "Waiting for your reply...",
                           style: TextStyle(
@@ -128,8 +122,9 @@ class MessageDetailsScreen extends StatelessWidget {
                           ),
                         ),
 
-                      // ✅ ✅ SHOW REPLY
-                      if (message.replyStatus == 1) ...[
+                      // ✅ Inbox & Sent: show reply ONLY if it exists
+                      if (hasReply) ...[
+                        SizedBox(height: 12.h),
                         Text(
                           "Reply:",
                           style: TextStyle(
@@ -137,14 +132,11 @@ class MessageDetailsScreen extends StatelessWidget {
                             fontSize: 16.sp,
                           ),
                         ),
-
                         SizedBox(height: 8.h),
-
                         Text(
                           message.noteBodyReply ?? '',
                           style: TextStyle(fontSize: 15.sp),
                         ),
-
                         SizedBox(height: 10.h),
 
                         if (replyAttachments.isNotEmpty)
@@ -173,6 +165,7 @@ class MessageDetailsScreen extends StatelessWidget {
       ),
     );
   }
+
 
   // ✅ ✅ ORIGINAL ATTACHMENTS
   List<String> getOriginalAttachments(BaseMessage message) {

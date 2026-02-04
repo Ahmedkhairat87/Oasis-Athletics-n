@@ -61,6 +61,9 @@ dependencies:
   provider: any
   circular_menu: ^4.0.0
   connectivity_plus: ^6.0.3
+  firebase_core: ^3.0.0
+  firebase_messaging: ^15.0.0
+  flutter_local_notifications: ^17.0.0
 
 
 flutter_launcher_icons:

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../../../core/colors_Manager.dart';
 import '../../../../../../core/medical_constants.dart';
-
-
 import 'medical_form_helpers.dart';
 import 'medical_form_state.dart';
 

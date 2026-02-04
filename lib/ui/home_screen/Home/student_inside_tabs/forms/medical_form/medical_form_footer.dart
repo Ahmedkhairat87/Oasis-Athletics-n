@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../../../core/colors_Manager.dart';
-
 import 'medical_form_state.dart';
 
 class MedicalFormFooter extends StatelessWidget {

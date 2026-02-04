@@ -7,12 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../../core/colors_Manager.dart';
-import '../../../../../core/reusable_components/profile_tab_golden_card.dart';
-import '../../../../../core/reusable_components/profile_tab_section_title.dart';
-import '../../../../../core/reusable_components/Notifiers/student_notifier.dart';
-import '../../../../../core/services/stdProfile/SchoolAcademicLinksServices/StdSchoolAcademicLinksService.dart';
-import '../../../../webView-attachmentopener/openAttachment.dart'; // adjust path if needed
+import '../../../../core/colors_Manager.dart';
+import '../../../../core/reusable_components/profile_tab_golden_card.dart';
+import '../../../../core/reusable_components/profile_tab_section_title.dart';
+import '../../../../core/reusable_components/Notifiers/student_notifier.dart';
+import '../../../../core/services/stdProfile/SchoolAcademicLinksServices/StdSchoolAcademicLinksService.dart';
+import '../../../webView-attachmentopener/openAttachment.dart'; // adjust path if needed
 
 class stdSchoolAcademicTab extends StatefulWidget {
   const stdSchoolAcademicTab({super.key});
@@ -114,7 +114,7 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
     }
   }
 
-  Future<void> _refresh() async => _loadLinks();
+  Future<void> _refresh() async => loadAcademicLinks();
 
   void _open(String url) {
     openAttachment(context, url); // uses your existing viewer
@@ -206,49 +206,87 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // TOP ROW: Icon + Title + school year
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start, // ✅ important
                       children: [
                         Container(
                           padding: EdgeInsets.all(12.r),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: SweepGradient(
-                              colors: [
-                                primaryBlue,
-                                accentSky,
-                                accentMint,
-                                accentSun,
-                                primaryBlue,
-                              ],
+                              colors: [primaryBlue, accentSky, accentMint, accentSun, primaryBlue],
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: primaryBlue.withOpacity(0.25),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
                           ),
-                          child: Icon(
-                            Icons.link,
-                            color: Colors.white,
-                            size: 28.r,
-                          ),
+                          child: Icon(Icons.link, color: Colors.white, size: 28.r),
                         ),
                         SizedBox(width: 12.w),
-                        Expanded(
-                          child: Text(
-                            'Academic Links — $schoolYear',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w800,
-                              color: primaryBlue,
-                            ),
+
+                        Flexible( // ✅ use Flexible not Expanded هنا
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Academic Links — $schoolYear',
+                                softWrap: true,
+                                maxLines: 3,                 // ✅ show more
+                                overflow: TextOverflow.clip, // ✅ no ellipsis
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w800,
+                                  color: primaryBlue,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
+                    // TOP ROW: Icon + Title + school year
+                    // Row(
+                    //   children: [
+                    //     Container(
+                    //       padding: EdgeInsets.all(12.r),
+                    //       decoration: BoxDecoration(
+                    //         shape: BoxShape.circle,
+                    //         gradient: SweepGradient(
+                    //           colors: [
+                    //             primaryBlue,
+                    //             accentSky,
+                    //             accentMint,
+                    //             accentSun,
+                    //             primaryBlue,
+                    //           ],
+                    //         ),
+                    //         boxShadow: [
+                    //           BoxShadow(
+                    //             color: primaryBlue.withOpacity(0.25),
+                    //             blurRadius: 12,
+                    //             offset: const Offset(0, 6),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       child: Icon(
+                    //         Icons.link,
+                    //         color: Colors.white,
+                    //         size: 28.r,
+                    //       ),
+                    //     ),
+                    //     SizedBox(width: 12.w),
+                    //     Expanded(
+                    //       child: Text(
+                    //         'Academic Links — $schoolYear',
+                    //         maxLines: 2,                 // ✅ allow wrap
+                    //         softWrap: true,              // ✅ wrap text
+                    //         overflow: TextOverflow.visible, // ✅ don’t ellipsis
+                    //         style: TextStyle(
+                    //           fontSize: 16.sp,
+                    //           fontWeight: FontWeight.w800,
+                    //           color: primaryBlue,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
 
                     SizedBox(height: 10.h),
 
@@ -374,36 +412,20 @@ class _AcademicTabState extends State<stdSchoolAcademicTab> {
                                                 SizedBox(width: 12.w),
                                                 Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
                                                         item.title ?? item.url,
-                                                        maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
+                                                        maxLines: 3,
+                                                        overflow: TextOverflow.clip,
+                                                        softWrap: true,
                                                         style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w800,
+                                                          fontWeight: FontWeight.w800,
                                                           fontSize: 14.sp,
                                                           color: primaryBlue,
                                                         ),
                                                       ),
-                                                      SizedBox(height: 6.h),
-                                                      Text(
-                                                        item.url,
-                                                        maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                        style: TextStyle(
-                                                          fontSize: 11.sp,
-                                                          color:
-                                                              Colors.grey[700],
-                                                        ),
-                                                      ),
+                                                      // ✅ removed item.url Text here
                                                     ],
                                                   ),
                                                 ),

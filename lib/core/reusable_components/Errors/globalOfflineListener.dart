@@ -1,4 +1,3 @@
-// lib/core/reusable_components/Errors/globalOfflineListener.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -14,13 +13,15 @@ class GlobalOfflineListener extends StatefulWidget {
   State<GlobalOfflineListener> createState() => _GlobalOfflineListenerState();
 }
 
-class _GlobalOfflineListenerState extends State<GlobalOfflineListener> {
+class _GlobalOfflineListenerState extends State<GlobalOfflineListener>
+    with WidgetsBindingObserver {
   StreamSubscription<bool>? _sub;
   bool _sheetOpen = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _sub = NetworkController.I.onlineStream.listen((isOnline) {
       if (!isOnline) {
@@ -31,6 +32,19 @@ class _GlobalOfflineListenerState extends State<GlobalOfflineListener> {
     });
   }
 
+  // ✅ important: when app resumes from lock
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // ignore fake offline for a moment
+      NetworkController.I.setResumeGrace(duration: const Duration(seconds: 3));
+      // optional: do a refresh after grace
+      Future.delayed(const Duration(seconds: 3), () {
+        NetworkController.I.refresh();
+      });
+    }
+  }
+
   Future<void> _showOfflineSheet() async {
     if (_sheetOpen) return;
 
@@ -39,7 +53,6 @@ class _GlobalOfflineListenerState extends State<GlobalOfflineListener> {
 
     _sheetOpen = true;
 
-    // show modern sheet
     await ErrorRetrySheet.show(
       ctx,
       title: 'You are offline',
@@ -47,8 +60,7 @@ class _GlobalOfflineListenerState extends State<GlobalOfflineListener> {
       cancelText: 'Close',
       tryAgainText: 'Retry',
       onTryAgain: () async {
-        // retry here just re-check internet, if online sheet closes by listener
-        await NetworkController.I.start();
+        await NetworkController.I.refresh(forceEmit: true);
       },
       onCancel: () {},
       barrierDismissible: true,
@@ -62,15 +74,13 @@ class _GlobalOfflineListenerState extends State<GlobalOfflineListener> {
     final nav = rootNavKey.currentState;
     if (nav == null) return;
 
-    // close top-most route if it's the bottom sheet
-    if (nav.canPop()) {
-      nav.pop();
-    }
+    if (nav.canPop()) nav.pop();
     _sheetOpen = false;
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _sub?.cancel();
     super.dispose();
   }

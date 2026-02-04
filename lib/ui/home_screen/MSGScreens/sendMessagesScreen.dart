@@ -18,6 +18,8 @@ import '../../../core/reusable_components/app_background.dart';
 import '../../../core/services/sideMenu/messagesServices/getDepartmentsServices.dart';
 import '../../../core/services/sideMenu/messagesServices/getEmpsServices.dart';
 import '../../../core/services/sideMenu/messagesServices/sendMessageServices/sendMessageServices.dart';
+import '../Home/mianwrapper.dart';
+import 'messages.dart';
 
 /// Messages screen: choose child -> recipient type -> recipient -> subject -> message -> send
 class sendMessagesScreen extends StatefulWidget {
@@ -144,7 +146,7 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
       final response = await GetEmpsService.GetEmployeeResponse(
         token: token,
         selectedStd:
-            "${selectedStudent!.stdId}|${selectedStudent!.oasisAthleticFlag}",
+        "${selectedStudent!.stdId}|${selectedStudent!.oasisAthleticFlag}",
         toCategNo: category.msgCategNo.toString(),
       );
 
@@ -182,10 +184,10 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
 
         if (result != null) {
           final files =
-              result.files
-                  .where((f) => f.path != null)
-                  .map((f) => File(f.path!))
-                  .toList();
+          result.files
+              .where((f) => f.path != null)
+              .map((f) => File(f.path!))
+              .toList();
 
           setState(() {
             final remaining = maxAttachments - attachments.length;
@@ -199,6 +201,20 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
   }
 
   Future<void> _onSend() async {
+    if (selectedStudent == null || selectedCategory == null || selectedEmployee == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("❌ Please fill out all fields"), backgroundColor: Colors.red),
+      );
+      return;
+    }
+
+    if (_messageController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("❌ Please write a message"), backgroundColor: Colors.red),
+      );
+      return;
+    }
+
     try {
       final response = await SendMessageService.sendMessageWithAttachments(
         token: token,
@@ -214,56 +230,32 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
 
       final int result = int.tryParse(response.data.toString()) ?? 0;
 
-      if (result > 0) {
-        print("✅ Message Sent Successfully with ID: $result");
-
-        // ✅ مسح كل البيانات بعد الإرسال
-        _subjectController.clear();
-        _messageController.clear();
-
-        setState(() {
-          selectedStudent = null;
-          selectedCategory = null;
-          selectedEmployee = null;
-
-          categories.clear();
-          employees.clear();
-          attachments.clear();
-        });
-
+      if (result <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("✅ Message sent successfully"),
-            backgroundColor: Colors.green,
-          ),
+          const SnackBar(content: Text("❌ Failed to send message"), backgroundColor: Colors.red),
         );
-
-        // ✅ الرجوع لشاشة الرسائل
-        Future.delayed(const Duration(milliseconds: 500), () {
-          Navigator.pop(context);
-        });
-      } else {
-        print("❌ API Returned Failure Code: ${response.data}");
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("❌ Failed to send message"),
-            backgroundColor: Colors.red,
-          ),
-        );
+        return;
       }
-    } catch (e) {
-      print("❌ Send Message Error: $e");
+
+      if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("❌ Server error while sending"),
-          backgroundColor: Colors.red,
-        ),
+        const SnackBar(content: Text("✅ Message sent successfully"), backgroundColor: Colors.green),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 400));
+      if (!mounted) return;
+
+      final nav = Navigator.of(context);
+      nav.pushNamedAndRemoveUntil(MainWrapper.routeName, (route) => false);
+      nav.pushNamed(Messages.routeName);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("❌ Server error while sending"), backgroundColor: Colors.red),
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -300,22 +292,27 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
                 ),
                 SizedBox(height: 8.h),
 
-                // --- select student (child) ---
-                _sectionTitle('Select child'),
-                SizedBox(height: 8.h),
-                SizedBox(
-                  height: 120.h,
-                  child:
-                      loadingStudents
-                          ? const Center(child: CircularProgressIndicator())
-                          : ListView.separated(
+                // ✅ Make the content scrollable to prevent RenderFlex overflow
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 16.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // --- select student (child) ---
+                        _sectionTitle('Select child'),
+                        SizedBox(height: 8.h),
+                        SizedBox(
+                          height: 120.h,
+                          child: loadingStudents
+                              ? const Center(child: CircularProgressIndicator())
+                              : ListView.separated(
                             scrollDirection: Axis.horizontal,
                             itemCount: students.length,
                             separatorBuilder: (_, __) => SizedBox(width: 8.w),
                             itemBuilder: (context, index) {
                               final student = students[index];
-                              final selected =
-                                  selectedStudent?.stdId == student.stdId;
+                              final selected = selectedStudent?.stdId == student.stdId;
                               return GestureDetector(
                                 onTap: () {
                                   setState(() => selectedStudent = student);
@@ -326,16 +323,12 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
                                   width: 120.w,
                                   padding: EdgeInsets.all(8.w),
                                   decoration: BoxDecoration(
-                                    color:
-                                        selected
-                                            ? primaryBlue.withOpacity(0.12)
-                                            : theme.colorScheme.surface,
+                                    color: selected
+                                        ? primaryBlue.withOpacity(0.12)
+                                        : theme.colorScheme.surface,
                                     borderRadius: BorderRadius.circular(14.r),
                                     border: Border.all(
-                                      color:
-                                          selected
-                                              ? primaryBlue
-                                              : Colors.transparent,
+                                      color: selected ? primaryBlue : Colors.transparent,
                                       width: selected ? 1.4 : 0,
                                     ),
                                   ),
@@ -344,9 +337,7 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
                                     children: [
                                       CircleAvatar(
                                         radius: 32.r,
-                                        backgroundImage: NetworkImage(
-                                          student.stdPicture ?? "",
-                                        ),
+                                        backgroundImage: NetworkImage(student.stdPicture ?? ""),
                                         onBackgroundImageError: (_, __) {},
                                       ),
                                       SizedBox(height: 8.h),
@@ -360,24 +351,23 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
                               );
                             },
                           ),
-                ),
+                        ),
 
-                SizedBox(height: 12.h),
+                        SizedBox(height: 12.h),
 
-                // --- recipient type buttons ---
-                _sectionTitle('Send to'),
-                SizedBox(height: 8.h),
-                _sectionTitle('Choose Department'),
-                SizedBox(height: 8.h),
+                        // --- recipient type buttons ---
+                        _sectionTitle('Send to'),
+                        SizedBox(height: 8.h),
+                        _sectionTitle('Choose Department'),
+                        SizedBox(height: 8.h),
 
-                loadingCategories
-                    ? const CircularProgressIndicator()
-                    : DropdownButtonFormField<ToCategory>(
-                      isExpanded: true,
-                      initialValue: selectedCategory,
-                      hint: const Text("Select Department"),
-                      items:
-                          categories.map((e) {
+                        loadingCategories
+                            ? const Center(child: CircularProgressIndicator())
+                            : DropdownButtonFormField<ToCategory>(
+                          isExpanded: true,
+                          initialValue: selectedCategory,
+                          hint: const Text("Select Department"),
+                          items: categories.map((e) {
                             return DropdownMenuItem(
                               value: e,
                               child: SizedBox(
@@ -390,179 +380,179 @@ class _sendMessagesScreenState extends State<sendMessagesScreen> {
                               ),
                             );
                           }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedCategory = value;
-                        });
-                        if (value != null) loadEmployees(value);
-                      },
-                    ),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCategory = value;
+                            });
+                            if (value != null) loadEmployees(value);
+                          },
+                        ),
 
-                SizedBox(height: 12.h),
+                        SizedBox(height: 12.h),
 
-                // --- recipient dropdown ---
-                _sectionTitle('Choose recipient'),
-                SizedBox(height: 8.h),
-                DropdownButtonFormField<DepartmentEmployee>(
-                  isExpanded: true, // ✅ أهم سطر يمنع الـ overflow
-                  initialValue: selectedEmployee,
-                  hint: const Text("Select Employee"),
-                  items:
-                      employees.map((e) {
-                        return DropdownMenuItem(
-                          value: e,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              e.matDesc ?? "",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis, // ✅ يمنع الكسر
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                  onChanged:
-                      (value) => setState(() => selectedEmployee = value),
-                ),
-
-                SizedBox(height: 12.h),
-
-                // --- Subject ---
-                _sectionTitle('Subject'),
-                SizedBox(height: 8.h),
-
-                // -> Glass Subject field
-                _GlassTextField(
-                  controller: _subjectController,
-                  hintText: 'Subject (optional)',
-                  minLines: 1,
-                  maxLines: 3,
-                ),
-
-                SizedBox(height: 12.h),
-
-                // --- Message ---
-                _sectionTitle('Message'),
-                SizedBox(height: 8.h),
-
-                // -> Glass Message field (expands)
-                Expanded(
-                  child: _GlassTextField(
-                    controller: _messageController,
-                    hintText: 'Write your message here...',
-                    expands: true,
-                    maxLines: null,
-                    minLines: null,
-                    keyboardType: TextInputType.multiline,
-                  ),
-                ),
-
-                SizedBox(height: 12.h),
-
-                //attach button
-                _sectionTitle('Attachments'),
-
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.image),
-                      onPressed: () => pickAttachment(isImage: true),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.attach_file),
-                      onPressed: () => pickAttachment(),
-                    ),
-                    Text("${attachments.length}/5 attached"),
-                  ],
-                ),
-                SizedBox(height: 12.h),
-
-                // --- Send button ---
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: _onSend,
-                        icon: const Icon(Icons.send),
-                        label: const Text('Send'),
-                      ),
-                    ),
-                  ],
-                ),
-
-                if (attachments.isNotEmpty)
-                  SizedBox(
-                    height: 90,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: attachments.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        final file = attachments[index];
-                        final fileName = file.path.split('/').last;
-
-                        return Stack(
-                          children: [
-                            Container(
-                              width: 90,
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  file.path.endsWith(".jpg") ||
-                                          file.path.endsWith(".png")
-                                      ? Image.file(
-                                        file,
-                                        height: 40,
-                                        fit: BoxFit.cover,
-                                      )
-                                      : const Icon(
-                                        Icons.insert_drive_file,
-                                        size: 35,
-                                      ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    fileName,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 10),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            // زر الحذف
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    attachments.removeAt(index);
-                                  });
-                                },
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
+                        // --- recipient dropdown ---
+                        _sectionTitle('Choose recipient'),
+                        SizedBox(height: 8.h),
+                        DropdownButtonFormField<DepartmentEmployee>(
+                          isExpanded: true,
+                          initialValue: selectedEmployee,
+                          hint: const Text("Select Employee"),
+                          items: employees.map((e) {
+                            return DropdownMenuItem(
+                              value: e,
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Text(
+                                  e.matDesc ?? "",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) => setState(() => selectedEmployee = value),
+                        ),
+
+                        SizedBox(height: 12.h),
+
+                        // --- Subject ---
+                        _sectionTitle('Subject'),
+                        SizedBox(height: 8.h),
+                        _GlassTextField(
+                          controller: _subjectController,
+                          hintText: 'Subject (optional)',
+                          minLines: 1,
+                          maxLines: 3,
+                        ),
+
+                        SizedBox(height: 12.h),
+
+                        // --- Message ---
+                        _sectionTitle('Message'),
+                        SizedBox(height: 8.h),
+
+                        // ✅ Give the message field a fixed height inside a scroll view
+                        SizedBox(
+                          height: 220.h,
+                          child: _GlassTextField(
+                            controller: _messageController,
+                            hintText: 'Write your message here...',
+                            expands: true,
+                            maxLines: null,
+                            minLines: null,
+                            keyboardType: TextInputType.multiline,
+                          ),
+                        ),
+
+                        SizedBox(height: 12.h),
+
+                        // Attachments
+                        _sectionTitle('Attachments'),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.image),
+                              onPressed: () => pickAttachment(isImage: true),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.attach_file),
+                              onPressed: () => pickAttachment(),
+                            ),
+                            Text("${attachments.length}/5 attached"),
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
+
+                        // Send button
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: _onSend,
+                                icon: const Icon(Icons.send),
+                                label: const Text('Send'),
                               ),
                             ),
                           ],
-                        );
-                      },
+                        ),
+
+                        if (attachments.isNotEmpty) ...[
+                          SizedBox(height: 12.h),
+                          SizedBox(
+                            height: 90,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: attachments.length,
+                              separatorBuilder: (_, __) => const SizedBox(width: 8),
+                              itemBuilder: (context, index) {
+                                final file = attachments[index];
+                                final fileName = file.path.split('/').last;
+
+                                return Stack(
+                                  children: [
+                                    Container(
+                                      width: 90,
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          file.path.endsWith(".jpg") || file.path.endsWith(".png")
+                                              ? Image.file(
+                                            file,
+                                            height: 40,
+                                            fit: BoxFit.cover,
+                                          )
+                                              : const Icon(
+                                            Icons.insert_drive_file,
+                                            size: 35,
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            fileName,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(fontSize: 10),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            attachments.removeAt(index);
+                                          });
+                                        },
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
+                ),
               ],
             ),
           ),
