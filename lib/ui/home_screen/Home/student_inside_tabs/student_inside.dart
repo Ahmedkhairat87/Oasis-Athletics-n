@@ -176,8 +176,9 @@ class _StudentInsideState extends State<StudentInside>
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
-    final double headerTotal = statusBarHeight + 90;
-    final double reservedTop = headerTotal + 46;
+    const double headerContentTopPad = 16;
+    final double headerTotal = statusBarHeight + 90 + headerContentTopPad;
+    final double reservedTop = headerTotal + 40;
 
     return Scaffold(
       body: AppBackground(
@@ -204,7 +205,12 @@ class _StudentInsideState extends State<StudentInside>
                 top: 0,
                 left: 0,
                 right: 0,
-                child: _buildTopHeader(context, statusBarHeight, headerTotal),
+                child: _buildTopHeader(
+                  context,
+                  statusBarHeight,
+                  headerTotal,
+                  headerContentTopPad,
+                ),
               ),
 
               /// ✅ Tab bar (real tabs أو placeholder)
@@ -318,18 +324,26 @@ class _StudentInsideState extends State<StudentInside>
     );
   }
 
-  Widget _buildTopHeader(BuildContext context, double statusBar, double total) {
+  Widget _buildTopHeader(
+    BuildContext context,
+    double statusBar,
+    double total,
+    double extraTopPad,
+  ) {
     return SizedBox(
       height: total,
       child: SafeArea(
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Icon(Icons.arrow_back),
-            ),
-            Expanded(child: StudentHeaderFromFull()),
-          ],
+        child: Padding(
+          padding: EdgeInsets.only(top: extraTopPad.h),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.arrow_back),
+              ),
+              Expanded(child: StudentHeaderFromFull()),
+            ],
+          ),
         ),
       ),
     );

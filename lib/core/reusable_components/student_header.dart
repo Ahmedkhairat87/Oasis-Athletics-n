@@ -56,38 +56,52 @@ class StudentHeader extends StatelessWidget {
           ),
         );
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
-        child: Row(
-          children: [
-            // Avatar lifted upward
-            Transform.translate(
-              offset: const Offset(0, -10), // <— LIFT THE PHOTO UP
-              child: Container(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Avatar (centered with name/class)
+              Container(
                 padding: EdgeInsets.all(2.5.w),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: SweepGradient(
-                    startAngle: 0,
-                    endAngle: math.pi * 2,
-                    colors: [
-                      primaryBlue,
-                      accentSky,
-                      ColorsManager.accentPurple,
-                      accentMint,
-                      accentSun,
-                      ColorsManager.accentCoral,
-                    ],
-                    stops: const [0.0, 0.18, 0.34, 0.55, 0.75, 0.95],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryBlue.withOpacity(0.20),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
+                decoration:
+                    isLight
+                        ? BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: SweepGradient(
+                            startAngle: 0,
+                            endAngle: math.pi * 2,
+                            colors: [
+                              primaryBlue,
+                              accentSky,
+                              ColorsManager.accentPurple,
+                              accentMint,
+                              accentSun,
+                              ColorsManager.accentCoral,
+                            ],
+                            stops: const [
+                              0.0,
+                              0.18,
+                              0.34,
+                              0.55,
+                              0.75,
+                              0.95,
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primaryBlue.withOpacity(0.20),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        )
+                        : BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.outline.withOpacity(0.35),
+                        ),
                 child: CircleAvatar(
                   radius: 28.r,
                   backgroundColor: Theme.of(context).colorScheme.surface,
@@ -95,13 +109,13 @@ class StudentHeader extends StatelessWidget {
                       avatar ?? const AssetImage('assets/images/logo.png'),
                 ),
               ),
-            ),
 
             SizedBox(width: 12.w),
 
             // Name + Grade only
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   LayoutBuilder(
@@ -130,7 +144,10 @@ class StudentHeader extends StatelessWidget {
                         height: 6.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: accentMint,
+                          color:
+                              isLight
+                                  ? accentMint
+                                  : Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       SizedBox(width: 8.w),

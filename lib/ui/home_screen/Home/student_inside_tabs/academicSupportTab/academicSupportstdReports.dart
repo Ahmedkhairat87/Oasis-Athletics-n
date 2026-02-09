@@ -45,6 +45,10 @@ class StudentReports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final Color titleColor = isLight
+        ? ColorsManager.primaryGradientStart
+        : Theme.of(context).colorScheme.onSurface;
     final report =
         (response?.stdReports != null && response!.stdReports!.isNotEmpty)
             ? response!.stdReports!.first
@@ -74,7 +78,7 @@ class StudentReports extends StatelessWidget {
         title: Text(
           "academic_support_report".tr(),
           style: TextStyle(
-            color: Colors.white,
+            color: isLight ? Colors.white : Theme.of(context).colorScheme.onSurface,
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
           ),
@@ -83,14 +87,21 @@ class StudentReports extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    ColorsManager.primaryGradientStart.withOpacity(0.98),
-                    ColorsManager.primaryGradientEnd.withOpacity(0.98),
-                  ],
-                ),
-              ),
+              decoration:
+                  isLight
+                      ? BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            ColorsManager.primaryGradientStart.withOpacity(
+                              0.98,
+                            ),
+                            ColorsManager.primaryGradientEnd.withOpacity(0.98),
+                          ],
+                        ),
+                      )
+                      : BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                      ),
             ),
           ),
         ),
@@ -105,10 +116,21 @@ class StudentReports extends StatelessWidget {
                 /// ================= HEADER CARD =================
                 Container(
                   padding: EdgeInsets.all(14.w),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
+                  decoration:
+                      isLight
+                          ? BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14.r),
+                          )
+                          : BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(14.r),
+                            border: Border.all(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.outline.withOpacity(0.35),
+                            ),
+                          ),
                   child: Row(
                     children: [
                       CircleAvatar(
@@ -127,7 +149,7 @@ class StudentReports extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
-                                color: ColorsManager.primaryGradientStart,
+                                color: titleColor,
                               ),
                             ),
                             SizedBox(height: 4.h),
@@ -135,7 +157,7 @@ class StudentReports extends StatelessWidget {
                               "Class: $className",
                               style: TextStyle(
                                 fontSize: 13.sp,
-                                color: Colors.grey.shade600,
+                                color: isLight ? Colors.grey.shade600 : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                               ),
                             ),
                           ],
@@ -144,14 +166,14 @@ class StudentReports extends StatelessWidget {
                       Column(
                         children: [
                            Text("school_tasks".tr()),
-                          _pill("$schoolTasks", Colors.cyan),
+                          _pill(context, "$schoolTasks", Colors.cyan),
                         ],
                       ),
                       SizedBox(width: 6.w),
                       Column(
                         children: [
                            Text("extra_tasks".tr()),
-                          _pill("$extraTasks", Colors.orange),
+                          _pill(context, "$extraTasks", Colors.orange),
                         ],
                       ),
                     ],
@@ -164,15 +186,25 @@ class StudentReports extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
-                    color: Colors.red.shade400,
+                    color: isLight ? Colors.red.shade400 : Colors.red.shade400,
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _attendanceRow("Present", "$present", Icons.check_circle),
+                      _attendanceRow(
+                        context,
+                        "Present",
+                        "$present",
+                        Icons.check_circle,
+                      ),
                       SizedBox(height: 6.h),
-                      _attendanceRow("Absent", "$absent", Icons.cancel),
+                      _attendanceRow(
+                        context,
+                        "Absent",
+                        "$absent",
+                        Icons.cancel,
+                      ),
                     ],
                   ),
                 ),
@@ -185,9 +217,19 @@ class StudentReports extends StatelessWidget {
                     width: double.infinity,
                     padding: EdgeInsets.all(14.w),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color:
+                          isLight
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(14.r),
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(
+                        color:
+                            isLight
+                                ? Colors.grey.shade300
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.outline.withOpacity(0.35),
+                      ),
                     ),
                     child: Text(
                       "no_subrepo_found".tr(),
@@ -225,6 +267,7 @@ class StudentReports extends StatelessWidget {
                     return Padding(
                       padding: EdgeInsets.only(bottom: 20.h),
                       child: _subjectCard(
+                        context: context,
                         title: title,
                         color: bgColor,
                         indicators: indicators,
@@ -242,7 +285,8 @@ class StudentReports extends StatelessWidget {
 
   /// ================= SMALL WIDGETS =================
 
-  Widget _pill(String text, Color color) {
+  Widget _pill(BuildContext context, String text, Color color) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
       decoration: BoxDecoration(
@@ -251,23 +295,42 @@ class StudentReports extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color:
+              isLight
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.onSurface,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
-  Widget _attendanceRow(String label, String value, IconData icon) {
+  Widget _attendanceRow(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Row(
       children: [
-        Icon(icon, color: Colors.white, size: 18.sp),
+        Icon(
+          icon,
+          color:
+              isLight
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.onSurface,
+          size: 18.sp,
+        ),
         SizedBox(width: 6.w),
         Text(
           "$label: $value",
           style: TextStyle(
-            color: Colors.white,
+            color:
+                isLight
+                    ? Colors.white
+                    : Theme.of(context).colorScheme.onSurface,
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
           ),
@@ -277,17 +340,28 @@ class StudentReports extends StatelessWidget {
   }
 
   Widget _subjectCard({
+    required BuildContext context,
     required String title,
     required Color color,
     required List<String> indicators,
     required String comment,
   }) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final Color titleColor =
+        isLight
+            ? ColorsManager.primaryGradientStart
+            : Theme.of(context).colorScheme.onSurface;
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color:
+              isLight
+                  ? Colors.grey.shade300
+                  : Theme.of(context).colorScheme.outline.withOpacity(0.35),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,7 +371,7 @@ class StudentReports extends StatelessWidget {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
-              color: ColorsManager.primaryGradientStart,
+              color: titleColor,
             ),
           ),
           SizedBox(height: 12.h),
@@ -313,7 +387,10 @@ class StudentReports extends StatelessWidget {
                       vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color:
+                          isLight
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(
@@ -339,7 +416,7 @@ class StudentReports extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
-                  color: ColorsManager.primaryGradientStart,
+                  color: titleColor,
                 ),
               ),
             ],
@@ -351,7 +428,10 @@ class StudentReports extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: Colors.blue.shade50,
+              color:
+                  isLight
+                      ? Colors.blue.shade50
+                      : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(

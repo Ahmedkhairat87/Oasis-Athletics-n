@@ -130,14 +130,27 @@ class _ProfileTabState extends State<ProfileTab> {
   void initState() {
     super.initState();
 
-    // Fill read-only info (safe)
-    _nameController.text = _toText(widget.student.stdFirstname);
-    _gradeController.text = _toText(widget.student.gradeDesc);
-    _ageController.text = _numText(widget.student.ageYears);
-    _weightController.text = _numText(widget.student.weightKG);
-    _heightController.text = _numText(widget.student.heightCM);
-    _schoolYearController.text = _toText(widget.student.schoolYear);
-    _birthDateController.text = _toText(widget.student.stdBirthdate);
+    // // Fill read-only info (safe)
+    // _nameController.text = _toText(widget.student.stdFirstname);
+    // _gradeController.text = _toText(widget.student.gradeDesc);
+    // _ageController.text = _numText(widget.student.ageYears);
+    // _weightController.text = _numText(widget.student.weightKG);
+    // _heightController.text = _numText(widget.student.heightCM);
+    // _schoolYearController.text = _toText(widget.student.schoolYear);
+    // _birthDateController.text = _toText(widget.student.stdBirthdate);
+
+    // Fill read-only info (safe + placeholder)
+    _nameController.text = _displayText(widget.student.stdFirstname);
+    _gradeController.text = _displayText(widget.student.gradeDesc);
+
+// If ageYears sometimes comes as 0 or empty, treat 0 as empty:
+    _ageController.text = _displayNum(widget.student.ageYears?.toString(), treatZeroAsEmpty: true);
+
+    _weightController.text = _displayNum(widget.student.weightKG?.toString(), treatZeroAsEmpty: true);
+    _heightController.text = _displayNum(widget.student.heightCM?.toString(), treatZeroAsEmpty: true);
+
+    _schoolYearController.text = _displayText(widget.student.schoolYear);
+    _birthDateController.text = _displayText(widget.student.stdBirthdate);
 
     // Contact info
     _emailController.text = _toText(widget.student.stdEmail);
@@ -223,58 +236,238 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   // multicolor chip helper (visual only, re-themed)
-  Widget _goldChip(BuildContext context, String text) {
+  // Widget _goldChip(BuildContext context, String text) {
+  //   final isLight = Theme.of(context).brightness == Brightness.light;
+  //   final Color primaryBlue =
+  //       isLight
+  //           ? ColorsManager.primaryGradientStart
+  //           : Theme.of(context).colorScheme.onSurface;
+  //   final Color accentMint = ColorsManager.accentMint;
+  //   final Color accentSky = ColorsManager.accentSky;
+  //
+  //   return TweenAnimationBuilder<double>(
+  //     tween: Tween(begin: 0.9, end: 1.0),
+  //     duration: const Duration(milliseconds: 200),
+  //     curve: Curves.easeOutBack,
+  //     builder: (context, value, child) {
+  //       return Transform.scale(scale: value, child: child);
+  //     },
+  //     child: Container(
+  //       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+  //       decoration:
+  //           isLight
+  //               ? BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(999.r),
+  //                 gradient: LinearGradient(
+  //                   colors: [
+  //                     primaryBlue.withOpacity(0.12),
+  //                     accentMint.withOpacity(0.18),
+  //                     accentSky.withOpacity(0.14),
+  //                   ],
+  //                   begin: Alignment.topLeft,
+  //                   end: Alignment.bottomRight,
+  //                 ),
+  //                 border: Border.all(
+  //                   color: primaryBlue.withOpacity(0.7),
+  //                   width: 0.8,
+  //                 ),
+  //               )
+  //               : BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(999.r),
+  //                 color: Theme.of(context).colorScheme.surface,
+  //                 border: Border.all(
+  //                   color: Theme.of(
+  //                     context,
+  //                   ).colorScheme.outline.withOpacity(0.35),
+  //                 ),
+  //               ),
+  //       child: Text(
+  //         text,
+  //         style: TextStyle(
+  //           color:
+  //               isLight
+  //                   ? primaryBlue
+  //                   : Theme.of(context).colorScheme.onSurface,
+  //           fontWeight: FontWeight.w600,
+  //           fontSize: 12.sp,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // small read-only chips row (age / weight / height)
+
+  Widget _goldLabeledChip(BuildContext context, {required String label, required String value}) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     final Color primaryBlue =
-        Theme.of(context).brightness == Brightness.light
-            ? ColorsManager.primaryGradientStart
-            : ColorsManager.primaryGradientStartDark;
+    isLight ? ColorsManager.primaryGradientStart : Theme.of(context).colorScheme.onSurface;
     final Color accentMint = ColorsManager.accentMint;
     final Color accentSky = ColorsManager.accentSky;
 
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.9, end: 1.0),
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeOutBack,
-      builder: (context, value, child) {
-        return Transform.scale(scale: value, child: child);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(999.r),
-          gradient: LinearGradient(
-            colors: [
-              primaryBlue.withOpacity(0.12),
-              accentMint.withOpacity(0.18),
-              accentSky.withOpacity(0.14),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          border: Border.all(color: primaryBlue.withOpacity(0.7), width: 0.8),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: isLight
+          ? BoxDecoration(
+        borderRadius: BorderRadius.circular(14.r),
+        gradient: LinearGradient(
+          colors: [
+            primaryBlue.withOpacity(0.10),
+            accentMint.withOpacity(0.16),
+            accentSky.withOpacity(0.12),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: primaryBlue,
-            fontWeight: FontWeight.w600,
-            fontSize: 12.sp,
-          ),
+        border: Border.all(color: primaryBlue.withOpacity(0.55), width: 0.8),
+      )
+          : BoxDecoration(
+        borderRadius: BorderRadius.circular(14.r),
+        color: Theme.of(context).colorScheme.surface,
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.35),
         ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w600,
+              color: isLight ? primaryBlue : Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
+              color: isLight ? primaryBlue : Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // small read-only chips row (age / weight / height)
   Widget _readOnlyChips(BuildContext context) {
-    return Wrap(
-      spacing: 8.w,
-      runSpacing: 8.h,
+    return Row(
       children: [
-        _goldChip(context, _ageController.text),
-        _goldChip(context, _weightController.text),
-        _goldChip(context, _heightController.text),
+        Expanded(
+          child: _infoChip(
+            context: context,
+            label: "Age".tr(),
+            value: _ageController.text,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: _infoChip(
+            context: context,
+            label: "Weight".tr(),
+            value: _weightController.text == _empty
+                ? _empty
+                : "${_weightController.text} kg",
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: _infoChip(
+            context: context,
+            label: "Height".tr(),
+            value: _heightController.text == _empty
+                ? _empty
+                : "${_heightController.text} cm",
+          ),
+        ),
       ],
+    );
+  }
+
+
+  Widget _infoChip({
+    required BuildContext context,
+    required String label,
+    required String value,
+  }) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
+    final Color primaryBlue =
+    isLight ? ColorsManager.primaryGradientStart : Theme.of(context).colorScheme.onSurface;
+
+    final Color accentMint = ColorsManager.accentMint;
+    final Color accentSky = ColorsManager.accentSky;
+
+    return Container(
+      height: 60.h,
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      decoration: isLight
+          ? BoxDecoration(
+        borderRadius: BorderRadius.circular(14.r),
+        gradient: LinearGradient(
+          colors: [
+            primaryBlue.withOpacity(0.10),
+            accentMint.withOpacity(0.18),
+            accentSky.withOpacity(0.12),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(color: primaryBlue.withOpacity(0.55), width: 0.8),
+      )
+          : BoxDecoration(
+        borderRadius: BorderRadius.circular(14.r),
+        color: Theme.of(context).colorScheme.surface,
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.35),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 🔥 key line
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 14.h,
+            child: Center(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w600,
+                  height: 1.0, // 🔥 normalize text height
+                  color: isLight
+                      ? primaryBlue.withOpacity(0.85)
+                      : Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 18.h,
+            child: Center(
+              child: Text(
+                value,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w800,
+                  height: 1.0, // 🔥 normalize text height
+                  color: isLight ? primaryBlue : Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -454,7 +647,10 @@ class _ProfileTabState extends State<ProfileTab> {
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: primaryBlue,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? primaryBlue
+                                    : Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         SizedBox(width: 12.w),
@@ -463,24 +659,42 @@ class _ProfileTabState extends State<ProfileTab> {
                             horizontal: 10.w,
                             vertical: 4.h,
                           ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.r),
-                            gradient: LinearGradient(
-                              colors: [
-                                accentMint.withOpacity(0.18),
-                                accentSky.withOpacity(0.16),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
+                          decoration:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        accentMint.withOpacity(0.18),
+                                        accentSky.withOpacity(0.16),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                  )
+                                  : BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    border: Border.all(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.outline.withOpacity(0.35),
+                                    ),
+                                  ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               // ✅ safe: must be null or one of items
                               value: _safeDropdownValue(_bloodGroup),
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                color: primaryBlue,
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? primaryBlue
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
                               ),
                               items:
                                   _bloodItems
@@ -589,25 +803,27 @@ class _ProfileTabState extends State<ProfileTab> {
                       builder: (context, value, child) {
                         return Transform.scale(scale: value, child: child);
                       },
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: accentCoral,
-                          foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(vertical: 14.h),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
-                          elevation: 2,
-                        ),
-                        onPressed: _onSave,
-                        child: Text(
-                          'Save'.tr(),
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
+
+                      ///////SAVE BUTTON/////
+                      // child: ElevatedButton(
+                      //   style: ElevatedButton.styleFrom(
+                      //     backgroundColor: accentCoral,
+                      //     foregroundColor: Colors.white,
+                      //     padding: EdgeInsets.symmetric(vertical: 14.h),
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(10.r),
+                      //     ),
+                      //     elevation: 2,
+                      //   ),
+                      //   onPressed: _onSave,
+                      //   child: Text(
+                      //     'Save'.tr(),
+                      //     style: TextStyle(
+                      //       fontSize: 16.sp,
+                      //       fontWeight: FontWeight.w700,
+                      //     ),
+                      //   ),
+                      // ),
                     ),
                   ),
                 ],

@@ -388,5 +388,9 @@
   "attend": "Attendre",
   "mild": "Léger",
   "severe": "Sévère",
-  "pciycsfomotfc":"Veuillez vérifier si votre enfant souffre d’une ou de plusieurs des conditions suivantes."
+  "pciycsfomotfc":"Veuillez vérifier si votre enfant souffre d’une ou de plusieurs des conditions suivantes.",
+
+  "Weight" : "Poids",
+  "Height" : "Hauteur",
+  "Age": "Âge"
 }

@@ -43,6 +43,12 @@ class AcademicSupportReportCard extends StatelessWidget {
     final isLight = Theme.of(context).brightness == Brightness.light;
     final Color cardBaseColor =
         isLight ? Colors.white : ColorsManager.darkFields;
+    final Color titleColor =
+        isLight ? primaryBlue : Theme.of(context).colorScheme.onSurface;
+    final Color subtleText =
+        Theme.of(context).textTheme.bodySmall?.color ??
+        Theme.of(context).colorScheme.onSurface.withOpacity(0.8);
+    final Color darkBorder = ColorsManager.darkBorders;
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.94, end: 1.0),
@@ -66,23 +72,41 @@ class AcademicSupportReportCard extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                cardBaseColor,
-                accentSky.withOpacity(0.10),
-                accentMint.withOpacity(0.08),
-              ],
+              colors:
+                  isLight
+                      ? [
+                        cardBaseColor,
+                        accentSky.withOpacity(0.10),
+                        accentMint.withOpacity(0.08),
+                      ]
+                      : [
+                        cardBaseColor,
+                        cardBaseColor.withOpacity(0.98),
+                      ],
             ),
             border: Border.all(
-              color: (isSchool ? accentMint : accentCoral).withOpacity(0.8),
-              width: 1.4,
+              color:
+                  isLight
+                      ? (isSchool ? accentMint : accentCoral).withOpacity(0.8)
+                      : darkBorder,
+              width: 1.2,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: primaryBlue.withOpacity(0.08),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow:
+                isLight
+                    ? [
+                      BoxShadow(
+                        color: primaryBlue.withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                    : [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.35),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +120,7 @@ class AcademicSupportReportCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w800,
-                        color: primaryBlue,
+                        color: titleColor,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -111,16 +135,17 @@ class AcademicSupportReportCard extends StatelessWidget {
                           Icon(
                             Icons.calendar_month_rounded,
                             size: 14.r,
-                            color: accentSun.withOpacity(0.9),
+                            color:
+                                isLight
+                                    ? accentSun.withOpacity(0.9)
+                                    : subtleText.withOpacity(0.75),
                           ),
                           SizedBox(width: 4.w),
                           Text(
                             dateLabel,
                             style: TextStyle(
                               fontSize: 11.sp,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.color?.withOpacity(0.8),
+                              color: subtleText.withOpacity(0.8),
                             ),
                           ),
                         ],
@@ -134,9 +159,7 @@ class AcademicSupportReportCard extends StatelessWidget {
                           Icon(
                             Icons.access_time_rounded,
                             size: 12.r,
-                            color: Theme.of(
-                              context,
-                            ).textTheme.bodySmall?.color?.withOpacity(0.7),
+                            color: subtleText.withOpacity(0.7),
                           ),
                           SizedBox(width: 4.w),
                           Text(
@@ -144,9 +167,7 @@ class AcademicSupportReportCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 11.sp,
                               fontWeight: FontWeight.w600,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.color?.withOpacity(0.85),
+                              color: subtleText.withOpacity(0.85),
                             ),
                           ),
                         ],

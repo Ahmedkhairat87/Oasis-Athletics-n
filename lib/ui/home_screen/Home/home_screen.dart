@@ -66,160 +66,170 @@ class StudentsScreen extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: AppBackground(
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// TITLE + ICON (نفس الحركة)
-                  TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    duration: const Duration(milliseconds: 260),
-                    curve: Curves.easeOutBack,
-                    builder: (context, value, child) {
-                      final safe = value.clamp(0.0, 1.0);
-                      return Opacity(
-                        opacity: safe,
-                        child: Transform.translate(
-                          offset: Offset(0, (1 - safe) * 10),
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 32.w,
-                          height: 32.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: SweepGradient(
-                              colors: [
-                                ColorsManager.accentSun,
-                                ColorsManager.accentMint,
-                                ColorsManager.accentSky,
-                                primaryBlue,
-                                ColorsManager.accentSun,
-                              ],
-                            ),
-                          ),
-                          child: const Center(
-                            child: Text('🎒', style: TextStyle(fontSize: 18)),
+    return  Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// TITLE + ICON (نفس الحركة)
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 260),
+                  curve: Curves.easeOutBack,
+                  builder: (context, value, child) {
+                    final safe = value.clamp(0.0, 1.0);
+                    return Opacity(
+                      opacity: safe,
+                      child: Transform.translate(
+                        offset: Offset(0, (1 - safe) * 10),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 32.w,
+                        height: 32.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: SweepGradient(
+                            colors: [
+                              ColorsManager.accentSun,
+                              ColorsManager.accentMint,
+                              ColorsManager.accentSky,
+                              primaryBlue,
+                              ColorsManager.accentSun,
+                            ],
                           ),
                         ),
-                        SizedBox(width: 10.w),
-                        Text(
-                          "Students",
-                          style: TextStyle(
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.bold,
-                            color: scheme.textMainBlack,
-                          ),
+                        child: const Center(
+                          child: Text('🎒', style: TextStyle(fontSize: 18)),
                         ),
-                        const Spacer(),
+                      ),
+                      SizedBox(width: 10.w),
+                      Text(
+                        "Students",
+                        style: TextStyle(
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.bold,
+                          color: scheme.textMainBlack,
+                        ),
+                      ),
+                      const Spacer(),
 
-                        // ✅ Refresh زر صغير (اختياري، مش بيكسر UI)
-                        IconButton(
-                          icon: Icon(
-                            Icons.refresh,
-                            color: scheme.textMainBlack,
-                            size: 22.sp,
-                          ),
-                          onPressed: isRefreshing ? null : () => onRefresh(),
+                      // ✅ Refresh زر صغير (اختياري، مش بيكسر UI)
+                      IconButton(
+                        icon: Icon(
+                          Icons.refresh,
+                          color: scheme.textMainBlack,
+                          size: 22.sp,
                         ),
+                        onPressed: isRefreshing ? null : () => onRefresh(),
+                      ),
 
-                        /// ✅ LOGOUT BUTTON
-                        IconButton(
-                          icon: Icon(
-                            Icons.logout,
-                            color: scheme.textMainBlack,
-                            size: 22.sp,
-                          ),
-                          onPressed: () => _handleLogout(context),
+                      /// ✅ LOGOUT BUTTON
+                      IconButton(
+                        icon: Icon(
+                          Icons.logout,
+                          color: scheme.textMainBlack,
+                          size: 22.sp,
                         ),
-                      ],
-                    ),
+                        onPressed: () => _handleLogout(context),
+                      ),
+                    ],
                   ),
+                ),
 
-                  SizedBox(height: 20.h),
+                SizedBox(height: 20.h),
 
-                  Expanded(
-                    child:
-                        students.isEmpty
-                            ? _emptyState(context, onRefresh)
-                            : GridView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: students.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 16.w,
-                                    mainAxisSpacing: 16.h,
-                                    childAspectRatio: 0.85,
-                                  ),
-                              itemBuilder: (_, index) {
-                                final student = students[index];
-                                return _buildAnimatedStudentCard(
-                                  context,
-                                  student: student,
-                                  index: index,
-                                );
-                              },
-                            ),
-                  ),
-                ],
-              ),
+                Expanded(
+                  child:
+                      students.isEmpty
+                          ? _emptyState(context, onRefresh)
+                          : GridView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: students.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 16.w,
+                                  mainAxisSpacing: 16.h,
+                                  childAspectRatio: 0.85,
+                                ),
+                            itemBuilder: (_, index) {
+                              final student = students[index];
+                              return _buildAnimatedStudentCard(
+                                context,
+                                student: student,
+                                index: index,
+                              );
+                            },
+                          ),
+                ),
+              ],
             ),
+          ),
 
-            // ✅ Loading overlay خفيف فوق الخلفية (مش solid)
-            if (isRefreshing)
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 8.h,
-                child: Center(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.75),
-                      borderRadius: BorderRadius.circular(999.r),
-                      border: Border.all(color: Colors.black.withOpacity(0.06)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 14.r,
-                          height: 14.r,
-                          child: const CircularProgressIndicator(
-                            strokeWidth: 2,
+          // ✅ Loading overlay خفيف فوق الخلفية (مش solid)
+          if (isRefreshing)
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 8.h,
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 8.h,
+                  ),
+                  decoration:
+                      isLight
+                          ? BoxDecoration(
+                            color: Colors.white.withOpacity(0.75),
+                            borderRadius: BorderRadius.circular(999.r),
+                            border: Border.all(
+                              color: Colors.black.withOpacity(0.06),
+                            ),
+                          )
+                          : BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(999.r),
+                            border: Border.all(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.outline.withOpacity(0.35),
+                            ),
                           ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 14.r,
+                        height: 14.r,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2,
                         ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          'Updating…',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        'Updating…',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-          ],
-        ),
-      ),
+            ),
+        ]
     );
+
+
   }
 
   Widget _emptyState(BuildContext context, Future<void> Function() onRefresh) {
@@ -232,7 +242,10 @@ class StudentsScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
-              color: Colors.grey.shade700,
+              color:
+                  Theme.of(context).brightness == Brightness.light
+                      ? Colors.grey.shade700
+                      : Theme.of(context).colorScheme.onSurface,
             ),
           ),
           SizedBox(height: 10.h),

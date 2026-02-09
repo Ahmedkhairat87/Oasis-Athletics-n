@@ -386,5 +386,10 @@
   "attend": "Attend",
   "mild": "Mild",
   "severe": "Severe",
-  "pciycsfomotfc": "Please check if your child suffers from one or more of the following conditions."
+  "pciycsfomotfc": "Please check if your child suffers from one or more of the following conditions.",
+
+
+  "Weight" : "Weight",
+  "Height" : "Height",
+  "Age": "Age"
 }

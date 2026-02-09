@@ -70,11 +70,15 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
   }
 
   Widget _buildUI(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     final Color primaryBlue = ColorsManager.primaryGradientStart;
     final Color accentMint = ColorsManager.accentMint;
     final Color accentSun = ColorsManager.accentSun;
     final Color accentSky = ColorsManager.accentSky;
     final Color accentPurple = ColorsManager.accentPurple;
+    final Color titleColor = isLight
+        ? primaryBlue
+        : Theme.of(context).colorScheme.onSurface;
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -108,21 +112,33 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
                       children: [
                         Container(
                           padding: EdgeInsets.all(12.r),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: SweepGradient(
-                              colors: [
-                                primaryBlue,
-                                accentSky,
-                                accentMint,
-                                accentSun,
-                                primaryBlue,
-                              ],
-                            ),
-                          ),
+                          decoration:
+                              isLight
+                                  ? BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: SweepGradient(
+                                      colors: [
+                                        primaryBlue,
+                                        accentSky,
+                                        accentMint,
+                                        accentSun,
+                                        primaryBlue,
+                                      ],
+                                    ),
+                                  )
+                                  : BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .outline
+                                        .withOpacity(0.35),
+                                  ),
                           child: Icon(
                             Icons.menu_book,
-                            color: Colors.white,
+                            color:
+                                isLight
+                                    ? Colors.white
+                                    : Theme.of(context).colorScheme.onSurface,
                             size: 28.r,
                           ),
                         ),
@@ -133,7 +149,7 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w800,
-                              color: primaryBlue,
+                              color: titleColor,
                             ),
                           ),
                         ),
@@ -207,21 +223,33 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
                       children: [
                         Container(
                           padding: EdgeInsets.all(12.r),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: SweepGradient(
-                              colors: [
-                                accentPurple,
-                                accentSky,
-                                accentMint,
-                                accentSun,
-                                accentPurple,
-                              ],
-                            ),
-                          ),
+                          decoration:
+                              isLight
+                                  ? BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: SweepGradient(
+                                      colors: [
+                                        accentPurple,
+                                        accentSky,
+                                        accentMint,
+                                        accentSun,
+                                        accentPurple,
+                                      ],
+                                    ),
+                                  )
+                                  : BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .outline
+                                        .withOpacity(0.35),
+                                  ),
                           child: Icon(
                             Icons.description_rounded,
-                            color: Colors.white,
+                            color:
+                                isLight
+                                    ? Colors.white
+                                    : Theme.of(context).colorScheme.onSurface,
                             size: 28.r,
                           ),
                         ),
@@ -232,7 +260,7 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w800,
-                              color: primaryBlue,
+                              color: titleColor,
                             ),
                           ),
                         ),
@@ -278,16 +306,33 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
     Color accentSky,
     Color accentPurple,
   ) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final Color titleColor =
+        isLight ? primaryBlue : Theme.of(context).colorScheme.onSurface;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 260),
       padding: EdgeInsets.all(10.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14.r),
-        gradient: LinearGradient(
-          colors: [accentSky.withOpacity(0.16), accentMint.withOpacity(0.14)],
-        ),
-        border: Border.all(color: accentMint.withOpacity(0.9)),
-      ),
+      decoration:
+          isLight
+              ? BoxDecoration(
+                borderRadius: BorderRadius.circular(14.r),
+                gradient: LinearGradient(
+                  colors: [
+                    accentSky.withOpacity(0.16),
+                    accentMint.withOpacity(0.14),
+                  ],
+                ),
+                border: Border.all(color: accentMint.withOpacity(0.9)),
+              )
+              : BoxDecoration(
+                borderRadius: BorderRadius.circular(14.r),
+                color: Theme.of(context).colorScheme.surface,
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outline.withOpacity(0.35),
+                ),
+              ),
       child: Column(
         children: [
           Row(
@@ -298,14 +343,17 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,
-                    color: primaryBlue,
+                    color: titleColor,
                   ),
                 ),
               ),
               Icon(
                 Icons.chevron_right,
                 size: 20.r,
-                color: ColorsManager.accentSun,
+                color:
+                    isLight
+                        ? ColorsManager.accentSun
+                        : Theme.of(context).colorScheme.onSurface,
               ),
             ],
           ),
@@ -330,19 +378,33 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
     Color accentMint,
     Color accentPurple,
   ) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final Color titleColor =
+        isLight ? primaryBlue : Theme.of(context).colorScheme.onSurface;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 260),
       padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: accentMint.withOpacity(0.9)),
-        gradient: LinearGradient(
-          colors: [
-            accentPurple.withOpacity(0.10),
-            accentMint.withOpacity(0.08),
-          ],
-        ),
-      ),
+      decoration:
+          isLight
+              ? BoxDecoration(
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: accentMint.withOpacity(0.9)),
+                gradient: LinearGradient(
+                  colors: [
+                    accentPurple.withOpacity(0.10),
+                    accentMint.withOpacity(0.08),
+                  ],
+                ),
+              )
+              : BoxDecoration(
+                borderRadius: BorderRadius.circular(12.r),
+                color: Theme.of(context).colorScheme.surface,
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outline.withOpacity(0.35),
+                ),
+              ),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -354,7 +416,14 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
         },
         child: Row(
           children: [
-            Icon(Icons.description_rounded, color: accentPurple, size: 18.r),
+            Icon(
+              Icons.description_rounded,
+              color:
+                  isLight
+                      ? accentPurple
+                      : Theme.of(context).colorScheme.onSurface,
+              size: 18.r,
+            ),
             SizedBox(width: 10.w),
             Expanded(
               child: Text(
@@ -362,14 +431,17 @@ class _AcademicTabState extends State<AcademicSupportMainTab> {
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
-                  color: primaryBlue,
+                  color: titleColor,
                 ),
               ),
             ),
             Icon(
               Icons.chevron_right,
               size: 20.r,
-              color: ColorsManager.accentSun,
+              color:
+                  isLight
+                      ? ColorsManager.accentSun
+                      : Theme.of(context).colorScheme.onSurface,
             ),
           ],
         ),
