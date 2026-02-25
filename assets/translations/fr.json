@@ -392,5 +392,21 @@
 
   "Weight" : "Poids",
   "Height" : "Hauteur",
-  "Age": "Âge"
+  "Age": "Âge",
+
+  "selectRole": "Sélectionnez votre rôle pour continuer",
+  "financeError": "Veuillez, vérifier l'état de votre compte auprès de l'administration.",
+
+  "Logout": "Déconnexion",
+  "logoutMsg" : "Vous devrez vous connecter à nouveau pour utiliser l'application.",
+  "logoutNote" : "Vous pouvez vous reconnecter à tout moment.",
+
+  "faceIDNotSupported": "La biométrie n'est pas prise en charge sur cet appareil.",
+  "faceIDtitle": "Activer le verrouillage de l'application ?",
+  "faceIDMsg": "Utilisez Face ID / empreinte digitale (ou code PIN/mot de passe de votre téléphone) la prochaine fois que vous ouvrirez l'application.",
+  "faceIDCancel": "Pas maintenant",
+  "faceIDOK": "Activer",
+  "faceIdOptionMsg": "Vous pourrez modifier ce paramètre ultérieurement dans les Paramètres."
+
+
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'globalNavigatorKey.dart';
-import 'ErrorRetryDialog.dart'; // اللي فيه ErrorRetrySheet
+import '../errorsDialogs/ErrorRetryDialog.dart'; // اللي فيه ErrorRetrySheet
 //
 
 class ApiGuard {

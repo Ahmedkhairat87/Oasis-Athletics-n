@@ -17,6 +17,7 @@ import '../../../../core/model/stdLinks/StdFullData.dart';
 import '../../../../core/model/stdLinks/StdLinks.dart';
 import '../../../../core/model/stdLinks/StdMainLinks.dart';
 import '../../../../core/model/stdLinks/StdSports.dart';
+import '../../../../core/reusable_components/Checkers/checkInternetConnection.dart';
 import '../../../../core/reusable_components/app_background.dart';
 import '../../../../core/reusable_components/gridViewAnimation/tabsBarSkeketon.dart';
 import '../../../../core/reusable_components/gridViewAnimation/tabsSkeletonGrid.dart';
@@ -28,8 +29,7 @@ import '../../../../core/services/stdProfile/stdLinksServices/stdLinksServices.d
 import 'dart:async';
 import 'dart:io';
 
-import '../../../../core/reusable_components/Errors/checkInternetConnection.dart'; // NetworkGuard
-import '../../../../core/reusable_components/Errors/ErrorRetryDialog.dart'; // ErrorRetrySheet
+import '../../../../core/reusable_components/errorsDialogs/ErrorRetryDialog.dart'; // ErrorRetrySheet
 
 class StudentInside extends StatefulWidget {
   const StudentInside({super.key});

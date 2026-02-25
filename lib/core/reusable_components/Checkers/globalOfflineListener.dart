@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'ErrorRetryDialog.dart';
+import '../errorsDialogs/ErrorRetryDialog.dart';
 import 'globalNavigatorKey.dart';
 import 'networkController.dart';
 

@@ -391,5 +391,23 @@
 
   "Weight" : "Weight",
   "Height" : "Height",
-  "Age": "Age"
+  "Age": "Age",
+
+  "selectRole": "Select your role to continue",
+  "financeError": "Please check the account status with the administration.",
+
+  "Logout": "Logout",
+  "logoutMsg" : "You’ll need to sign in again to use the app.",
+  "logoutNote" : "You can sign in again anytime.",
+
+  "faceIDNotSupported": "Biometrics not supported on this device.",
+  "faceIDtitle": "Enable App Lock?",
+  "faceIDMsg": "Use Face ID / fingerprint (or phone PIN/password) next time you open the app.",
+  "faceIDCancel": "Not now",
+  "faceIDOK": "Enable",
+  "faceIdOptionMsg": "You can change this later from Settings."
+
+
+
+
 }

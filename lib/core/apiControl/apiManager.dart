@@ -57,6 +57,11 @@ class APIManager {
   static const updatePaEduInfo = "${fixedURL}Parent/UEducationInfo";
   static const updateEmergency = "${fixedURL}Parent/UUrgentInfo";
 
+  //Notifications
+  static const notificationCenter = "${fixedURL}GETNotification";
+  static const readOneNotification = "${fixedURL}ReadNotification";
+  static const readAllNotifications = "${fixedURL}ReadAllNotification";
+
   //Canteen Charge
   // static const getAmountList = "${fixedURL2}chargAmounts";
   // static const paymentLinkGeneration = "${fixedURL2}CreateNewVoucher";

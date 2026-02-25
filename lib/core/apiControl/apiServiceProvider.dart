@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
-import '../reusable_components/Errors/checkInternetConnection.dart'; // NetworkGuard
+import '../reusable_components/Checkers/checkInternetConnection.dart';
 
 class APIServices {
   Future<Map<String, dynamic>> apiRequest(

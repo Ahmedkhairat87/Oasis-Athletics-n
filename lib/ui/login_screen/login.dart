@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/assets_manager.dart';
 import '../../core/model/loginModels/LoginResponse.dart';
 import '../../core/reusable_components/app_colors_extension.dart';
-import '../../core/reusable_components/generalErrorDialog.dart'; // UnderConstructionDialog
+import '../../core/reusable_components/errorsDialogs/appDialog.dart';
+import '../../core/reusable_components/generalErrorDialog.dart';
 import '../../core/reusable_components/login_background.dart';
 import '../../core/reusable_components/role_selector.dart';
 import '../../core/reusable_components/text_field.dart';
@@ -18,8 +19,19 @@ import '../../core/services/apiExceptions.dart';
 import '../../core/services/loginServices/AuthLoginService.dart';
 import '../../core/setMobileData.dart';
 
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
+
+  // ✅ make them PUBLIC (no underscore)
+  static const kToken = 'token';
+  static const kEmpName = 'empName';
+  static const kBioEnabled = 'bio_enabled';
+  static const kBioAsked = 'bio_asked';
+
+
   const LoginScreen({super.key});
 
   @override
@@ -29,9 +41,12 @@ class LoginScreen extends StatefulWidget {
 // Save token + username
 Future<void> saveUserData(String token, String empName) async {
   final prefs = await SharedPreferences.getInstance();
-  await prefs.setString("token", token);
-  await prefs.setString("empName", empName);
+  await prefs.setString(LoginScreen.kToken, token);
+  await prefs.setString(LoginScreen.kEmpName, empName);
 
+  // ✅ optional: store last user id to show on biometrics card (like screenshot)
+  // if you want to show it, call this also in _loginPressed with userController.text
+  // await prefs.setString('last_user', userId);
 }
 
 class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
@@ -39,6 +54,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   late TextEditingController passController;
   late TextEditingController mailController;
   late GlobalKey<FormState> formKey;
+  bool _autoStarted = false;
+  bool _authInProgress = false;
+  static const int maxBioFails = 3;
+  static const String kBioFailCount = 'bio_fail_count';
+  final LocalAuthentication _auth = LocalAuthentication();
 
   UserRole? selectedRole;
   late FocusNode userFocusNode;
@@ -55,14 +75,27 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   // ✅ inputs enabled only after role selected
   bool get _inputsEnabled => selectedRole != null;
 
+  // ---------------------------
+  // ✅ Session/Biometrics gate
+  // ---------------------------
+  bool _checkingSession = true;
+  bool _hasSession = false;
+  bool _bioEnabled = false;
+  bool _bioBusy = false;
+  bool _authAutoTriggered = false;
+
+  String _lastUserId = '';
+
+
+
   @override
   void initState() {
     super.initState();
+
     formKey = GlobalKey<FormState>();
     userController = TextEditingController();
     passController = TextEditingController();
     mailController = TextEditingController();
-
     userFocusNode = FocusNode();
 
     _switchController = AnimationController(
@@ -73,6 +106,13 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     // ✅ clear inline error as user types
     userController.addListener(_clearLoginError);
     passController.addListener(_clearLoginError);
+
+    // ✅ bootstrap session check + auto-biometrics (once)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_autoStarted) return;
+      _autoStarted = true;
+      _bootstrapAuthGate();
+    });
   }
 
   @override
@@ -121,25 +161,187 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     }
   }
 
+  // ✅ Bootstrap: check if token exists + bio enabled -> auto auth once
+  Future<void> _bootstrapAuthGate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString(LoginScreen.kToken) ?? '';
+    final bioEnabled = prefs.getBool(LoginScreen.kBioEnabled) ?? false;
+    final lastUser = prefs.getString('last_user') ?? '';
+
+    if (!mounted) return;
+
+    setState(() {
+      _checkingSession = false;
+      _hasSession = token.isNotEmpty;
+      _bioEnabled = bioEnabled;
+      _lastUserId = lastUser;
+    });
+
+    final fails = prefs.getInt(kBioFailCount) ?? 0;
+    if (_hasSession && _bioEnabled && fails < maxBioFails && !_authAutoTriggered) {
+      _authAutoTriggered = true;
+      if (_bioBusy || _authInProgress) return;
+      await _loginWithBiometrics();
+    }
+  }
+
+  // ✅ Call local_auth and stay on screen if failed (show message)
+  Future<void> _loginWithBiometrics() async {
+    if (_bioBusy || _authInProgress) return;
+
+    setState(() {
+      _bioBusy = true;
+      _loginErrorText = null;
+    });
+
+    final ok = await _authenticateForLogin();
+    if (!mounted) return;
+
+    final prefs = await SharedPreferences.getInstance();
+
+    if (ok) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('suppress_lock_until',
+          DateTime.now().add(const Duration(seconds: 4)).millisecondsSinceEpoch);
+
+      await prefs.setInt(kBioFailCount, 0);
+      Navigator.pushReplacementNamed(context, MainWrapper.routeName);
+      return;
+    }
+    else {
+      // ✅ increment fails
+      final fails = (prefs.getInt(kBioFailCount) ?? 0) + 1;
+      await prefs.setInt(kBioFailCount, fails);
+
+      if (fails >= maxBioFails) {
+        // ✅ too many fails -> force login again
+        await prefs.setInt(kBioFailCount, 0);
+        await prefs.setBool(LoginScreen.kBioEnabled, false);
+        await _forceLogoutLocalOnly();
+
+        if (!mounted) return;
+        setState(() {
+          _hasSession = false;
+          _bioEnabled = false;
+          _authAutoTriggered = false;
+          _loginErrorText = 'Too many failed attempts. Please sign in again.';
+        });
+
+        // No navigation needed: your UI will switch to normal login because showBioGate becomes false
+      } else {
+        _setLoginError('Authentication failed. Try again (${fails}/$maxBioFails).');
+      }
+    }
+
+    if (mounted) setState(() => _bioBusy = false);
+  }
+  Future<bool> _authenticateForLogin() async {
+    if (_authInProgress) return false;
+    _authInProgress = true;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('auth_in_progress', true);
+
+    try {
+      final supported = await _auth.isDeviceSupported();
+      if (!supported) return false; // means no biometrics AND no device credentials available
+
+      final ok = await _auth.authenticate(
+        localizedReason: 'Confirm to continue',
+        options: const AuthenticationOptions(
+          biometricOnly: false, // ✅ allows PIN/pattern/password
+          stickyAuth: false,
+          useErrorDialogs: true,
+        ),
+      );
+
+      return ok;
+    } on PlatformException {
+      return false;
+    } catch (_) {
+      return false;
+    } finally {
+      _authInProgress = false;
+      await prefs.setBool('auth_in_progress', false);
+    }
+  }
+
+  Future<void> _forceLogoutLocalOnly() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(LoginScreen.kToken);
+    await prefs.remove(LoginScreen.kEmpName);
+  }
+
+  // ✅ Ask once (after real login) if user wants app lock
+  Future<void> _maybeAskEnableBiometrics() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final alreadyAsked = prefs.getBool(LoginScreen.kBioAsked) ?? false;
+    if (alreadyAsked) return;
+
+    await prefs.setBool(LoginScreen.kBioAsked, true);
+
+    final supported = await _auth.isDeviceSupported();
+    if (!supported) {
+      await prefs.setBool(LoginScreen.kBioEnabled, false);
+      return;
+    }
+
+    if (!mounted) return;
+
+    final enable = await ModernActionSheet.confirm(
+      context,
+      title: "faceIDtitle".tr(),
+      message:"faceIDMsg".tr(),
+      cancelText: "faceIDCancel".tr(),
+      confirmText: "faceIDOK".tr(),
+      icon: Icons.face_rounded,
+      footNote: "faceIdOptionMsg".tr(),
+    );
+
+    if (!enable) {
+      await prefs.setBool(LoginScreen.kBioEnabled, false);
+      return;
+    }
+
+    // ✅ NOW authenticate once to confirm
+    try {
+      final didAuthenticate = await _auth.authenticate(
+        localizedReason: 'Confirm biometric setup',
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: true,
+        ),
+      );
+
+      if (didAuthenticate) {
+        await prefs.setBool(LoginScreen.kBioEnabled, true);
+      } else {
+        await prefs.setBool(LoginScreen.kBioEnabled, false);
+      }
+    } catch (e) {
+      await prefs.setBool(LoginScreen.kBioEnabled, false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
     Widget transitionBuilder(Widget child, Animation<double> animation) {
-      final inOffset = Tween<Offset>(
-        begin: const Offset(0, 0.08),
-        end: Offset.zero,
-      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
-      final outOffset = Tween<Offset>(
-        begin: Offset.zero,
-        end: const Offset(0, -0.04),
-      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeIn));
+      final inOffset = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
+          .animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+      final outOffset = Tween<Offset>(begin: Offset.zero, end: const Offset(0, -0.04))
+          .animate(CurvedAnimation(parent: animation, curve: Curves.easeIn));
 
       return SlideTransition(
         position: animation.status == AnimationStatus.reverse ? outOffset : inOffset,
         child: FadeTransition(opacity: animation, child: child),
       );
     }
+
+    // ✅ session bio gate
+    final showBioGate = !_checkingSession && _hasSession && _bioEnabled;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -154,9 +356,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             return name.contains("RenderEditable");
           });
 
-          if (!tappedEditable) {
-            FocusManager.instance.primaryFocus?.unfocus();
-          }
+          if (!tappedEditable) FocusManager.instance.primaryFocus?.unfocus();
         },
         child: Stack(
           alignment: Alignment.center,
@@ -197,36 +397,208 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-
                         SizedBox(height: 6.h),
 
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 420),
-                          transitionBuilder: (child, animation) =>
-                              transitionBuilder(child, animation),
-                          layoutBuilder: (currentChild, previousChildren) {
-                            return Stack(
-                              alignment: Alignment.topCenter,
-                              children: <Widget>[
-                                ...previousChildren,
-                                if (currentChild != null) currentChild,
-                              ],
-                            );
-                          },
-                          child: selectedRole == null
-                              ? _buildRoleSelectorCard(scheme)
-                              : _buildCredentialsCard(scheme),
-                        ),
+                        // ✅ if session + bio enabled: show "Use Face ID" gate (but keep your UI logic untouched)
+                        if (showBioGate) ...[
+                          SizedBox(height: 14.h),
 
-                        // ✅ inline error (small)
+                          Text(
+                            'Enter the password for your account',
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: scheme.onSurface.withOpacity(0.55),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+
+                          if (_lastUserId.isNotEmpty)
+                            Text(
+                              _lastUserId,
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w800,
+                                color: scheme.onSurface.withOpacity(0.75),
+                              ),
+                            ),
+
+                          SizedBox(height: 20.h),
+
+                          // simple FaceID block (you can replace with your design)
+                          Container(
+                            width: 140.w,
+                            height: 140.w,
+                            decoration: BoxDecoration(
+                              color: scheme.onSurface.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.face, size: 52.sp, color: scheme.onSurface.withOpacity(0.25)),
+                                SizedBox(height: 10.h),
+                                Text(
+                                  'Face ID',
+                                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: 20.h),
+
+                          SizedBox(
+                            width: 330.w,
+                            height: 44.h,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: scheme.elements,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                              ),
+                              onPressed: _bioBusy ? null : _loginWithBiometrics,
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 200),
+                                child: _bioBusy
+                                    ? Row(
+                                  key: const ValueKey('bio-loading'),
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                    ),
+                                    SizedBox(width: 10.w),
+                                    Text(
+                                      'Checking…',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                    : Text(
+                                  'Use Face ID',
+                                  key: const ValueKey('bio-text'),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 10.h),
+
+                          TextButton(
+                            onPressed: () async {
+                              await _forceLogoutLocalOnly();
+                              if (!mounted) return;
+                              setState(() {
+                                _hasSession = false;
+                                _bioEnabled = false;
+                                _authAutoTriggered = false;
+                              });
+                            },
+                            child: const Text('Sign in again'),
+                          ),
+
+                          SizedBox(height: 8.h),
+                        ] else ...[
+                          // ✅ your existing UI logic unchanged:
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 420),
+                            transitionBuilder: (child, animation) => transitionBuilder(child, animation),
+                            layoutBuilder: (currentChild, previousChildren) {
+                              return Stack(
+                                alignment: Alignment.topCenter,
+                                children: <Widget>[
+                                  ...previousChildren,
+                                  if (currentChild != null) currentChild,
+                                ],
+                              );
+                            },
+                            child: selectedRole == null
+                                ? _buildRoleSelectorCard(scheme)
+                                : _buildCredentialsCard(scheme),
+                          ),
+
+                          SizedBox(height: 8.h),
+
+                          AnimatedOpacity(
+                            duration: const Duration(milliseconds: 300),
+                            opacity: (selectedRole != null) ? 1.0 : 0.9,
+                            child: SizedBox(
+                              width: 330.w,
+                              height: 44.h,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: (selectedRole != null)
+                                      ? scheme.elements
+                                      : Theme.of(context).disabledColor,
+                                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                ),
+                                onPressed: (!_inputsEnabled || _isLoggingIn) ? null : _loginPressed,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 200),
+                                  child: _isLoggingIn
+                                      ? Row(
+                                    key: const ValueKey('loading'),
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 16.r,
+                                        height: 16.r,
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10.w),
+                                      Text(
+                                        'Signing in…',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                      : Text(
+                                    "login".tr(),
+                                    key: const ValueKey('text'),
+                                    style: TextStyle(
+                                      color: scheme.textMainWhite,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+
+                        // ✅ inline error stays the same (your UI)
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 220),
                           transitionBuilder: (child, animation) {
                             return SlideTransition(
-                              position: Tween<Offset>(
-                                begin: const Offset(0, -0.08),
-                                end: Offset.zero,
-                              ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
+                              position: Tween<Offset>(begin: const Offset(0, -0.08), end: Offset.zero)
+                                  .animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
                               child: FadeTransition(opacity: animation, child: child),
                             );
                           },
@@ -238,8 +610,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.error_outline_rounded,
-                                    size: 16.sp, color: Colors.redAccent),
+                                Icon(Icons.error_outline_rounded, size: 16.sp, color: Colors.redAccent),
                                 SizedBox(width: 6.w),
                                 Flexible(
                                   child: Text(
@@ -254,90 +625,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 14.h),
-
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 260),
-                          opacity: selectedRole == null ? 1.0 : 0.0,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 24.w),
-                            child: Text(
-                              selectedRole == null ? 'Please choose a role to continue' : '',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: scheme.onSurface.withOpacity(0.6),
-                                fontSize: 13.sp,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 8.h),
-
-                        // ✅ Login button with modern loading
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 300),
-                          opacity: (selectedRole != null) ? 1.0 : 0.9,
-                          child: SizedBox(
-                            width: 330.w,
-                            height: 44.h,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: (selectedRole != null)
-                                    ? scheme.elements
-                                    : Theme.of(context).disabledColor,
-                                padding: EdgeInsets.symmetric(vertical: 12.h),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
-                              ),
-
-                              // ✅ FIX: use _isLoggingIn (not _isLoading)
-                              onPressed: (!_inputsEnabled || _isLoggingIn)
-                                  ? null
-                                  : _loginPressed,
-
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 200),
-                                child: _isLoggingIn
-                                    ? Row(
-                                  key: const ValueKey('loading'),
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 16.r,
-                                      height: 16.r,
-                                      child: const CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10.w),
-                                    Text(
-                                      'Signing in…',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                    : Text(
-                                  "login".tr(),
-                                  key: const ValueKey('text'),
-                                  style: TextStyle(
-                                    color: scheme.textMainWhite,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
                             ),
                           ),
                         ),
@@ -397,7 +684,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           ),
           SizedBox(height: 8.h),
           Text(
-            'Select your role to continue',
+            "selectRole".tr(),
             style: TextStyle(
               fontSize: 13.sp,
               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
@@ -508,9 +795,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "empty_password".tr();
-                    }
+                    if (value == null || value.isEmpty) return "empty_password".tr();
                     return null;
                   },
                 ),
@@ -620,11 +905,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     );
   }
 
-  /// ✅ LOGIN LOGIC (same base logic, fixed loading)
+  /// ✅ LOGIN LOGIC (your original, with storing last_user + asking biometrics)
   Future<void> _loginPressed() async {
     if (!formKey.currentState!.validate()) return;
-
-    // ✅ prevent double taps
     if (_isLoggingIn) return;
 
     setState(() {
@@ -645,8 +928,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         return;
       }
 
-      print("📌 Using saved FCM token on login: $fcmToken");
-
       final response = await AuthLoginService.login(
         username: userController.text,
         password: passController.text,
@@ -661,21 +942,34 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         final userData =
         response.data != null && response.data!.isNotEmpty ? response.data!.first : null;
 
+        // ✅ 1) CHECK ACCOUNT STATUS BEFORE SAVING TOKEN
+        final appAccountStatus = userData?.appAccountStatus ?? 1; // int? in your model
+        final accountStatus = userData?.accountStatus ?? 1;
+
+        if (appAccountStatus == 0 || accountStatus == 0) {
+          // make sure nothing saved locally
+          await _forceLogoutLocalOnly();
+
+          // show message and STOP
+          _setLoginError("financeError".tr());
+          return;
+        }
+
         final empName = userData?.fatherFullname ?? "";
         final token = response.token ?? "";
 
+        // ✅ save session
         await saveUserData(token, empName);
 
+        // ✅ save last_user for FaceID screen label
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('last_user', userController.text);
+
+        // ✅ ask enable biometrics (once)
+        await _maybeAskEnableBiometrics();
+
         if (!mounted) return;
-        Navigator.pushReplacementNamed(
-          context,
-          MainWrapper.routeName,
-          arguments: {
-            "empName": empName,
-            "token": token,
-            "role": selectedRole.toString(),
-          },
-        );
+        Navigator.pushReplacementNamed(context, MainWrapper.routeName);
         return;
       }
 
@@ -687,37 +981,18 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       if (e is ApiException) {
         final code = e.statusCode ?? -1;
 
-        if (code == 204) {
-          // ✅ invalid credentials
-          _setLoginError('Wrong username or password.');
-        }
-
-        else if (code == 401 || code == 403) {
-          _setLoginError('Access denied. Please contact support.');
-        }
-        else if (code == 404) {
-          _setLoginError('Service not available. Please try again later.');
-        }
-        else if (code >= 500) {
-          _setLoginError('Server error. Please try again later.');
-        }
-        else {
-          _setLoginError('Server error. Please try again later-.');
-        }
-      }
-      else {
-        // Non-ApiException (rare, but keep safe)
+        if (code == 204) _setLoginError('Wrong username or password.');
+        else if (code == 401 || code == 403) _setLoginError('Access denied. Please contact support.');
+        else if (code == 404) _setLoginError('Service not available. Please try again later.');
+        else if (code >= 500) _setLoginError('Server error. Please try again later.');
+        else _setLoginError('Server error. Please try again later-.');
+      } else {
         final msg = e.toString().toLowerCase();
-
-        if (msg.contains('socketexception') ||
-            msg.contains('no internet') ||
-            msg.contains('network')) {
+        if (msg.contains('socketexception') || msg.contains('no internet') || msg.contains('network')) {
           _setLoginError('No internet connection. Please check your network.');
-        }
-        else if (msg.contains('timeout')) {
+        } else if (msg.contains('timeout')) {
           _setLoginError('Request timed out. Please try again.');
-        }
-        else {
+        } else {
           _setLoginError('Unexpected error. Please try again later.');
         }
       }
@@ -726,7 +1001,4 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       setState(() => _isLoggingIn = false);
     }
   }
-
-
-
 }
