@@ -1,4 +1,3 @@
-// lib/core/reusable_components/labeled_text_field.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,6 +9,7 @@ class LabeledTextField extends StatelessWidget {
     this.keyboardType,
     this.readOnly = false,
     this.onTap,
+    this.maxLines = 1,
   });
 
   final TextEditingController controller;
@@ -17,13 +17,16 @@ class LabeledTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool readOnly;
   final VoidCallback? onTap;
+  final int maxLines;
 
   InputDecoration _decoration() {
     return InputDecoration(
       hintText: hint,
       isDense: true,
-      contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+      contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.r),
+      ),
     );
   }
 
@@ -34,7 +37,14 @@ class LabeledTextField extends StatelessWidget {
       keyboardType: keyboardType,
       readOnly: readOnly,
       onTap: onTap,
+      maxLines: maxLines,
+      minLines: 1,
+      enableInteractiveSelection: readOnly,
       decoration: _decoration(),
+      style: TextStyle(
+        fontSize: 14.sp,
+        height: 1.2,
+      ),
     );
   }
 }

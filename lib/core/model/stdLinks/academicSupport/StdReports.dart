@@ -1,18 +1,17 @@
 class StdReports {
   StdReports({
-    this.stdId,
-    this.nom,
-    this.gradeId,
-    this.gradeDesc,
-    this.className,
-    this.schoolYear,
-    this.purposeDescE,
-    this.stdPicture,
-    this.schoolTask,
-    this.extraTask,
-    this.presentCount,
-    this.absentCount,
-  });
+      this.stdId, 
+      this.nom, 
+      this.gradeId, 
+      this.gradeDesc, 
+      this.className, 
+      this.schoolYear, 
+      this.purposeDescE, 
+      this.stdPicture, 
+      this.schoolTask, 
+      this.extraTask, 
+      this.presentCount, 
+      this.absentCount,});
 
   StdReports.fromJson(dynamic json) {
     stdId = json['std_id'];
@@ -57,4 +56,5 @@ class StdReports {
     map['AbsentCount'] = absentCount;
     return map;
   }
+
 }

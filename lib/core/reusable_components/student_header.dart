@@ -3,6 +3,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oasisathletic/core/reusable_components/widgets/app_avatar.dart';
 import '../colors_Manager.dart';
 import '../model/regStdModels/stdData.dart';
 import '../model/stdLinks/StdFullData.dart';
@@ -11,13 +12,13 @@ import 'Notifiers/student_notifier.dart';
 /// Compact header showing avatar, name, and grade only.
 /// Use StudentHeader.fromNotifier() to listen automatically to studentNotifier.
 class StudentHeader extends StatelessWidget {
-  final ImageProvider? avatar;
+  final String? imageUrl;
   final String name;
   final String grade;
 
   const StudentHeader({
     super.key,
-    this.avatar,
+    this.imageUrl,
     required this.name,
     required this.grade,
   });
@@ -62,54 +63,34 @@ class StudentHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Avatar (centered with name/class)
-              Container(
+               Container(
                 padding: EdgeInsets.all(2.5.w),
-                decoration:
-                    isLight
-                        ? BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: SweepGradient(
-                            startAngle: 0,
-                            endAngle: math.pi * 2,
-                            colors: [
-                              primaryBlue,
-                              accentSky,
-                              ColorsManager.accentPurple,
-                              accentMint,
-                              accentSun,
-                              ColorsManager.accentCoral,
-                            ],
-                            stops: const [
-                              0.0,
-                              0.18,
-                              0.34,
-                              0.55,
-                              0.75,
-                              0.95,
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: primaryBlue.withOpacity(0.20),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        )
-                        : BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.outline.withOpacity(0.35),
-                        ),
-                child: CircleAvatar(
-                  radius: 28.r,
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  backgroundImage:
-                      avatar ?? const AssetImage('assets/images/logo.png'),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: SweepGradient(
+                    colors: [
+                      primaryBlue,
+                      accentSky,
+                      ColorsManager.accentPurple,
+                      accentMint,
+                      accentSun,
+                      ColorsManager.accentCoral,
+                    ],
+                  ),
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(2.w),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).colorScheme.surface, // ✅ مهم
+                  ),
+                  child: AppAvatar(
+                    imageUrl: imageUrl,
+                    name: name,
+                    radius: 26, // ⬅️ صغرها شوية عشان البوردر
+                  ),
                 ),
               ),
-
             SizedBox(width: 12.w),
 
             // Name + Grade only
@@ -186,18 +167,10 @@ class _StudentHeaderFromNotifier extends StudentHeader {
       valueListenable: studentNotifier,
       builder: (context, student, _) {
         // Prepare avatar safely
-        ImageProvider? avatar;
-
-        if (student.stdPicture != null && student.stdPicture!.isNotEmpty) {
-          if (student.stdPicture!.startsWith('http')) {
-            avatar = NetworkImage(student.stdPicture!);
-          } else {
-            avatar = AssetImage(student.stdPicture!);
-          }
-        }
+        final imageUrl = student.stdPicture;
 
         return StudentHeader(
-          avatar: avatar,
+          imageUrl: imageUrl,
           name: student.stdFirstname ?? "",
           grade: student.currentClasse?.toString() ?? "",
         );
@@ -233,16 +206,13 @@ class StudentHeaderFromFull extends StatelessWidget {
 
         final imageUrl = fixImageUrl(student.stdPicture);
 
-        ImageProvider? avatar =
-            imageUrl.isNotEmpty && imageUrl.startsWith("http")
-                ? NetworkImage(imageUrl)
-                : const AssetImage("assets/images/logo.png");
+
 
         final gradeText =
             "${student.gradeDesc ?? ''} - ${student.className ?? ''}";
 
         return StudentHeader(
-          avatar: avatar,
+          imageUrl: imageUrl,
           name: student.stdFirstname ?? "",
           grade: gradeText,
         );

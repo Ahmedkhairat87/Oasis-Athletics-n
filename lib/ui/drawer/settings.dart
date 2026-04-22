@@ -10,6 +10,10 @@ import '../../core/reusable_components/app_background.dart';
 
 import '../../core/reusable_components/language_dropdown.dart';
 import '../../core/reusable_components/setting_tile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:local_auth/local_auth.dart';
+import '../login_screen/login.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Settings extends StatefulWidget {
   static const routeName = '/settings';
@@ -21,6 +25,70 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool _notificationsEnabled = true;
+  bool _bioEnabled = false;
+  final LocalAuthentication _auth = LocalAuthentication();
+
+  String _appVersion = '';
+  String _buildNumber = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBiometricStatus();
+    _loadAppVersion();
+  }
+
+
+  Future<void> _loadAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    setState(() {
+      _appVersion = info.version;       // e.g. 1.2.3
+      _buildNumber = info.buildNumber;  // e.g. 45
+    });
+  }
+
+  Future<void> _loadBiometricStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final enabled = prefs.getBool(LoginScreen.kBioEnabled) ?? false;
+    if (!mounted) return;
+    setState(() => _bioEnabled = enabled);
+  }
+
+  Future<void> _toggleBiometrics(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (value) {
+      final supported = await _auth.isDeviceSupported();
+      if (!supported) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("faceIDNotSupported".tr())),
+        );
+        return;
+      }
+
+      final authenticated = await _auth.authenticate(
+        localizedReason: 'Confirm to enable App Lock',
+        options: const AuthenticationOptions(
+          biometricOnly: false, // ✅ allow PIN/pattern/password
+          stickyAuth: false,
+          useErrorDialogs: true,
+        ),
+      );
+
+      if (!authenticated) return;
+
+      await prefs.setBool(LoginScreen.kBioEnabled, true);
+      await prefs.setBool(LoginScreen.kBioAsked, true);
+      if (!mounted) return;
+      setState(() => _bioEnabled = true);
+    } else {
+      await prefs.setBool(LoginScreen.kBioEnabled, false);
+      if (!mounted) return;
+      setState(() => _bioEnabled = false);
+    }
+  }
+
 
   Future<void> _contactSupport() async {
     final Uri emailUri = Uri(
@@ -127,6 +195,19 @@ class _SettingsState extends State<Settings> {
                   ),
                   _divider(),
 
+                  /// Face ID / App Lock
+                  SettingTile(
+                    icon: Icons.lock_outline,
+                    title: 'Face ID / App Lock',
+                    trailing: Switch(
+                      value: _bioEnabled,
+                      activeThumbColor: Colors.blueAccent,
+                      onChanged: _toggleBiometrics,
+                    ),
+                  ),
+                  _divider(),
+
+
                   /// Change password
                   SettingTile(
                     icon: Icons.password,
@@ -150,7 +231,9 @@ class _SettingsState extends State<Settings> {
                     child: Padding(
                       padding: EdgeInsets.only(top: 20.h),
                       child: Text(
-                        'App Version 1.0.0',
+                        _appVersion.isEmpty
+                            ? 'App Version'
+                            : 'App Version $_appVersion ($_buildNumber)',
                         style: TextStyle(
                           fontSize: 12.sp,
                           color:

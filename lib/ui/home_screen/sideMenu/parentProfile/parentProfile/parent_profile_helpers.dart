@@ -8,11 +8,33 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+      padding: EdgeInsets.only(top: 10.h, bottom: 12.h),
+      child: Row(
+        children: [
+          Container(
+            width: 5.w,
+            height: 22.h,
+            decoration: BoxDecoration(
+              color: scheme.primary,
+              borderRadius: BorderRadius.circular(999.r),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w800,
+                color: scheme.onSurface,
+                height: 1.1,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -32,30 +54,104 @@ class EditableField extends StatelessWidget {
     this.canEdit = true,
   });
 
+  String _displayValue(String value) {
+    final v = value.trim();
+    return v.isEmpty ? '—' : v;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isEditable = editMode && canEdit;
+    final scheme = Theme.of(context).colorScheme;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(label),
-            if (!canEdit) const SizedBox(width: 6),
-            if (!canEdit) const Icon(CupertinoIcons.lock, size: 14),
-          ],
-        ),
-        const SizedBox(height: 6),
-        isEditable
-            ? TextFormField(controller: controller)
-            : Text(controller.text),
-        const Divider(),
-      ],
+    return Padding(
+      padding: EdgeInsets.only(bottom: 12.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    color: scheme.onSurface.withOpacity(0.72),
+                  ),
+                ),
+              ),
+              if (!canEdit) ...[
+                SizedBox(width: 6.w),
+                Icon(
+                  CupertinoIcons.lock_fill,
+                  size: 14.sp,
+                  color: scheme.onSurface.withOpacity(0.55),
+                ),
+              ],
+            ],
+          ),
+          SizedBox(height: 7.h),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: double.infinity,
+            padding: isEditable
+                ? EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.h)
+                : EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+            decoration: BoxDecoration(
+              color: scheme.surface.withOpacity(0.88),
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(
+                color: isEditable
+                    ? scheme.primary.withOpacity(0.35)
+                    : scheme.outline.withOpacity(0.18),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: isEditable
+                ? TextFormField(
+              controller: controller,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
+                color: scheme.onSurface,
+              ),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 14.w,
+                  vertical: 14.h,
+                ),
+                border: InputBorder.none,
+                hintText: label,
+                hintStyle: TextStyle(
+                  fontSize: 14.sp,
+                  color: scheme.onSurface.withOpacity(0.35),
+                ),
+              ),
+            )
+                : Text(
+              _displayValue(controller.text),
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
+                color: controller.text.trim().isEmpty
+                    ? scheme.onSurface.withOpacity(0.45)
+                    : scheme.onSurface,
+                height: 1.25,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
-
 
 class ProfileDropdown<T> extends StatelessWidget {
   final String label;
@@ -75,32 +171,95 @@ class ProfileDropdown<T> extends StatelessWidget {
     required this.onChanged,
   });
 
+  String _displayValue() {
+    if (value == null) return '—';
+    final txt = itemLabel(value!).trim();
+    return txt.isEmpty ? '—' : txt;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Padding(
-      padding: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.only(bottom: 12.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontSize: 13.sp, color: Colors.grey)),
-          SizedBox(height: 6.h),
-          enabled
-              ? DropdownButtonFormField<T>(
-            value: value,
-            items: items
-                .map((e) => DropdownMenuItem<T>(
-              value: e,
-              child: Text(itemLabel(e)),
-            ))
-                .toList(),
-            onChanged: onChanged,
-            decoration: const InputDecoration(border: InputBorder.none),
-          )
-              : Text(
-            value != null ? itemLabel(value!) : '',
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w700,
+              color: scheme.onSurface.withOpacity(0.72),
+            ),
           ),
-          const Divider(),
+          SizedBox(height: 7.h),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: double.infinity,
+            padding: enabled
+                ? EdgeInsets.zero
+                : EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+            decoration: BoxDecoration(
+              color: scheme.surface.withOpacity(0.88),
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(
+                color: enabled
+                    ? scheme.primary.withOpacity(0.35)
+                    : scheme.outline.withOpacity(0.18),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: enabled
+                ? DropdownButtonFormField<T>(
+              value: value,
+              isExpanded: true,
+              items: items
+                  .map(
+                    (e) => DropdownMenuItem<T>(
+                  value: e,
+                  child: Text(
+                    itemLabel(e),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              )
+                  .toList(),
+              onChanged: onChanged,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 14.w,
+                  vertical: 14.h,
+                ),
+                border: InputBorder.none,
+              ),
+              icon: Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: scheme.primary,
+              ),
+            )
+                : Text(
+              _displayValue(),
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w600,
+                color: value == null
+                    ? scheme.onSurface.withOpacity(0.45)
+                    : scheme.onSurface,
+              ),
+            ),
+          ),
         ],
       ),
     );

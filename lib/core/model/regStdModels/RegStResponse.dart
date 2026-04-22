@@ -48,7 +48,7 @@ class RegStdResponse {
     requiredURL = json['requiredURL'];
   }
   List<stdData>? data;
-  num? unReadedCount;
+  int? unReadedCount;
   num? urgentUpdateIOS;
   num? urgentUpdateAndroid;
   String? androidVersion;

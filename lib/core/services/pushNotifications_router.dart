@@ -3,12 +3,15 @@ import '../../ui/drawer/canteen_charge.dart';
 import '../../ui/home_screen/Home/mianwrapper.dart';
 import '../../ui/home_screen/sideMenu/Gallery/galleryAlbums.dart';
 import '../../ui/home_screen/sideMenu/newsLetter/NewsLetterScreen.dart';
-import '../reusable_components/Errors/globalNavigatorKey.dart';
+import '../reusable_components/Checkers/globalNavigatorKey.dart';
 import '../../ui/home_screen/MSGScreens/messages.dart';
-import '../../ui/home_screen/Home/student_inside_tabs/student_inside.dart';
+import '../../ui/home_screen/Home/student_inside_tabs/screen/student_inside.dart';
 
 class PushRouter {
   static Map<String, dynamic>? _pendingData;
+  static bool _processingPending = false;
+  static DateTime? _lastOpenAt;
+  static const Duration _openDebounce = Duration(milliseconds: 700);
 
   static Future<void> init() async {
     // Foreground (app open): you can show local notification later
@@ -32,17 +35,26 @@ class PushRouter {
   }
 
   static void processPendingIfAny() {
+    if (_processingPending) return;
     if (_pendingData == null) return;
 
+    _processingPending = true;
     final targetRoute = _pendingData!['_targetRoute']?.toString();
     final arguments = _pendingData!['_arguments'];
 
     _pendingData = null;
 
-    if (targetRoute == null || targetRoute.isEmpty) return;
-    if (arguments is! Map<String, dynamic>) return;
+    if (targetRoute == null || targetRoute.isEmpty) {
+      _processingPending = false;
+      return;
+    }
+    if (arguments is! Map<String, dynamic>) {
+      _processingPending = false;
+      return;
+    }
 
     _openOnTopOfMainWrapper(targetRoute: targetRoute, arguments: arguments);
+    _processingPending = false;
   }
 
 
@@ -108,6 +120,13 @@ class PushRouter {
       _pendingData = {'_targetRoute': targetRoute, '_arguments': arguments};
       return;
     }
+
+    final now = DateTime.now();
+    final last = _lastOpenAt;
+    if (last != null && now.difference(last) < _openDebounce) {
+      return;
+    }
+    _lastOpenAt = now;
 
     // Ensure Home base exists then push target
     nav.pushNamedAndRemoveUntil(MainWrapper.routeName, (route) => false);

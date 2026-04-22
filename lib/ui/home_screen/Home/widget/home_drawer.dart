@@ -1,19 +1,27 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/Utilities/fontsHelper.dart';
 import '../../../../core/colors_Manager.dart';
 import '../../../../core/model/regStdModels/SideMenu.dart';
 
 // ✅ skeleton reusable
+import '../../../../core/reusable_components/Checkers/globalNavigatorKey.dart';
+import '../../../../core/reusable_components/Notifiers/theme_mode_provider.dart';
+import '../../../../core/reusable_components/errorsDialogs/appDialog.dart';
 import '../../../../core/reusable_components/gridViewAnimation/tabsSkeletonGrid.dart';
 
 import 'package:oasisathletic/ui/drawer/canteen_charge.dart';
 import 'package:oasisathletic/ui/home_screen/sideMenu/Gallery/galleryAlbums.dart';
 import 'package:oasisathletic/ui/home_screen/sideMenu/newsLetter/NewsLetterScreen.dart';
 import 'package:oasisathletic/ui/webView-attachmentopener/WebViewScreen.dart';
+import '../../../../core/services/loginServices/AuthLogoutService.dart';
 import '../../../drawer/settings.dart';
+import '../../../login_screen/login.dart';
 import '../../MSGScreens/messages.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -36,17 +44,34 @@ class _HomeDrawerState extends State<HomeDrawer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   int selectedIndex = -1;
+  String _appVersion = '';
+  String _buildNumber = '';
+
+
 
   bool get _disabled => widget.isLoading || !widget.isOnline;
 
   @override
   void initState() {
     super.initState();
+    _loadAppVersion();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..forward();
   }
+
+  Future<void> _loadAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    setState(() {
+      _appVersion = info.version;       // e.g. 1.2.3
+      _buildNumber = info.buildNumber;  // e.g. 45
+    });
+  }
+
+
 
   @override
   void dispose() {
@@ -126,6 +151,8 @@ class _HomeDrawerState extends State<HomeDrawer>
         uri.host.isNotEmpty;
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
@@ -136,6 +163,9 @@ class _HomeDrawerState extends State<HomeDrawer>
     final Color accentMint = ColorsManager.accentMint;
     final Color accentSky = ColorsManager.accentSky;
     final Color accentSun = ColorsManager.accentSun;
+    final themeProvider = context.watch<ThemeModeProvider>();
+    final isDarkMode = themeProvider.isDarkMode;
+    final textColor = isDarkMode ? Colors.white : Colors.black;
 
     return Drawer(
       child: Container(
@@ -383,8 +413,81 @@ class _HomeDrawerState extends State<HomeDrawer>
                     ),
                 ],
               ),
+
+            ),
+            // ✅ Logout Section (bottom of drawer)
+            Padding(
+              padding: EdgeInsets.fromLTRB(12.w, 1.h, 12.w, 3.h),
+              child: Column(
+                children: [
+                  Divider(
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.4),
+                  ),
+
+                  ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8.w),
+                    leading: Icon(
+                      Icons.logout_rounded,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    title: Text(
+                      "Logout",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontWeight: FontWeight.w700,
+                        fontSize: fsp(context, 14, max: 16),
+                      ),
+                    ),
+                    onTap: () async {
+                      Navigator.of(context).pop(); // close drawer
+
+                      final ok = await ModernActionSheet.confirm(
+                        context,
+                        title: "Logout".tr(),
+                        message: "logoutMsg".tr(),
+                        cancelText: "Cancel".tr(),
+                        confirmText: "logout".tr(),
+                        icon: Icons.logout_rounded,
+                        destructive: true,
+                      );
+
+                      if (!ok) return;
+
+                      final success = await ParentLogoutService.logout();
+                      if (!success) return;
+
+                      // 🔥 USE YOUR EXISTING rootNavKey
+                      rootNavKey.currentState?.pushNamedAndRemoveUntil(
+                        LoginScreen.routeName,
+                            (route) => false,
+                      );
+                    },
+                  ),
+
+                  SizedBox(height: 4.h),
+
+                  // optional version label
+                  Opacity(
+                    opacity: 0.5,
+                    child: Text(
+                      _appVersion.isEmpty
+                          ? 'App Version'
+                          : 'App Version $_appVersion ($_buildNumber)',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color:
+                        isDarkMode
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
+                      ),
+                    ),
+
+                  ),
+                ],
+              ),
             ),
           ],
+
         ),
       ),
     );
