@@ -12,6 +12,33 @@
   "empty_email": "Veuillez entrer votre adresse e-mail",
   "not_valid_password": "Veuillez entrer un mot de passe valide !",
   "not_valid_email": "Veuillez entrer une adresse e-mail valide !",
+  "parent": "Parent",
+  "student": "Étudiant",
+  "admin": "Administrateur",
+  "coordinator": "Coordinateur",
+  "confirm_to_continue": "Confirmez pour continuer",
+  "confirm_biometric_setup": "Confirmez l’activation de la biométrie",
+  "enter_password_for_account": "Saisissez le mot de passe de votre compte",
+  "face_id": "Face ID",
+  "checking": "Vérification…",
+  "use_face_id": "Utiliser Face ID",
+  "sign_in_again": "Se reconnecter",
+  "change_role": "Changer le rôle",
+  "under_construction_message": "Ce module sera bientôt disponible.",
+  "notifications_required_signin": "Les notifications sont requises pour vous connecter. Veuillez les activer puis réessayer.",
+  "generic_error_try_again": "Une erreur s’est produite. Veuillez réessayer.",
+  "wrong_username_or_password": "Nom d’utilisateur ou mot de passe incorrect.",
+  "access_denied_contact_support": "Accès refusé. Veuillez contacter le support.",
+  "service_not_available": "Service indisponible. Veuillez réessayer plus tard.",
+  "server_error_try_later": "Erreur serveur. Veuillez réessayer plus tard.",
+  "no_internet_connection": "Pas de connexion Internet. Veuillez vérifier votre réseau.",
+  "request_timed_out": "Le délai de la requête a expiré. Veuillez réessayer.",
+  "unexpected_error": "Erreur inattendue. Veuillez réessayer plus tard.",
+  "too_many_failed_attempts": "Trop de tentatives échouées. Veuillez vous reconnecter.",
+  "authentication_failed_try_again": "Échec de l’authentification. Réessayez ({current}/{max}).",
+
+
+
   "send": "Envoyer",
   "reset": "Réinitialiser le mot de passe",
   "reset_note": "Vos identifiants de connexion seront envoyés à l'adresse e-mail fournie. Veuillez vérifier son exactitude avant de soumettre",
@@ -276,6 +303,22 @@
   "doctor": "Médecin",
   "psychologist": "Psychologue",
   "physiotherapist": "Kinésithérapeute",
+
+
+
+  "hide_details": "Masquer les détails",
+  "open_link": "Ouvrir le lien",
+  "exercise_links": "Liens des exercices",
+  "rehab_plan": "Plan de rééducation",
+  "home_exercise_program": "Programme d'exercices à domicile",
+  "home_care_option": "Soins à domicile",
+  "other_care": "Autres soins",
+  "id": "ID",
+  "error_loading": "Erreur lors du chargement des données",
+  "try_again": "Réessayer",
+
+
+
   "clinic_visits": "Visites à la clinique",
   "nutritionist": "Nutritionniste",
   "body_follow_up": "Suivi corporel",
@@ -286,6 +329,24 @@
   "visit": "Visite",
   "complaint": "Plainte",
   "diagnosis": "Diagnostic",
+  "doctor_section": "Section médecin",
+  "psychologist_section": "Section psychologue",
+  "physiotherapist_section": "Section physiothérapeute",
+  "inbody_follow_up": "Suivi InBody",
+  "viewed_by_parent": "Vu par le parent",
+  "not_viewed_yet": "Pas encore vu",
+  "no_doctor_reports": "Aucun rapport médical trouvé",
+  "no_psychologist_reports": "Aucun rapport psychologique trouvé",
+  "no_physiotherapy_reports": "Aucun rapport de physiothérapie trouvé",
+  "no_inbody_reports": "Aucun rapport InBody trouvé",
+  "no_diet_plan": "Aucun plan alimentaire disponible",
+  "no_file_available": "Aucun fichier disponible",
+  "return_to_play": "Retour au jeu",
+  "last_updated": "Dernière mise à jour",
+  "breakfast": "Petit-déjeuner",
+  "lunch": "Déjeuner",
+  "dinner": "Dîner",
+  "note": "Remarque",
   "needed_scans": "Examens requis",
   "follow_up": "Suivi",
   "physiotherapy_visit": "Visite de kinésithérapie",
@@ -406,7 +467,43 @@
   "faceIDMsg": "Utilisez Face ID / empreinte digitale (ou code PIN/mot de passe de votre téléphone) la prochaine fois que vous ouvrirez l'application.",
   "faceIDCancel": "Pas maintenant",
   "faceIDOK": "Activer",
-  "faceIdOptionMsg": "Vous pourrez modifier ce paramètre ultérieurement dans les Paramètres."
+  "faceIdOptionMsg": "Vous pourrez modifier ce paramètre ultérieurement dans les Paramètres.",
+
+  "update_available_title": "Mise à jour disponible",
+  "update_available_message": "Une nouvelle version de l'application est disponible ({version}). Veuillez mettre à jour pour une meilleure expérience.",
+  "update_required_title": "Mise à jour requise",
+  "update_required_message": "Une mise à jour obligatoire est requise pour continuer à utiliser l'application. Dernière version : {version}",
+  "update_button": "Mettre à jour",
+  "later_button": "Plus tard",
 
 
+
+  "forms_title": "Formulaires",
+  "medical_form_desc": "Ouvrir le formulaire médical pour consulter / remplir les détails",
+  "nutrition_form_desc": "Ouvrir le formulaire nutritionnel pour consulter / remplir les détails",
+  "forms_help": "Appuyez sur une carte pour ouvrir le formulaire correspondant. Le formulaire s'ouvre en plein écran.",
+
+
+
+
+
+
+
+
+  "student_book" : "Carnet de l'élève",
+  "no_messages_found" : "Aucun message trouvé",
+  "noSent": "Aucun message envoyé.",
+  "refresh" : "Faites glisser vers le bas pour actualiser ou envoyer un nouveau message.",
+  "sent_message_no_reply": "Aucune réponse",
+  "write_your_reply_here": "Répondez ici",
+  "reply_sent_successfully" : "Réponse envoyée avec succès",
+  "failed_to_send_reply" : "Échec de l'envoi de la réponse",
+
+  "please_fill_all_fields": "Veuillez remplir tous les champs",
+  "message_sent_successfully" : "Message envoyé avec succès",
+  "failed_to_send_message" : "Échec de l'envoi du message",
+  "write_your_message_here" : "Écrivez votre message ici",
+
+  "edit_mode_enabled": "Vous pouvez modifier la section affichée",
+  "view_mode_enabled": "Aperçu des informations du profil"
 }

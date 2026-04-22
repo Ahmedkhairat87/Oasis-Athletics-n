@@ -145,22 +145,21 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     if (r == null) return '';
     switch (r) {
       case UserRole.parent:
-        return 'Parent';
+        return 'parent'.tr();
       case UserRole.student:
-        return 'Student';
+        return 'student'.tr();
       case UserRole.teacher:
-        return 'Teacher';
+        return 'teacher'.tr();
       case UserRole.coach:
-        return 'Coach';
+        return 'coach'.tr();
       case UserRole.admin:
-        return 'Admin';
+        return 'admin'.tr();
       case UserRole.coordinator:
-        return 'Coordinator';
+        return 'coordinator'.tr();
       default:
-        return r.toString();
+        return '';
     }
   }
-
   // ✅ Bootstrap: check if token exists + bio enabled -> auto auth once
   Future<void> _bootstrapAuthGate() async {
     final prefs = await SharedPreferences.getInstance();
@@ -205,7 +204,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           DateTime.now().add(const Duration(seconds: 4)).millisecondsSinceEpoch);
 
       await prefs.setInt(kBioFailCount, 0);
-      Navigator.pushReplacementNamed(context, MainWrapper.routeName);
+      Navigator.of(context).pop(true);
+      //Navigator.pushReplacementNamed(context, MainWrapper.routeName);
       return;
     }
     else {
@@ -224,12 +224,19 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           _hasSession = false;
           _bioEnabled = false;
           _authAutoTriggered = false;
-          _loginErrorText = 'Too many failed attempts. Please sign in again.';
+          _loginErrorText = 'too_many_failed_attempts'.tr();
         });
 
         // No navigation needed: your UI will switch to normal login because showBioGate becomes false
       } else {
-        _setLoginError('Authentication failed. Try again (${fails}/$maxBioFails).');
+        _setLoginError(
+          'authentication_failed_try_again'.tr(
+            namedArgs: {
+              'current': '$fails',
+              'max': '$maxBioFails',
+            },
+          ),
+        );
       }
     }
 
@@ -247,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       if (!supported) return false; // means no biometrics AND no device credentials available
 
       final ok = await _auth.authenticate(
-        localizedReason: 'Confirm to continue',
+        localizedReason: 'confirm_to_continue'.tr(),
         options: const AuthenticationOptions(
           biometricOnly: false, // ✅ allows PIN/pattern/password
           stickyAuth: false,
@@ -307,7 +314,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     // ✅ NOW authenticate once to confirm
     try {
       final didAuthenticate = await _auth.authenticate(
-        localizedReason: 'Confirm biometric setup',
+        localizedReason: 'confirm_biometric_setup'.tr(),
         options: const AuthenticationOptions(
           biometricOnly: false,
           stickyAuth: true,
@@ -329,10 +336,15 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     final scheme = Theme.of(context).colorScheme;
 
     Widget transitionBuilder(Widget child, Animation<double> animation) {
-      final inOffset = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
-          .animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
-      final outOffset = Tween<Offset>(begin: Offset.zero, end: const Offset(0, -0.04))
-          .animate(CurvedAnimation(parent: animation, curve: Curves.easeIn));
+      final inOffset = Tween<Offset>(
+        begin: const Offset(0, 0.08),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut));
+
+      final outOffset = Tween<Offset>(
+        begin: Offset.zero,
+        end: const Offset(0, -0.04),
+      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeIn));
 
       return SlideTransition(
         position: animation.status == AnimationStatus.reverse ? outOffset : inOffset,
@@ -340,7 +352,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       );
     }
 
-    // ✅ session bio gate
     final showBioGate = !_checkingSession && _hasSession && _bioEnabled;
 
     return Scaffold(
@@ -356,26 +367,15 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             return name.contains("RenderEditable");
           });
 
-          if (!tappedEditable) FocusManager.instance.primaryFocus?.unfocus();
+          if (!tappedEditable) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
         },
         child: Stack(
           alignment: Alignment.center,
           fit: StackFit.expand,
           children: [
             LoginBackground(showTopBlueBar: false),
-
-            Positioned(
-              top: 40.h,
-              right: 20.w,
-              child: PopupMenuButton<Locale>(
-                icon: Icon(Icons.language, color: scheme.elements),
-                onSelected: (Locale locale) => context.setLocale(locale),
-                itemBuilder: (_) => const [
-                  PopupMenuItem(value: Locale('en'), child: Text('🇬🇧 English')),
-                  PopupMenuItem(value: Locale('fr'), child: Text('🇫🇷 Français')),
-                ],
-              ),
-            ),
 
             Center(
               child: SingleChildScrollView(
@@ -399,7 +399,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                         ),
                         SizedBox(height: 6.h),
 
-                        // ✅ if session + bio enabled: show "Use Face ID" gate (but keep your UI logic untouched)
                         if (showBioGate) ...[
                           SizedBox(height: 14.h),
 
@@ -425,7 +424,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
                           SizedBox(height: 20.h),
 
-                          // simple FaceID block (you can replace with your design)
                           Container(
                             width: 140.w,
                             height: 140.w,
@@ -436,11 +434,18 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.face, size: 52.sp, color: scheme.onSurface.withOpacity(0.25)),
+                                Icon(
+                                  Icons.face,
+                                  size: 52.sp,
+                                  color: scheme.onSurface.withOpacity(0.25),
+                                ),
                                 SizedBox(height: 10.h),
                                 Text(
                                   'Face ID',
-                                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800),
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                                 ),
                               ],
                             ),
@@ -470,7 +475,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                     const SizedBox(
                                       width: 16,
                                       height: 16,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                     SizedBox(width: 10.w),
                                     Text(
@@ -508,15 +516,15 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 _authAutoTriggered = false;
                               });
                             },
-                            child: const Text('Sign in again'),
+                            child: Text('sign_in_again'.tr())
                           ),
 
                           SizedBox(height: 8.h),
                         ] else ...[
-                          // ✅ your existing UI logic unchanged:
                           AnimatedSwitcher(
                             duration: const Duration(milliseconds: 420),
-                            transitionBuilder: (child, animation) => transitionBuilder(child, animation),
+                            transitionBuilder: (child, animation) =>
+                                transitionBuilder(child, animation),
                             layoutBuilder: (currentChild, previousChildren) {
                               return Stack(
                                 alignment: Alignment.topCenter,
@@ -536,54 +544,75 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           AnimatedOpacity(
                             duration: const Duration(milliseconds: 300),
                             opacity: (selectedRole != null) ? 1.0 : 0.9,
-                            child: SizedBox(
-                              width: 330.w,
-                              height: 44.h,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: (selectedRole != null)
-                                      ? scheme.elements
-                                      : Theme.of(context).disabledColor,
-                                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.r),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 330.w,
+                                minHeight: 52.h,
+                              ),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: (selectedRole != null)
+                                        ? scheme.elements
+                                        : Theme.of(context).disabledColor,
+                                    foregroundColor: Colors.white,
+                                    minimumSize: Size(double.infinity, 52.h),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w,
+                                      vertical: 12.h,
+                                    ),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                    ),
                                   ),
-                                ),
-                                onPressed: (!_inputsEnabled || _isLoggingIn) ? null : _loginPressed,
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 200),
-                                  child: _isLoggingIn
-                                      ? Row(
-                                    key: const ValueKey('loading'),
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 16.r,
-                                        height: 16.r,
-                                        child: const CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  onPressed:
+                                  (!_inputsEnabled || _isLoggingIn) ? null : _loginPressed,
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 200),
+                                    child: _isLoggingIn
+                                        ? Row(
+                                      key: const ValueKey('loading'),
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          width: 16.r,
+                                          height: 16.r,
+                                          child: const CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(width: 10.w),
-                                      Text(
-                                        'Signing in…',
+                                        SizedBox(width: 10.w),
+                                        Flexible(
+                                          child: Text(
+                                            'Signing in…',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15.sp,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                        : FittedBox(
+                                      key: const ValueKey('text'),
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        "login".tr(),
                                         style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15.sp,
-                                          fontWeight: FontWeight.w700,
+                                          color: scheme.textMainWhite,
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ],
-                                  )
-                                      : Text(
-                                    "login".tr(),
-                                    key: const ValueKey('text'),
-                                    style: TextStyle(
-                                      color: scheme.textMainWhite,
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -592,13 +621,16 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           ),
                         ],
 
-                        // ✅ inline error stays the same (your UI)
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 220),
                           transitionBuilder: (child, animation) {
                             return SlideTransition(
-                              position: Tween<Offset>(begin: const Offset(0, -0.08), end: Offset.zero)
-                                  .animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
+                              position: Tween<Offset>(
+                                begin: const Offset(0, -0.08),
+                                end: Offset.zero,
+                              ).animate(
+                                CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                              ),
                               child: FadeTransition(opacity: animation, child: child),
                             );
                           },
@@ -606,11 +638,19 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               ? const SizedBox.shrink()
                               : Padding(
                             key: const ValueKey('login-error'),
-                            padding: EdgeInsets.only(top: 10.h, left: 24.w, right: 24.w),
+                            padding: EdgeInsets.only(
+                              top: 10.h,
+                              left: 24.w,
+                              right: 24.w,
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.error_outline_rounded, size: 16.sp, color: Colors.redAccent),
+                                Icon(
+                                  Icons.error_outline_rounded,
+                                  size: 16.sp,
+                                  color: Colors.redAccent,
+                                ),
                                 SizedBox(width: 6.w),
                                 Flexible(
                                   child: Text(
@@ -636,6 +676,42 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                 ),
               ),
             ),
+
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 8.h,
+              right: 12.w,
+              child: Material(
+                color: Colors.transparent,
+                child: PopupMenuButton<Locale>(
+                  tooltip: 'language'.tr(),
+                  icon: Icon(
+                    Icons.language,
+                    color: scheme.elements,
+                    size: 24.sp,
+                  ),
+                  onSelected: (Locale locale) async {
+                    await context.setLocale(locale);
+                    if (mounted) setState(() {});
+                  },
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                      value: const Locale('en'),
+                      child: Text(
+                        '🇬🇧 English',
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: const Locale('fr'),
+                      child: Text(
+                        '🇫🇷 Français',
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -645,7 +721,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   void _showUnderConstruction() {
     UnderConstructionDialog.show(
       context,
-      message: 'This module will be available soon.',
+      message: 'under_construction_message'.tr(),
     );
   }
 
@@ -755,7 +831,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     _loginErrorText = null;
                   });
                 },
-                child: Text('Change role', style: TextStyle(fontSize: 13.sp)),
+                child: Text('change_role'.tr(), style: TextStyle(fontSize: 13.sp))
               ),
             ],
           ),
@@ -922,8 +998,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       final fcmToken = await FcmService.getOrFetchToken();
 
       if (fcmToken.isEmpty) {
-        _setLoginError(
-          'Notifications are required to sign in. Please enable notifications and try again.',
+          _setLoginError('notifications_required_signin'.tr()
         );
         return;
       }
@@ -973,7 +1048,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         return;
       }
 
-      _setLoginError('An error occurred. Please try again.');
+      _setLoginError('generic_error_try_again'.tr());
     } catch (e, st) {
       debugPrint("LOGIN ERROR: $e");
       debugPrintStack(stackTrace: st);
@@ -981,19 +1056,19 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       if (e is ApiException) {
         final code = e.statusCode ?? -1;
 
-        if (code == 204) _setLoginError('Wrong username or password.');
-        else if (code == 401 || code == 403) _setLoginError('Access denied. Please contact support.');
-        else if (code == 404) _setLoginError('Service not available. Please try again later.');
-        else if (code >= 500) _setLoginError('Server error. Please try again later.');
-        else _setLoginError('Server error. Please try again later-.');
+        if (code == 204) _setLoginError('wrong_username_or_password'.tr());
+        else if (code == 401 || code == 403) _setLoginError('access_denied_contact_support'.tr());
+        else if (code == 404) _setLoginError('service_not_available'.tr());
+        else if (code >= 500) _setLoginError('server_error_try_later'.tr());
+        else _setLoginError('no_internet_connection'.tr());
       } else {
         final msg = e.toString().toLowerCase();
         if (msg.contains('socketexception') || msg.contains('no internet') || msg.contains('network')) {
-          _setLoginError('No internet connection. Please check your network.');
+          _setLoginError('no_internet_connection'.tr());
         } else if (msg.contains('timeout')) {
-          _setLoginError('Request timed out. Please try again.');
+          _setLoginError('request_timed_out'.tr());
         } else {
-          _setLoginError('Unexpected error. Please try again later.');
+          _setLoginError('unexpected_error'.tr());
         }
       }
     } finally {

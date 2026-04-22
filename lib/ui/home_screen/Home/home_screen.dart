@@ -11,7 +11,7 @@ import '../../../core/reusable_components/student_card.dart';
 import '../../../core/reusable_components/Notifiers/student_notifier.dart';
 import '../../../core/services/loginServices/AuthLogoutService.dart';
 import '../../login_screen/login.dart';
-import 'student_inside_tabs/student_inside.dart';
+import 'student_inside_tabs/screen/student_inside.dart';
 
 class StudentsScreen extends StatelessWidget {
   final List<stdData> students;

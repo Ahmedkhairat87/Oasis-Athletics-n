@@ -11,7 +11,6 @@ import '../sections/parent_profile_emergency.dart';
 import '../sections/parent_profile_general.dart';
 import '../sections/parent_profile_work.dart';
 import 'parent_profile_state.dart';
-// TODO import other sections when you create them
 
 class ParentProfileScreen extends StatelessWidget {
   static const routeName = '/parentprofile';
@@ -23,45 +22,60 @@ class ParentProfileScreen extends StatelessWidget {
       create: (_) => ParentProfileState(),
       child: Consumer<ParentProfileState>(
         builder: (context, state, _) {
+          final scheme = Theme.of(context).colorScheme;
+
           return Scaffold(
             extendBodyBehindAppBar: true,
             appBar: AppBar(
-              title: const Text('Parents Profile'),
+              title: Text(
+                'Parents Profile',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
               centerTitle: true,
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: [
                 if (!state.editMode) ...[
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: state.loading ? null : state.toggleEdit,
+                  Padding(
+                    padding: EdgeInsets.only(right: 8.w),
+                    child: IconButton(
+                      icon: const Icon(Icons.edit_rounded),
+                      onPressed: state.loading ? null : state.toggleEdit,
+                    ),
                   ),
                 ] else ...[
                   IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(Icons.close_rounded),
                     tooltip: "Cancel",
                     onPressed: state.loading
                         ? null
                         : () {
-                      state.cancelEdit(); // we'll add it in state
+                      state.cancelEdit();
                       FocusScope.of(context).unfocus();
                     },
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.check),
-                    tooltip: "Save",
-                    onPressed: state.loading
-                        ? null
-                        : () async {
-                      FocusScope.of(context).unfocus();
-                      final ok = await state.save(); // save only here
-                      if (ok) {
-                        state.toggleEdit(); // close edit mode ONLY after success
-                      }
-                    },
+                  Padding(
+                    padding: EdgeInsets.only(right: 8.w),
+                    child: IconButton(
+                      icon: const Icon(Icons.check_rounded),
+                      tooltip: "Save",
+                      onPressed: state.loading
+                          ? null
+                          : () async {
+                        FocusScope.of(context).unfocus();
+                        final ok = await state.save();
+                        if (ok) {
+                          state.toggleEdit();
+                        }
+                      },
+                    ),
                   ),
                 ]
-              ],            ),
+              ],
+            ),
             body: AppBackground(
               child: SafeArea(
                 child: Stack(
@@ -72,25 +86,58 @@ class ParentProfileScreen extends StatelessWidget {
                       _sectionWrapper(
                         context,
                         title: _titleForSection(state.currentSection).tr(),
+                        subtitle: state.editMode
+                            ? 'edit_mode_enabled'.tr()
+                            : 'view_mode_enabled'.tr(),
                         child: _buildSection(state),
-
                       ),
+
                     if (state.error != null)
-                      Positioned.fill(
-                        child: Center(
-                          child: Text(
-                            state.error!,
-                            style: const TextStyle(color: Colors.red),
+                      Positioned(
+                        top: 12.h,
+                        left: 20.w,
+                        right: 20.w,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 14.w,
+                            vertical: 12.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.10),
+                            borderRadius: BorderRadius.circular(14.r),
+                            border: Border.all(
+                              color: Colors.red.withOpacity(0.25),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.error_outline_rounded,
+                                color: Colors.redAccent,
+                                size: 18.sp,
+                              ),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: Text(
+                                  state.error!,
+                                  style: TextStyle(
+                                    color: Colors.redAccent,
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
 
                     CircularMenu(
                       alignment: Alignment.bottomRight,
-                      radius: 90.w,
-                      startingAngleInRadian: 3.0,
-                      endingAngleInRadian: 4.7,
-                      toggleButtonColor: Colors.blue,
+                      radius: 92.w,
+                      startingAngleInRadian: 3.1,
+                      endingAngleInRadian: 4.75,
+                      toggleButtonColor: scheme.primary,
                       toggleButtonIconColor: Colors.white,
                       items: ProfileSection.values.map((section) {
                         final isActive = section == state.currentSection;
@@ -98,8 +145,8 @@ class ParentProfileScreen extends StatelessWidget {
                           icon: _iconForSection(section),
                           iconSize: 16.sp,
                           padding: 10.w,
-                          iconColor: isActive ? Colors.white : Colors.blue,
-                          color: isActive ? Colors.blue : Colors.white,
+                          iconColor: isActive ? Colors.white : scheme.primary,
+                          color: isActive ? scheme.primary : Colors.white,
                           onTap: () {
                             if (state.loading) return;
                             state.selectSection(section);
@@ -135,18 +182,59 @@ class ParentProfileScreen extends StatelessWidget {
   static Widget _sectionWrapper(
       BuildContext context, {
         required String title,
+        required String subtitle,
         required Widget child,
       }) {
+    final scheme = Theme.of(context).colorScheme;
+
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 120.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold)),
-          SizedBox(height: 20.h),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(18.w),
+            decoration: BoxDecoration(
+              color: scheme.surface.withOpacity(0.95),
+              borderRadius: BorderRadius.circular(22.r),
+              border: Border.all(
+                color: scheme.outline.withOpacity(0.12),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w800,
+                    color: scheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w500,
+                    color: scheme.onSurface.withOpacity(0.62),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 18.h),
           child,
           SizedBox(height: 40.h),
-
         ],
       ),
     );
@@ -170,15 +258,15 @@ class ParentProfileScreen extends StatelessWidget {
   static IconData _iconForSection(ProfileSection s) {
     switch (s) {
       case ProfileSection.general:
-        return Icons.person;
+        return Icons.person_rounded;
       case ProfileSection.contact:
-        return Icons.phone;
+        return Icons.phone_rounded;
       case ProfileSection.work:
-        return Icons.work;
+        return Icons.work_rounded;
       case ProfileSection.education:
-        return Icons.school;
+        return Icons.school_rounded;
       case ProfileSection.emergency:
-        return Icons.warning;
+        return Icons.warning_amber_rounded;
     }
   }
 }

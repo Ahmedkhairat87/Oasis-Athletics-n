@@ -28,7 +28,7 @@ import 'ui/home_screen/sideMenu/Gallery/widget/cart_screen.dart';
 import 'ui/home_screen/sideMenu/newsLetter/NewsLetterScreen.dart';
 import 'ui/home_screen/MSGScreens/sendMessagesScreen.dart';
 import 'ui/home_screen/MSGScreens/messages.dart';
-import 'ui/home_screen/Home/student_inside_tabs/student_inside.dart';
+import 'ui/home_screen/Home/student_inside_tabs/screen/student_inside.dart';
 import 'ui/home_screen/sideMenu/Gallery/widget/provider/cart_provider.dart';
 import 'ui/home_screen/sideMenu/parentProfile/parentProfile/parent_profile_screen.dart';
 
@@ -172,13 +172,10 @@ class _AppLockWatcherState extends State<AppLockWatcher> with WidgetsBindingObse
     }
 
     _navigating = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      rootNavKey.currentState?.pushNamedAndRemoveUntil(
-        LoginScreen.routeName,
-            (_) => false,
-      );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await rootNavKey.currentState?.pushNamed(LoginScreen.routeName);
 
-      Future.delayed(const Duration(milliseconds: 700), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
         _navigating = false;
       });
     });

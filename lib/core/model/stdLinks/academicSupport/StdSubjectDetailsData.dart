@@ -1,20 +1,19 @@
 class StdSubjectDetailsData {
   StdSubjectDetailsData({
-    this.attendanceId,
-    this.attendanceDate,
-    this.abs,
-    this.timeSlot,
-    this.timeSlotName,
-    this.devoir,
-    this.travail,
-    this.comment,
-    this.empNo,
-    this.empName,
-    this.matNo,
-    this.subjectNameFR,
-    this.ifAppearforparent,
-    this.currentDate,
-  });
+      this.attendanceId, 
+      this.attendanceDate, 
+      this.abs, 
+      this.timeSlot, 
+      this.timeSlotName, 
+      this.devoir, 
+      this.travail, 
+      this.comment, 
+      this.empNo, 
+      this.empName, 
+      this.matNo, 
+      this.subjectNameFR, 
+      this.ifAppearforparent, 
+      this.currentDate,});
 
   StdSubjectDetailsData.fromJson(dynamic json) {
     attendanceId = json['attendance_id'];
@@ -65,4 +64,5 @@ class StdSubjectDetailsData {
     map['CurrentDate'] = currentDate;
     return map;
   }
+
 }

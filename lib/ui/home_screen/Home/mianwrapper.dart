@@ -21,6 +21,7 @@ import '../../../core/reusable_components/Checkers/globalOfflineListener.dart';
 import '../../../core/reusable_components/Checkers/networkController.dart';
 import '../../../core/reusable_components/Notifiers/student_notifier.dart';
 import '../../../core/reusable_components/app_background.dart';
+import '../../../core/services/AppUpdate/appUpdateChecker.dart';
 import '../../../core/services/loginServices/AuthLogoutService.dart';
 
 import '../../login_screen/login.dart';
@@ -248,6 +249,9 @@ class MainWrapperState extends State<MainWrapper> {
         return;
       }
 
+
+
+
 // ✅ 2) agreement redirect (uses outer "res" because flag/url are outside parsed.data)
       // after you validated res success and res["data"] exists
 
@@ -264,6 +268,18 @@ class MainWrapperState extends State<MainWrapper> {
         _sideMenuList = newSideMenu;
         _loading = false;
         _unreadCount = parsed.unReadedCount ?? 0;
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        AppUpdateChecker.checkAndShow(
+          context: context,
+          androidVersion: parsed.androidVersion,
+          iosVersion: parsed.iosVersion,
+          urgentUpdateAndroid: parsed.urgentUpdateAndroid,
+          urgentUpdateIOS: parsed.urgentUpdateIOS,
+        );
       });
 
       studentsNotifier.value = newStudents;

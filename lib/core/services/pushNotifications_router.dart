@@ -5,7 +5,7 @@ import '../../ui/home_screen/sideMenu/Gallery/galleryAlbums.dart';
 import '../../ui/home_screen/sideMenu/newsLetter/NewsLetterScreen.dart';
 import '../reusable_components/Checkers/globalNavigatorKey.dart';
 import '../../ui/home_screen/MSGScreens/messages.dart';
-import '../../ui/home_screen/Home/student_inside_tabs/student_inside.dart';
+import '../../ui/home_screen/Home/student_inside_tabs/screen/student_inside.dart';
 
 class PushRouter {
   static Map<String, dynamic>? _pendingData;

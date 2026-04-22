@@ -12,7 +12,6 @@ class APIServices {
     Duration timeout = const Duration(seconds: 20),
     bool checkInternetBeforeRequest = true,
   }) async {
-    // ✅ 1) fast-fail قبل ما نبدأ request
     if (checkInternetBeforeRequest) {
       final ok = await NetworkGuard.hasInternet();
       if (!ok) {
@@ -36,9 +35,7 @@ class APIServices {
           )
           .timeout(timeout);
 
-      // ignore: avoid_print
       print("🔹 Status Code: ${response.statusCode}");
-      // ignore: avoid_print
       print("🔹 Response: ${response.body}");
 
       // ✅ safe decode
@@ -108,7 +105,6 @@ class APIServices {
         "statusCode": 0,
       };
     } on SocketException {
-      // ✅ لو النت قطع بعد pre-check أو أثناء الطلب
       return {
         "success": false,
         "message": "No Internet connection",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oasisathletic/core/reusable_components/widgets/app_avatar.dart';
 import '../colors_Manager.dart';
 
 class StudentCard extends StatelessWidget {
@@ -33,12 +34,12 @@ class StudentCard extends StatelessWidget {
         isLight ? ColorsManager.lightText : ColorsManager.darkText;
 
     // STUDENT IMAGE
-    ImageProvider<Object> imageProvider;
-    if (photo.startsWith('http')) {
-      imageProvider = NetworkImage(Uri.encodeFull(photo));
-    } else {
-      imageProvider = const AssetImage('assets/images/logo.png');
-    }
+    // ImageProvider<Object> imageProvider;
+    // if (photo.startsWith('http')) {
+    //   imageProvider = NetworkImage(Uri.encodeFull(photo));
+    // } else {
+    //   imageProvider = const AssetImage('assets/images/logo.png');
+    // }
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.92, end: 1.0),
@@ -129,21 +130,11 @@ class StudentCard extends StatelessWidget {
                           color: Colors.white,
                         ),
                         padding: EdgeInsets.all(2.w),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50.r),
-                          child: Image(
-                            image: imageProvider,
-                            width: 80.w,
-                            height: 80.w,
-                            fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) => Icon(
-                                  Icons.person,
-                                  size: 50.w,
-                                  color: primaryBlue.withOpacity(0.7),
-                                ),
-                          ),
-                        ),
+                        child: AppAvatar(
+                          imageUrl: photo,
+                          name: name, // 🔥 مهم عشان initials
+                          radius: 40,
+                        )
                       ),
                     ),
 

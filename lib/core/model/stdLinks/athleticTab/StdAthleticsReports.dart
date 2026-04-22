@@ -1,27 +1,34 @@
 class StdAthleticsReports {
   StdAthleticsReports({
-    this.reportType,
-    this.uploadDate,
-    this.filePath,
-    this.parentRead,
-    this.readedDate,
-  });
+      this.updateType, 
+      this.ReportID,
+      this.reportType, 
+      this.uploadDate, 
+      this.filePath, 
+      this.parentRead, 
+      this.readedDate,});
 
   StdAthleticsReports.fromJson(dynamic json) {
+    updateType = json['updateType'];
+    ReportID = json['ReportID'];
     reportType = json['ReportType'];
     uploadDate = json['UploadDate'];
     filePath = json['FilePath'];
     parentRead = json['Parent_read'];
     readedDate = json['Readed_date'];
   }
+  num? updateType;
+  num? ReportID;
   String? reportType;
   String? uploadDate;
   String? filePath;
   num? parentRead;
-  String? readedDate;
+  dynamic readedDate;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['updateType'] = updateType;
+    map['ReportID'] = ReportID;
     map['ReportType'] = reportType;
     map['UploadDate'] = uploadDate;
     map['FilePath'] = filePath;
@@ -29,4 +36,5 @@ class StdAthleticsReports {
     map['Readed_date'] = readedDate;
     return map;
   }
+
 }

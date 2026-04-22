@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:oasisathletic/ui/home_screen/Home/student_inside_tabs/student_inside.dart';
+import 'package:oasisathletic/ui/home_screen/Home/student_inside_tabs/screen/student_inside.dart';
 
 import '../../../core/colors_Manager.dart';
 import '../../../core/model/regStdModels/stdData.dart';

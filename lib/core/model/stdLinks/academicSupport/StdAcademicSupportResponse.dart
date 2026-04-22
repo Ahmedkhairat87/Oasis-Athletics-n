@@ -1,19 +1,26 @@
 import 'StdReports.dart';
+import 'ReportNumbers.dart';
 import 'StdSubjectData.dart';
 import 'StdSubjectDetailsData.dart';
 
 class StdAcademicSupportResponse {
   StdAcademicSupportResponse({
-    this.stdReports,
-    this.stdSubjectData,
-    this.stdSubjectDetailsData,
-  });
+      this.stdReports, 
+      this.reportNumbers, 
+      this.stdSubjectData, 
+      this.stdSubjectDetailsData,});
 
   StdAcademicSupportResponse.fromJson(dynamic json) {
     if (json['stdReports'] != null) {
       stdReports = [];
       json['stdReports'].forEach((v) {
         stdReports?.add(StdReports.fromJson(v));
+      });
+    }
+    if (json['reportNumbers'] != null) {
+      reportNumbers = [];
+      json['reportNumbers'].forEach((v) {
+        reportNumbers?.add(ReportNumbers.fromJson(v));
       });
     }
     if (json['stdSubjectData'] != null) {
@@ -30,6 +37,7 @@ class StdAcademicSupportResponse {
     }
   }
   List<StdReports>? stdReports;
+  List<ReportNumbers>? reportNumbers;
   List<StdSubjectData>? stdSubjectData;
   List<StdSubjectDetailsData>? stdSubjectDetailsData;
 
@@ -38,13 +46,16 @@ class StdAcademicSupportResponse {
     if (stdReports != null) {
       map['stdReports'] = stdReports?.map((v) => v.toJson()).toList();
     }
+    if (reportNumbers != null) {
+      map['reportNumbers'] = reportNumbers?.map((v) => v.toJson()).toList();
+    }
     if (stdSubjectData != null) {
       map['stdSubjectData'] = stdSubjectData?.map((v) => v.toJson()).toList();
     }
     if (stdSubjectDetailsData != null) {
-      map['stdSubjectDetailsData'] =
-          stdSubjectDetailsData?.map((v) => v.toJson()).toList();
+      map['stdSubjectDetailsData'] = stdSubjectDetailsData?.map((v) => v.toJson()).toList();
     }
     return map;
   }
+
 }

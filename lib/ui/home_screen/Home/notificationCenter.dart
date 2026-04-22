@@ -8,7 +8,7 @@ import '../Home/widget/notificationCenterController.dart';
 
 // import your target screens routes:
 import '../../home_screen/MSGScreens/messages.dart';
-import '../../home_screen/Home/student_inside_tabs/student_inside.dart';
+import 'student_inside_tabs/screen/student_inside.dart';
 import '../../home_screen/sideMenu/newsLetter/NewsLetterScreen.dart';
 import '../../home_screen/sideMenu/Gallery/galleryAlbums.dart';
 import '../../drawer/canteen_charge.dart';
