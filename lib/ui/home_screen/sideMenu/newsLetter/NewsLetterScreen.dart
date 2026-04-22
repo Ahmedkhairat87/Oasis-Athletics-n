@@ -139,6 +139,7 @@ class _NewsLetterScreenState extends State<NewsLetterScreen> {
     required Color accentSky,
     required Color accentMint,
   }) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -175,9 +176,12 @@ class _NewsLetterScreenState extends State<NewsLetterScreen> {
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.16),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.newspaper,
-                  color: Colors.white,
+                  color:
+                      isLight
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.onSurface,
                   size: 30,
                 ),
               ),
@@ -192,7 +196,10 @@ class _NewsLetterScreenState extends State<NewsLetterScreen> {
                     Text(
                       item.date,
                       style: TextStyle(
-                        color: Colors.white,
+                        color:
+                            isLight
+                                ? Colors.white
+                                : Theme.of(context).colorScheme.onSurface,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w800,
                       ),

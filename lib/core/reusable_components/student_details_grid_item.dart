@@ -47,27 +47,38 @@ class StudentDetailsGridItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(18.r),
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18.r),
-              // joyful multicolor halo
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  primaryBlue.withOpacity(0.16),
-                  accentSky.withOpacity(0.14),
-                  accentMint.withOpacity(0.12),
-                  accentSun.withOpacity(0.10),
-                ],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: primaryBlue.withOpacity(isDark ? 0.35 : 0.18),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
+            decoration:
+                isDark
+                    ? BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(18.r),
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withOpacity(0.35),
+                      ),
+                    )
+                    : BoxDecoration(
+                      borderRadius: BorderRadius.circular(18.r),
+                      // joyful multicolor halo
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          primaryBlue.withOpacity(0.16),
+                          accentSky.withOpacity(0.14),
+                          accentMint.withOpacity(0.12),
+                          accentSun.withOpacity(0.10),
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: primaryBlue.withOpacity(0.18),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
             child: Container(
               margin: EdgeInsets.all(1.5.w),
               decoration: BoxDecoration(
@@ -89,18 +100,27 @@ class StudentDetailsGridItem extends StatelessWidget {
                       },
                       child: Container(
                         padding: EdgeInsets.all(6.w),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: SweepGradient(
-                            colors: [
-                              primaryBlue,
-                              accentSky,
-                              accentMint,
-                              accentSun,
-                              primaryBlue,
-                            ],
-                          ),
-                        ),
+                        decoration:
+                            isDark
+                                ? BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .outline
+                                      .withOpacity(0.35),
+                                )
+                                : BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: SweepGradient(
+                                    colors: [
+                                      primaryBlue,
+                                      accentSky,
+                                      accentMint,
+                                      accentSun,
+                                      primaryBlue,
+                                    ],
+                                  ),
+                                ),
                         child: Container(
                           padding: EdgeInsets.all(6.w),
                           decoration: const BoxDecoration(

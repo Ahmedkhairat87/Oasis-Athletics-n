@@ -46,34 +46,48 @@ class AthleticsTabReportCard extends StatelessWidget {
         );
       },
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14.r),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              primaryBlue.withOpacity(0.08),
-              primaryBlueEnd.withOpacity(0.06),
-              accentSky.withOpacity(0.05),
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: primaryBlue.withOpacity(0.08),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+        decoration:
+            isLight
+                ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(14.r),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      primaryBlue.withOpacity(0.08),
+                      primaryBlueEnd.withOpacity(0.06),
+                      accentSky.withOpacity(0.05),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: primaryBlue.withOpacity(0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                )
+                : BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withOpacity(0.35),
+                  ),
+                ),
         child: Container(
           padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
             color: cardBaseColor.withOpacity(0.96),
             borderRadius: BorderRadius.circular(14.r),
-            border: Border.all(
-              color: (isRead ? accentMint : accentCoral).withOpacity(0.7),
-              width: 1.3,
-            ),
+            border:
+                isLight
+                    ? Border.all(
+                      color: (isRead ? accentMint : accentCoral).withOpacity(0.7),
+                      width: 1.3,
+                    )
+                    : null,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,8 +118,11 @@ class AthleticsTabReportCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w800,
-                              color: primaryBlue,
-                            ),
+                            color:
+                                isLight
+                                    ? primaryBlue
+                                    : Theme.of(context).colorScheme.onSurface,
+                          ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),

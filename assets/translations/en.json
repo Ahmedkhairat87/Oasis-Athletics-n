@@ -12,6 +12,32 @@
   "empty_email" : "Please enter your Email",
   "not_valid_password" : "Please enter a Valid password !",
   "not_valid_email" : "Please enter a Valid E-Mail Address !",
+  "parent": "Parent",
+  "student": "Student",
+  "admin": "Admin",
+  "coordinator": "Coordinator",
+  "confirm_to_continue": "Confirm to continue",
+  "confirm_biometric_setup": "Confirm biometric setup",
+  "enter_password_for_account": "Enter the password for your account",
+  "face_id": "Face ID",
+  "checking": "Checking…",
+  "use_face_id": "Use Face ID",
+  "sign_in_again": "Sign in again",
+  "change_role": "Change role",
+  "under_construction_message": "This module will be available soon.",
+  "notifications_required_signin": "Notifications are required to sign in. Please enable notifications and try again.",
+  "generic_error_try_again": "An error occurred. Please try again.",
+  "wrong_username_or_password": "Wrong username or password.",
+  "access_denied_contact_support": "Access denied. Please contact support.",
+  "service_not_available": "Service not available. Please try again later.",
+  "server_error_try_later": "Server error. Please try again later.",
+  "no_internet_connection": "No internet connection. Please check your network.",
+  "request_timed_out": "Request timed out. Please try again.",
+  "unexpected_error": "Unexpected error. Please try again later.",
+  "too_many_failed_attempts": "Too many failed attempts. Please sign in again.",
+  "authentication_failed_try_again": "Authentication failed. Try again ({current}/{max}).",
+
+
   "send" : "Send",
   "reset" : "Reset Password",
   "reset_note" : "Your login credentials will be sent to the email address provided. Please confirm its accuracy before submission",
@@ -192,6 +218,23 @@
   "medical_form_subtitle": "Open medical form to view / fill details",
   "nutrition_form": "Nutrition Form",
   "nutrition_form_subtitle": "Open nutrition form to view / fill details",
+
+
+  "hide_details": "Hide details",
+  "open_link": "Open link",
+  "exercise_links": "Exercise Links",
+  "rehab_plan": "Rehab Plan",
+  "home_exercise_program": "Home Exercise Program",
+  "home_care_option": "Home Care Option",
+  "other_care": "Other Care",
+  "id": "ID",
+  "error_loading": "Error loading data",
+  "try_again": "Try Again",
+
+
+
+
+
   "forms_help_text": "Tap a card to open the corresponding form. The form opens as a full screen page.",
   "meal_all_plate": "All Plate",
   "meal_most_plate": "Most of the Plate",
@@ -284,6 +327,25 @@
   "visit": "Visit",
   "complaint": "Complaint",
   "diagnosis": "Diagnosis",
+  "doctor_section": "Doctor Section",
+
+  "psychologist_section": "Psychologist Section",
+  "physiotherapist_section": "Physiotherapist Section",
+  "inbody_follow_up": "InBody Follow-up",
+  "viewed_by_parent": "Viewed by Parent",
+  "not_viewed_yet": "Not Yet Viewed",
+  "no_doctor_reports": "No doctor reports found",
+  "no_psychologist_reports": "No psychologist reports found",
+  "no_physiotherapy_reports": "No physiotherapy reports found",
+  "no_inbody_reports": "No InBody reports found",
+  "no_diet_plan": "No diet plan available",
+  "no_file_available": "No file available",
+  "return_to_play": "Return To Play",
+  "last_updated": "Last Updated",
+  "breakfast": "Breakfast",
+  "lunch": "Lunch",
+  "dinner": "Dinner",
+  "note": "Note",
   "needed_scans": "Needed scans",
   "follow_up": "Follow-up",
   "physiotherapy_visit": "Physiotherapy visit",
@@ -383,5 +445,64 @@
   "pPast_injuries": "Past injuries",
   "no_subrepo_found" : "No subject reports found",
   "teacher_cmnt": "Teacher's Comment:",
-  "attend": "Attend"
+  "attend": "Attend",
+  "mild": "Mild",
+  "severe": "Severe",
+  "pciycsfomotfc": "Please check if your child suffers from one or more of the following conditions.",
+
+
+  "forms_title": "Forms",
+  "medical_form_desc": "Open medical form to view / fill details",
+  "nutrition_form_desc": "Open nutrition form to view / fill details",
+  "forms_help": "Tap a card to open the corresponding form. The form opens as a full screen page.",
+
+
+
+  "Weight" : "Weight",
+  "Height" : "Height",
+  "Age": "Age",
+
+  "selectRole": "Select your role to continue",
+  "financeError": "Please check the account status with the administration.",
+
+  "Logout": "Logout",
+  "logoutMsg" : "You’ll need to sign in again to use the app.",
+  "logoutNote" : "You can sign in again anytime.",
+
+  "faceIDNotSupported": "Biometrics not supported on this device.",
+  "faceIDtitle": "Enable App Lock?",
+  "faceIDMsg": "Use Face ID / fingerprint (or phone PIN/password) next time you open the app.",
+  "faceIDCancel": "Not now",
+  "faceIDOK": "Enable",
+  "faceIdOptionMsg": "You can change this later from Settings.",
+
+  "update_available_title": "Update Available",
+  "update_available_message": "A newer version of the app is available ({version}). Please update for the best experience.",
+  "update_required_title": "Update Required",
+  "update_required_message": "A mandatory update is required to continue using the app. Latest version: {version}",
+  "update_button": "Update",
+  "later_button": "Later",
+
+
+
+
+  "student_book" : "Student book",
+  "no_messages_found" : "No Messages found",
+  "noSent": "No sent messages.",
+  "refresh" : "Pull down to refresh or send a new message.",
+  "sent_message_no_reply": "There's no reply",
+  "write_your_reply_here": "Write your reply here",
+  "reply_sent_successfully" : "reply sent successfully",
+  "failed_to_send_reply" : "Failed to send reply",
+
+  "please_fill_all_fields": "Please fill all fields",
+  "message_sent_successfully" : "Message sent successfully",
+  "failed_to_send_message" : "Failed to send message",
+  "write_your_message_here" : "Write your message here",
+
+  "edit_mode_enabled": "You can update the visible section",
+  "view_mode_enabled": "Profile information overview"
+
+
+
 }

@@ -48,35 +48,52 @@ class ReportSummaryTile extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
-          color: Theme.of(context).colorScheme.surface.withOpacity(
-            bgOpacity,
-          ), // stronger surface when elevated
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              color.withOpacity(gradientStartOpacity),
-              color.withOpacity(gradientEndOpacity),
-            ],
-          ),
-          border: Border.all(color: color.withOpacity(borderOpacity)),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(shadowOpacity),
-              blurRadius: blurRadius,
-              offset: shadowOffset,
-            ),
-          ],
-        ),
+        decoration:
+            isLight
+                ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  color: Theme.of(context).colorScheme.surface.withOpacity(
+                    bgOpacity,
+                  ), // stronger surface when elevated
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      color.withOpacity(gradientStartOpacity),
+                      color.withOpacity(gradientEndOpacity),
+                    ],
+                  ),
+                  border: Border.all(color: color.withOpacity(borderOpacity)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(shadowOpacity),
+                      blurRadius: blurRadius,
+                      offset: shadowOffset,
+                    ),
+                  ],
+                )
+                : BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  color: Theme.of(context).colorScheme.surface,
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withOpacity(0.35),
+                  ),
+                ),
         child: Row(
           children: [
             // Tiny colorful dot as a playful accent
             Container(
               width: 10.w,
               height: 10.w,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                    isLight
+                        ? color
+                        : Theme.of(context).colorScheme.onSurface,
+              ),
             ),
             SizedBox(width: 8.w),
 
@@ -101,7 +118,10 @@ class ReportSummaryTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w800,
-                      color: color,
+                      color:
+                          isLight
+                              ? color
+                              : Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],

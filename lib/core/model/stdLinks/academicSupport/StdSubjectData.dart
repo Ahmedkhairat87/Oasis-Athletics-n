@@ -1,13 +1,12 @@
 class StdSubjectData {
   StdSubjectData({
-    this.subjectName,
-    this.autonomie,
-    this.organisation,
-    this.expression,
-    this.participation,
-    this.commentaire,
-    this.reportDate,
-  });
+      this.subjectName, 
+      this.autonomie, 
+      this.organisation, 
+      this.expression, 
+      this.participation, 
+      this.commentaire, 
+      this.reportDate,});
 
   StdSubjectData.fromJson(dynamic json) {
     subjectName = json['SubjectName'];
@@ -37,4 +36,5 @@ class StdSubjectData {
     map['ReportDate'] = reportDate;
     return map;
   }
+
 }

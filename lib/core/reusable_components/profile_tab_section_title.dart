@@ -10,6 +10,7 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     final Color primaryBlue = ColorsManager.primaryGradientStart;
     final Color accentMint = ColorsManager.accentMint;
     final Color accentSun = ColorsManager.accentSun;
@@ -39,14 +40,20 @@ class SectionTitle extends StatelessWidget {
             Container(
               width: 5.w,
               height: 24.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4.r),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [primaryBlue, accentSky, accentMint, accentSun],
-                ),
-              ),
+              decoration:
+                  isLight
+                      ? BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.r),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [primaryBlue, accentSky, accentMint, accentSun],
+                        ),
+                      )
+                      : BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.r),
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
             ),
 
             SizedBox(width: 10.w),
@@ -58,7 +65,10 @@ class SectionTitle extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w800,
-                  color: primaryBlue,
+                  color:
+                      isLight
+                          ? primaryBlue
+                          : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),

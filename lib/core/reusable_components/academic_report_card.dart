@@ -58,29 +58,43 @@ class AcademicReportCard extends StatelessWidget {
     final Color accentPurple = ColorsManager.accentPurple;
     final Color accentCoral = ColorsManager.accentCoral;
 
+    final isLight = Theme.of(context).brightness == Brightness.light;
     final Color cardBackground =
-        Theme.of(context).brightness == Brightness.light
-            ? Colors.white
-            : ColorsManager.darkFields;
+        isLight ? Colors.white : ColorsManager.darkFields;
+    final Color titleColor =
+        isLight
+            ? primaryBlue
+            : Theme.of(context).colorScheme.onSurface;
 
     return GoldCard(
       child: InkWell(
         borderRadius: BorderRadius.circular(18.r),
         onTap: onTap,
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18.r),
-            // subtle multicolor “confetti” gradient behind content
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                primaryBlue.withOpacity(0.08),
-                accentSky.withOpacity(0.06),
-                accentMint.withOpacity(0.04),
-              ],
-            ),
-          ),
+          decoration:
+              isLight
+                  ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(18.r),
+                    // subtle multicolor “confetti” gradient behind content
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        primaryBlue.withOpacity(0.08),
+                        accentSky.withOpacity(0.06),
+                        accentMint.withOpacity(0.04),
+                      ],
+                    ),
+                  )
+                  : BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(18.r),
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outline.withOpacity(0.35),
+                    ),
+                  ),
           child: Container(
             // inner white/field area so content is crisp
             decoration: BoxDecoration(
@@ -149,8 +163,8 @@ class AcademicReportCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w800,
-                          color: primaryBlue,
-                        ),
+                        color: titleColor,
+                      ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

@@ -77,8 +77,14 @@ class _LoginBackgroundState extends State<LoginBackground>
     final Color bg =
         isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground;
 
-    final gradStart = ColorsManager.primaryGradientStart;
-    final gradEnd = ColorsManager.primaryGradientEnd;
+    final gradStart =
+        isLight
+            ? ColorsManager.primaryGradientStart
+            : ColorsManager.primaryGradientStartDark;
+    final gradEnd =
+        isLight
+            ? ColorsManager.primaryGradientEnd
+            : ColorsManager.primaryGradientEndDark;
 
     final screen = MediaQuery.of(context).size;
 
@@ -93,11 +99,18 @@ class _LoginBackgroundState extends State<LoginBackground>
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    gradStart.withOpacity(0.20),
-                    gradEnd.withOpacity(0.12),
-                    bg,
-                  ],
+                  colors:
+                      isLight
+                          ? [
+                            gradStart.withOpacity(0.20),
+                            gradEnd.withOpacity(0.12),
+                            bg,
+                          ]
+                          : [
+                            gradStart.withOpacity(0.10),
+                            gradEnd.withOpacity(0.06),
+                            bg,
+                          ],
                 ),
               ),
             ),

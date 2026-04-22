@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "624628832750",
+    "project_id": "oasis-athletics-19d5e",
+    "storage_bucket": "oasis-athletics-19d5e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624628832750:android:5dc91473155a319922d6ff",
+        "android_client_info": {
+          "package_name": "com.oasisdemaadi.oasisathletics"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5Djv5SykE-_AMHOS8154jJODIkfRsmwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

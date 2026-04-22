@@ -20,6 +20,7 @@ class ReadOnlyField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     final Color primaryBlue = ColorsManager.primaryGradientStart;
     final Color accentSky = ColorsManager.accentSky;
     final Color accentMint = ColorsManager.accentMint;
@@ -49,7 +50,7 @@ class ReadOnlyField extends StatelessWidget {
               );
             },
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center, // ✅ center align label + value
               children: [
                 // label: takes labelW (which will be <= 45% of available width)
                 SizedBox(
@@ -59,18 +60,30 @@ class ReadOnlyField extends StatelessWidget {
                       horizontal: 6.w,
                       vertical: 4.h,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.r),
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          primaryBlue.withOpacity(0.14),
-                          accentSky.withOpacity(0.10),
-                          accentMint.withOpacity(0.08),
-                        ],
-                      ),
-                    ),
+                    decoration:
+                        isLight
+                            ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.r),
+                              gradient: LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  primaryBlue.withOpacity(0.14),
+                                  accentSky.withOpacity(0.10),
+                                  accentMint.withOpacity(0.08),
+                                ],
+                              ),
+                            )
+                            : BoxDecoration(
+                              color:
+                                  Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(10.r),
+                              border: Border.all(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.outline.withOpacity(0.35),
+                              ),
+                            ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -80,7 +93,12 @@ class ReadOnlyField extends StatelessWidget {
                           height: 6.w,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: primaryBlue,
+                            color:
+                                isLight
+                                    ? primaryBlue
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
                           ),
                         ),
                         SizedBox(width: 4.w),
@@ -91,7 +109,13 @@ class ReadOnlyField extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 13.sp,
-                              color: primaryBlue,
+                              height: 1.4,
+                              color:
+                                  isLight
+                                      ? primaryBlue
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
                               fontWeight: FontWeight.w700,
                             ),
                           ),

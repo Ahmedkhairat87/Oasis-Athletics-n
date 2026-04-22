@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oasisathletic/core/reusable_components/widgets/app_avatar.dart';
 import '../colors_Manager.dart';
 
 class StudentCard extends StatelessWidget {
@@ -22,7 +23,7 @@ class StudentCard extends StatelessWidget {
     final Color primaryBlue =
         isLight
             ? ColorsManager.primaryGradientStart
-            : ColorsManager.primaryGradientStartDark;
+            : Theme.of(context).colorScheme.onSurface;
     final Color accentMint = ColorsManager.accentMint;
     final Color accentSun = ColorsManager.accentSun;
     final Color accentSky = ColorsManager.accentSky;
@@ -33,12 +34,12 @@ class StudentCard extends StatelessWidget {
         isLight ? ColorsManager.lightText : ColorsManager.darkText;
 
     // STUDENT IMAGE
-    ImageProvider<Object> imageProvider;
-    if (photo.startsWith('http')) {
-      imageProvider = NetworkImage(Uri.encodeFull(photo));
-    } else {
-      imageProvider = const AssetImage('assets/images/logo.png');
-    }
+    // ImageProvider<Object> imageProvider;
+    // if (photo.startsWith('http')) {
+    //   imageProvider = NetworkImage(Uri.encodeFull(photo));
+    // } else {
+    //   imageProvider = const AssetImage('assets/images/logo.png');
+    // }
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.92, end: 1.0),
@@ -57,26 +58,37 @@ class StudentCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(18.r),
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18.r),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  primaryBlue.withOpacity(0.12),
-                  accentSky.withOpacity(0.10),
-                  accentMint.withOpacity(0.08),
-                  accentSun.withOpacity(0.06),
-                ],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: primaryBlue.withOpacity(0.16),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
+            decoration:
+                isLight
+                    ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(18.r),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          primaryBlue.withOpacity(0.12),
+                          accentSky.withOpacity(0.10),
+                          accentMint.withOpacity(0.08),
+                          accentSun.withOpacity(0.06),
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: primaryBlue.withOpacity(0.16),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    )
+                    : BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(18.r),
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withOpacity(0.35),
+                      ),
+                    ),
             child: Container(
               margin: EdgeInsets.all(1.5.w),
               decoration: BoxDecoration(
@@ -91,39 +103,38 @@ class StudentCard extends StatelessWidget {
                     // IMAGE RING
                     Container(
                       padding: EdgeInsets.all(3.0.w),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: SweepGradient(
-                          colors: [
-                            primaryBlue,
-                            accentSky,
-                            accentMint,
-                            accentSun,
-                            primaryBlue,
-                          ],
-                        ),
-                      ),
+                      decoration:
+                          isLight
+                              ? BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: SweepGradient(
+                                  colors: [
+                                    primaryBlue,
+                                    accentSky,
+                                    accentMint,
+                                    accentSun,
+                                    primaryBlue,
+                                  ],
+                                ),
+                              )
+                              : BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .outline
+                                    .withOpacity(0.35),
+                              ),
                       child: Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
                         padding: EdgeInsets.all(2.w),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50.r),
-                          child: Image(
-                            image: imageProvider,
-                            width: 80.w,
-                            height: 80.w,
-                            fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) => Icon(
-                                  Icons.person,
-                                  size: 50.w,
-                                  color: primaryBlue.withOpacity(0.7),
-                                ),
-                          ),
-                        ),
+                        child: AppAvatar(
+                          imageUrl: photo,
+                          name: name, // 🔥 مهم عشان initials
+                          radius: 40,
+                        )
                       ),
                     ),
 
